@@ -1,4 +1,5 @@
 var express = require('express');
+var conn = require('../db');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {

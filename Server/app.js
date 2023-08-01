@@ -1,21 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 
 const app = express();
 
 const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+const placesRouter = require('./routes/places');
 
 app.use('/api/users', usersRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/places', placesRouter);
 
 app.use(bodyParser.json());
-
-const pool = mysql.createPool({
-  host: 'mysql-host',
-  user: 'mysql-username',
-  password: 'mysql-password',
-  database: 'mysql-database',
-});
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
