@@ -1,9 +1,10 @@
 const mysql = require('mysql');
+const fs = require('fs');
 
 const conn = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: 'mysql-password',
+    password: fs.readFileSync('./utils/db.config'),
     database: 'mysql-database',
   });
 

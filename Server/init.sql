@@ -22,7 +22,7 @@ CREATE TABLE `tb_comment` (
 	`comment_id`	int	NOT NULL,
 	`post_id`	int	NOT NULL,
 	`is_reply`	tinyint	NOT NULL	DEFAULT 0	COMMENT '대댓',
-	`reply_id`	int	NULL	DEFAULT comment_id	COMMENT '대댓 참조 댓글'
+	`reply_id`	int	NULL	DEFAULT 0	COMMENT '대댓 참조 댓글'
 );
 
 CREATE TABLE `tb_post` (
