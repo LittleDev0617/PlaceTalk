@@ -14,10 +14,11 @@ app.use('/api/posts', postsRouter);
 app.use('/api/places', placesRouter);
 
 app.use((err, req, res, next) => {
-    res.status(err.status).json({ message : err.message });
+    if(err.status)
+        res.status(err.status).json({ message : err.message });
 });
 
 const port = 3000;
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
