@@ -1,0 +1,4 @@
+enum kakaoUserLoginStatus {
+  granted,
+  denied,
+}

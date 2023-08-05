@@ -1,0 +1,42 @@
+name: placex
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  auto_route: ^7.8.0
+  bloc: ^8.1.2
+  dropdown_button2: ^2.3.7
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.3
+  flutter_naver_map: ^1.0.2
+  flutter_screenutil: ^5.8.4
+  intl: ^0.18.1
+  kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  auto_route_generator: ^7.3.0
+  build_runner: ^2.4.6
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Gmarket
+      fonts:
+        - asset: assets/fonts/GmarketSansBold.otf
+          weight: 700
+        - asset: assets/fonts/GmarketSansMedium.otf
+          weight: 500
+        - asset: assets/fonts/GmarketSansLight.otf
+          weight: 300
+  assets:
+    - assets/images/kakao_login.png
+    - assets/images/profile.jpg
