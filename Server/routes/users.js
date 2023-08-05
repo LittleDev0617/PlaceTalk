@@ -4,10 +4,7 @@ const jwt = require('../utils/jwt');
 
 const router = express.Router();
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
-
-router.get('/', (req, res, next) => {
-    res.send('test');
-});
+const { auth } = require('../utils/auth');
 
 // deprecate
 // router.post('/login', (req, res, next) => {
@@ -30,7 +27,7 @@ router.get('/', (req, res, next) => {
 //     });
 // });
 
-// Add User
+// 회원 로그인 및 가입
 router.get('/auth', (req, res, next) => {
     const token = req.params.token;
     if(!token) 
@@ -54,6 +51,19 @@ router.get('/auth', (req, res, next) => {
         
         const token = jwt.sign(pay, jwt.secret, jwt.options);
         res.json({ token : token });
+    });
+});
+
+// 회원이 참가중인 핫플 조회
+// user_id : int
+router.get('/place', (req, res, next) => {
+    const { token, user_id } = req.body;
+
+    if(!auth(token, 2))
+        throw new UnauthorizedError('Cannot acces');
+
+    conn.query('SELECT * FROM tb_place WHERE place_id IN (SELECT place_id FROM tb_join WHERE user_id = ?', [user_id], (err, rows) => {
+        res.json(rows);
     });
 });
 

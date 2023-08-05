@@ -7,6 +7,7 @@ const conn = mysql.createConnection({
     user: 'root',
     password: fs.readFileSync('./utils/db.config'),
     database: 'PlaceTalk',
+    dateStrings: 'date'
 });
 
 module.exports = conn;
