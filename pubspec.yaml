@@ -40,3 +40,4 @@ flutter:
   assets:
     - assets/images/kakao_login.png
     - assets/images/profile.jpg
+    - assets/images/booth_icon.png

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
@@ -8,7 +9,7 @@ class boothModel extends Equatable {
   final String? title;
   final String? content;
 
-  const boothModel({
+  boothModel({
     required this.id,
     required this.position,
     this.title,

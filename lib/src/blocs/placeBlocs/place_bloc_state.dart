@@ -19,14 +19,3 @@ class NaverMapLoaded extends PlaceBlocState {
   @override
   List<Object?> get props => [markers];
 }
-
-class JoinDataLoading extends PlaceBlocState {}
-
-class JoinDataLoaded extends PlaceBlocState {
-  final List<String> namesList;
-
-  JoinDataLoaded(this.namesList);
-
-  @override
-  List<Object?> get props => [namesList];
-}

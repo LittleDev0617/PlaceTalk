@@ -75,9 +75,6 @@ class LoginPage extends StatelessWidget {
       floatingActionButton: BlocBuilder<MainBloc, MainBlocState>(
         builder: (context, state) {
           if (state is MainBlocLoded) {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              AutoRouter.of(context).pushNamed('/');
-            });
             return GestureDetector(
               onTap: () {
                 AutoRouter.of(context).pushNamed('/');

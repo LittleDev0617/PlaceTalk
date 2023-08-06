@@ -8,5 +8,3 @@ abstract class PlaceBlocEvent extends Equatable {
 }
 
 class FetchNaverMapDataEvent extends PlaceBlocEvent {}
-
-class FetchJoinDataEvent extends PlaceBlocEvent {}

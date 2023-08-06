@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -29,6 +31,8 @@ class placeModel extends Equatable {
         end_date,
       ];
 
+  get context => null;
+
   static placeModel fromJson(Map<String, dynamic> json) {
     return placeModel(
       id: json['id'],
@@ -45,11 +49,12 @@ class placeModel extends Equatable {
 
   NMarker toNMarker() {
     return NMarker(
-        id: id,
-        position: position,
-        caption: NOverlayCaption(text: name ?? 'error', textSize: 18),
-        subCaption: NOverlayCaption(
-            text: '${joining ?? 0}명 참여 중', color: Colors.grey, textSize: 14),
-        captionAligns: [NAlign.top]);
+      id: id,
+      position: position,
+      caption: NOverlayCaption(text: name ?? 'error', textSize: 18),
+      subCaption: NOverlayCaption(
+          text: '${joining ?? 0}명 참여 중', color: Colors.grey, textSize: 14),
+      captionAligns: [NAlign.top],
+    );
   }
 }

@@ -17,14 +17,14 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
     icon: Icon(Icons.grid_3x3),
     label: 'Explore',
   ),
-  // BottomNavigationBarItem(
-  //   icon: Icon(Icons.push_pin_rounded),
-  //   label: 'Notice',
-  // ),
-  // BottomNavigationBarItem(
-  //   icon: Icon(Icons.person_2_rounded),
-  //   label: 'Profile',
-  // ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.push_pin_rounded),
+    label: 'Notice',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.person_2_rounded),
+    label: 'Profile',
+  ),
 ];
 
 @RoutePage()
@@ -36,28 +36,6 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> with AutoRouteAware {
-  // RoutingController? _router;
-  // bool _bottomNavBarFlag = true;
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   if (_router == null) {
-  //     _router = context.router;
-  //     _router!.addListener(() {
-  //       if (_router!.topRoute.name != HomeRouteEvent.name) {
-  //         setState(() {
-  //           _bottomNavBarFlag = true;
-  //         });
-  //       } else {
-  //         setState(() {
-  //           _bottomNavBarFlag = false;
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
@@ -65,6 +43,8 @@ class _LandingScreenState extends State<LandingScreen> with AutoRouteAware {
         HomeRoute(),
         JoinRoute(),
         ExploreRoute(),
+        NoticeRoute(),
+        ProfileRoute(),
       ],
       bottomNavigationBuilder: buildNav,
     );

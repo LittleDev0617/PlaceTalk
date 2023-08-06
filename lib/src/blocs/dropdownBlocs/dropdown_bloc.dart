@@ -21,7 +21,8 @@ class DropdownBloc extends Bloc<DropdownBlocEvent, DropdownBlocState> {
     on<AddDataEvent>((event, emit) async {
       Map<String, dynamic> datas = await placeDataRepo().fetchData();
       if (datas.isNotEmpty) {
-        Map<String, Map<String, double>> itemsLatLng = datas['itemsLatLng'];
+        Map<String, dynamic> itemsLatLng =
+            datas['itemsLatLng']; // 'itemsLatLng'의 타입을 'dynamic'으로 가져옴
         itemsLatLng[event.item] = {
           'latitude': event.latitude,
           'longitude': event.longitude

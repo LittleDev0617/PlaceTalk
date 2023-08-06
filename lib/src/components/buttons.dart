@@ -33,7 +33,7 @@ class CircleAvatarIconButton extends StatelessWidget {
 class DropdownMapButton extends StatefulWidget {
   DropdownMapButton({super.key, required this.itemList, this.controller});
 
-  final Map<String, Map<String, double>>? itemList;
+  final Map<String, dynamic>? itemList;
 
   final NaverMapController? controller;
 

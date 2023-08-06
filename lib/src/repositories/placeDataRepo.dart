@@ -60,7 +60,7 @@ class placeDataRepo {
     final List<Map<String, dynamic>> apiData = [
       {
         'id': 'KUxSJU',
-        'name': '건국대 x 세종대 축제 (9.15 ~ 17)',
+        'name': '건국대 x 세종대 축제',
         'latitude': 37.54388827708887,
         'longitude': 127.07596063613892,
         'joining': 1234,
@@ -69,7 +69,7 @@ class placeDataRepo {
       },
       {
         'id': 'YUxKU',
-        'name': '연세대 x 고려대 축제 (9.25 ~ 28)',
+        'name': '연세대 x 고려대 축제',
         'latitude': 37.567116598039874,
         'longitude': 126.93903923034668,
         'joining': 4321,
@@ -78,7 +78,7 @@ class placeDataRepo {
       },
       {
         'id': 'Gangnam',
-        'name': '강남역 (준비중)',
+        'name': '강남역',
         'latitude': 37.497954687223526,
         'longitude': 127.02761650085449,
         'joining': 1324,
@@ -87,7 +87,7 @@ class placeDataRepo {
       },
       {
         'id': 'Lotteworld',
-        'name': '롯데월드 (준비중)',
+        'name': '롯데월드',
         'latitude': 37.511079023882786,
         'longitude': 127.09816932678223,
         'joining': 1324,
@@ -96,7 +96,7 @@ class placeDataRepo {
       },
       {
         'id': 'Banporiverpark',
-        'name': '반포한강공원 (준비중)',
+        'name': '반포한강공원',
         'latitude': 37.51000669383035,
         'longitude': 126.99502229690552,
         'joining': 1324,
@@ -105,16 +105,23 @@ class placeDataRepo {
       },
     ];
 
-    Map<String, Map<String, double>> createCoordinatesMap(
+    Map<String, Map<String, dynamic>> createCoordinatesMap(
         List<Map<String, dynamic>> apiData) {
-      Map<String, Map<String, double>> itemsLatLng = {};
+      Map<String, Map<String, dynamic>> itemsLatLng = {};
 
       for (final data in apiData) {
         final name = data['name'] as String;
         final latitude = data['latitude'] as double;
         final longitude = data['longitude'] as double;
+        final startDate = data['start_date'] as String;
+        final endDate = data['end_date'] as String;
 
-        itemsLatLng[name] = {'latitude': latitude, 'longitude': longitude};
+        itemsLatLng[name] = {
+          'latitude': latitude,
+          'longitude': longitude,
+          'start_date': startDate,
+          'end_date': endDate,
+        };
       }
 
       return itemsLatLng;

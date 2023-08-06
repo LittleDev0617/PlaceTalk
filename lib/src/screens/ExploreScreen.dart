@@ -1,7 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:placex/src/blocs/Exploreblocs/explore_bloc.dart';
+import 'package:placex/src/screens/routes/app_router.dart.gr.dart';
 
+import '../blocs/boothBlocs/booth_bloc.dart';
 import '../components/buttons.dart';
 
 @RoutePage()
@@ -79,57 +83,111 @@ class _StackedCardPageState extends State<StackedCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _pageController,
-      scrollDirection: Axis.vertical,
-      itemCount: 10,
-      onPageChanged: _onPageChanged,
-      itemBuilder: (BuildContext context, int index) {
-        double delta = index - _currentPage;
+    return BlocBuilder<ExploreBloc, ExploreBloceState>(
+      builder: (context, state) {
+        if (state is ExploreInitial) {
+          BlocProvider.of<ExploreBloc>(context).add(
+            FetchExploreDataEvent(),
+          );
+          return const Padding(
+            padding: EdgeInsets.all(15.0),
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is ExploreDataLoading) {
+          return const Padding(
+            padding: EdgeInsets.all(15.0),
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is ExploreDataLoaded) {
+          List<String> names = state.datas.keys.toList();
+          List<Map<String, dynamic>> dateRanges =
+              state.datas.values.map((value) {
+            return {
+              'start_date': value['start_date'] ?? '',
+              'end_date': value['end_date'] ?? '',
+            };
+          }).toList();
 
-        if (delta > 0) {
-        } else {}
+          List<Map<String, double>> latlong = state.datas.values.map((value) {
+            double latitude = value['latitude'];
+            double longitude = value['longitude'];
 
-        double translateY = delta * 20; // Adjust as needed
+            return {
+              'latitude': latitude,
+              'longitude': longitude,
+            };
+          }).toList();
+          return PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: state.datas.length,
+            onPageChanged: _onPageChanged,
+            itemBuilder: (BuildContext context, int index) {
+              double delta = index - _currentPage;
 
-        return Center(
-          child: GestureDetector(
-            onTap: () {
-              // Handle card tap if needed
-            },
-            child: Transform.translate(
-              offset: Offset(0, translateY),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('분류', style: TextStyle(fontSize: 18)),
-                      Text(
-                        '제목',
-                        style: TextStyle(
-                            fontSize: 22,
-                            letterSpacing: -1,
-                            fontWeight: FontWeight.w500),
+              if (delta > 0) {
+              } else {}
+
+              double translateY = delta * 20;
+
+              return Center(
+                child: GestureDetector(
+                  onTap: () {
+                    AutoRouter.of(context).push(const HomeRoute());
+                    BlocProvider.of<BoothBloc>(context).add(
+                      PopBoothDataEvent(
+                        NLatLng(
+                          latlong[index]['latitude']!,
+                          latlong[index]['longitude']!,
+                        ),
                       ),
-                      Text('기한',
-                          style: TextStyle(fontSize: 16, color: Colors.grey)),
-                    ],
+                    );
+                  },
+                  child: Transform.translate(
+                    offset: Offset(0, translateY),
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text('분류', style: TextStyle(fontSize: 18)),
+                            Text(
+                              names[index],
+                              style: const TextStyle(
+                                fontSize: 22,
+                                letterSpacing: -1,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              '${dateRanges[index]['start_date']} ~ ${dateRanges[index]['end_date']}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                                letterSpacing: -1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        );
+              );
+            },
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
       },
     );
   }

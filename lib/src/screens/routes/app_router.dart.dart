@@ -13,15 +13,10 @@ class AppRouter extends $AppRouter {
           children: [
             RedirectRoute(path: '', redirectTo: 'world'),
             AutoRoute(path: 'world', page: HomeRoute.page),
-            AutoRoute(
-              path: 'join',
-              page: JoinRoute.page,
-            ),
-            AutoRoute(path: 'test', page: JoinRoute.page),
-            AutoRoute(
-              path: 'explore',
-              page: ExploreRoute.page,
-            ),
+            AutoRoute(path: 'join', page: JoinRoute.page),
+            AutoRoute(path: 'explore', page: ExploreRoute.page),
+            AutoRoute(path: 'notice', page: NoticeRoute.page),
+            AutoRoute(path: 'profile', page: ProfileRoute.page),
           ],
         ),
       ];

@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:placex/src/blocs/JoinBlocs/join_bloc.dart';
 
-import '../blocs/placeBlocs/place_bloc.dart';
 import '../components/buttons.dart';
 
 @RoutePage()
@@ -46,9 +46,14 @@ class JoinPage extends StatelessWidget {
       ),
       extendBodyBehindAppBar: true,
       body: Center(
-        child: BlocBuilder<PlaceBloc, PlaceBlocState>(
+        child: BlocBuilder<JoinBloc, JoinBlocState>(
           builder: (context, state) {
-            if (state is JoinDataLoading) {
+            if (state is JoinInitial) {
+              BlocProvider.of<JoinBloc>(context).add(
+                FetchJoinDataEvent(),
+              );
+              return const CircularProgressIndicator();
+            } else if (state is JoinDataLoading) {
               return const CircularProgressIndicator();
             } else if (state is JoinDataLoaded) {
               List<String> namesList = state.namesList;
@@ -95,9 +100,6 @@ class JoinPage extends StatelessWidget {
                 ),
               );
             } else {
-              BlocProvider.of<PlaceBloc>(context).add(
-                FetchJoinDataEvent(),
-              );
               return const SizedBox.shrink();
             }
           },

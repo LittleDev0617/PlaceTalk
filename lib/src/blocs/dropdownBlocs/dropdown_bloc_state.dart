@@ -8,7 +8,7 @@ abstract class DropdownBlocState extends Equatable {
 class DropdownInitial extends DropdownBlocState {}
 
 class DropdownWithData extends DropdownBlocState {
-  final Map<String, Map<String, double>> itemsLatLng;
+  final Map<String, dynamic> itemsLatLng;
   final NaverMapController controller;
   DropdownWithData(this.itemsLatLng, this.controller);
 
