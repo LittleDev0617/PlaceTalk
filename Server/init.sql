@@ -43,8 +43,8 @@ CREATE TABLE `tb_post` (
 	`likes`	int	NOT NULL	DEFAULT 0
 );
 
-CREATE TABLE `tb_info` (
-	`info_id`	int PRIMARY KEY auto_increment	NOT NULL,
+CREATE TABLE `tb_feed` (
+	`feed_id`	int PRIMARY KEY auto_increment	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`title`	varchar(50)	NOT NULL,
 	`content`	varchar(1000)	NOT NULL
@@ -53,7 +53,7 @@ CREATE TABLE `tb_info` (
 CREATE TABLE `tb_image` (
 	`image_id`	int PRIMARY KEY auto_increment	NOT NULL,
 	`booth_id`	int	NOT NULL	DEFAULT 0,
-	`info_id`	int	NOT NULL	DEFAULT 0,
+	`feed_id`	int	NOT NULL	DEFAULT 0,
 	`order`	int	NULL	DEFAULT 0
 );
 
@@ -72,6 +72,45 @@ CREATE TABLE `tb_join` (
 	`place_id`	int	NOT NULL
 );
 
+CREATE TABLE `tb_organizer` (
+	`place_id`	int	NOT NULL,
+	`user_id`	int	NOT NULL
+);
+
+
+
+ALTER TABLE `tb_user` ADD CONSTRAINT `PK_TB_USER` PRIMARY KEY (
+	`user_id`
+);
+
+ALTER TABLE `tb_place` ADD CONSTRAINT `PK_TB_PLACE` PRIMARY KEY (
+	`place_id`
+);
+
+ALTER TABLE `tb_board` ADD CONSTRAINT `PK_TB_BOARD` PRIMARY KEY (
+	`board_id`,
+	`place_id`
+);
+
+ALTER TABLE `tb_comment` ADD CONSTRAINT `PK_TB_COMMENT` PRIMARY KEY (
+	`comment_id`
+);
+
+ALTER TABLE `tb_post` ADD CONSTRAINT `PK_TB_POST` PRIMARY KEY (
+	`post_id`
+);
+
+ALTER TABLE `tb_feed` ADD CONSTRAINT `PK_TB_FEED` PRIMARY KEY (
+	`feed_id`
+);
+
+ALTER TABLE `tb_image` ADD CONSTRAINT `PK_TB_IMAGE` PRIMARY KEY (
+	`image_id`
+);
+
+ALTER TABLE `tb_booth` ADD CONSTRAINT `PK_TB_BOOTH` PRIMARY KEY (
+	`booth_id`
+);
 
 ALTER TABLE `tb_board` ADD CONSTRAINT `FK_tb_place_TO_tb_board_1` FOREIGN KEY (
 	`place_id`
@@ -108,7 +147,7 @@ REFERENCES `tb_board` (
 	`place_id`
 );
 
-ALTER TABLE `tb_info` ADD CONSTRAINT `FK_tb_place_TO_tb_info_1` FOREIGN KEY (
+ALTER TABLE `tb_feed` ADD CONSTRAINT `FK_tb_place_TO_tb_feed_1` FOREIGN KEY (
 	`place_id`
 )
 REFERENCES `tb_place` (
@@ -122,11 +161,11 @@ REFERENCES `tb_booth` (
 	`booth_id`
 );
 
-ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_info_TO_tb_image_1` FOREIGN KEY (
-	`info_id`
+ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_feed_TO_tb_image_1` FOREIGN KEY (
+	`feed_id`
 )
-REFERENCES `tb_info` (
-	`info_id`
+REFERENCES `tb_feed` (
+	`feed_id`
 );
 
 ALTER TABLE `tb_booth` ADD CONSTRAINT `FK_tb_place_TO_tb_booth_1` FOREIGN KEY (
@@ -148,5 +187,19 @@ ALTER TABLE `tb_join` ADD CONSTRAINT `FK_tb_place_TO_tb_join_1` FOREIGN KEY (
 )
 REFERENCES `tb_place` (
 	`place_id`
+);
+
+ALTER TABLE `tb_organizer` ADD CONSTRAINT `FK_tb_place_TO_tb_organizer_1` FOREIGN KEY (
+	`place_id`
+)
+REFERENCES `tb_place` (
+	`place_id`
+);
+
+ALTER TABLE `tb_organizer` ADD CONSTRAINT `FK_tb_user_TO_tb_organizer_1` FOREIGN KEY (
+	`user_id`
+)
+REFERENCES `tb_user` (
+	`user_id`
 );
 INSERT INTO tb_user VALUES(0,0);
