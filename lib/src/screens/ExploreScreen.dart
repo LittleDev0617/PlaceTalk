@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placex/src/blocs/Exploreblocs/explore_bloc.dart';
 import 'package:placex/src/screens/routes/app_router.dart.gr.dart';
 
@@ -29,22 +30,23 @@ class ExplorePage extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              '인기장소 둘러보기',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-            ),
-            CircleAvatarIconButton(
-              backgroundColor: Colors.black87,
-              iconColor: Colors.white,
-              icon: Icons.notifications_rounded,
+        title: const Text(
+          '인기 장소 둘러보기',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 9),
+            child: CircleAvatarIconButton(
+              iconSize: 27,
+              backgroundColor: Colors.transparent,
+              iconColor: const Color(0xffFF7D7D),
+              icon: Icons.notifications_outlined,
               onPressed: () {},
             ),
-          ],
-        ),
-        backgroundColor: Colors.transparent,
+          ),
+        ],
+        backgroundColor: const Color(0xffF7F7F7),
         elevation: 0,
       ),
       body: StackedCardPage(),
@@ -148,7 +150,7 @@ class _StackedCardPageState extends State<StackedCardPage> {
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       child: Container(
                         padding: const EdgeInsets.all(20),

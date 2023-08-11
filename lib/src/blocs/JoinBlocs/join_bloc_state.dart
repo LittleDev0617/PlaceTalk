@@ -14,8 +14,12 @@ class JoinDataLoading extends JoinBlocState {}
 class JoinDataLoaded extends JoinBlocState {
   final List<String> namesList;
 
-  JoinDataLoaded(this.namesList);
+  Map<String, dynamic> datas;
+  JoinDataLoaded(
+    this.namesList,
+    this.datas,
+  );
 
   @override
-  List<Object> get props => [namesList];
+  List<Object> get props => [namesList, datas];
 }

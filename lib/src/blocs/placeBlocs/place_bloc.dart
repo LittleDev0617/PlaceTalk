@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:placex/src/repositories/placeDataRepo.dart';
 
-import '../boothBlocs/booth_bloc.dart';
-
 part 'place_bloc_event.dart';
 part 'place_bloc_state.dart';
 

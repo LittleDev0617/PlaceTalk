@@ -41,17 +41,20 @@ class App extends StatelessWidget {
         child: ScreenUtilInit(
           designSize: const Size(360, 716),
           builder: (context, child) => MaterialApp.router(
-            routerConfig: _appRouter.config(deepLinkBuilder: (deepLink) {
-              if (deepLink.path.startsWith('/event')) {
-                // continute with the platfrom link
-                return deepLink;
-              } else {
-                return DeepLink.defaultPath;
-              }
-            }),
+            // routerConfig: _appRouter.config(deepLinkBuilder: (deepLink) {
+            //   if (deepLink.path.startsWith('/post')) {
+            //     // continute with the platfrom link
+            //     return deepLink;
+            //   } else {
+            //     return DeepLink.defaultPath;
+            //   }
+            // }),
+
+            routerConfig: _appRouter.config(),
+
             theme: ThemeData(
               useMaterial3: true,
-              fontFamily: 'Gmarket',
+              fontFamily: 'Pretendard',
             ),
             debugShowCheckedModeBanner: false,
           ),

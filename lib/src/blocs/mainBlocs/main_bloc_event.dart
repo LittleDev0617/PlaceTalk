@@ -8,3 +8,5 @@ abstract class MainBlocEvent extends Equatable {
 }
 
 class RequestKakaoLogin extends MainBlocEvent {}
+
+class RequestKakaoLogout extends MainBlocEvent {}

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
@@ -7,12 +6,14 @@ class boothModel extends Equatable {
   final int id;
   final NLatLng position;
   final String? title;
+  final String? addr;
   final String? content;
 
   boothModel({
     required this.id,
     required this.position,
     this.title,
+    this.addr,
     this.content,
   });
 
@@ -23,6 +24,7 @@ class boothModel extends Equatable {
     return boothModel(
       id: json['id'],
       title: json['text'],
+      addr: json['addr'],
       content: json['content'],
       position: NLatLng(
         json['latitude'] as double,

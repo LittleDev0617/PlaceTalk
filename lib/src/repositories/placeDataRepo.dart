@@ -13,8 +13,8 @@ import '../models/placesModel.dart';
 //         'latitude': 37.5407,
 //         'longitude': 127.0793,
 //         'joining': 1234,
-//         'start_date': '2023-08-01T00:00:00Z',
-//         'end_date': '2023-08-05T00:00:00Z',
+//         'start_date': '08-01T00:00:00Z',
+//         'end_date': '08-05T00:00:00Z',
 //       },
 //       {
 //         'id': 2,
@@ -22,8 +22,8 @@ import '../models/placesModel.dart';
 //         'latitude': 37.5512,
 //         'longitude': 127.0731,
 //         'joining': 5678,
-//         'start_date': '2023-08-03T00:00:00Z',
-//         'end_date': '2023-08-07T00:00:00Z',
+//         'start_date': '08-03T00:00:00Z',
+//         'end_date': '08-07T00:00:00Z',
 //       },
 //     ];
 
@@ -64,8 +64,8 @@ class placeDataRepo {
         'latitude': 37.54388827708887,
         'longitude': 127.07596063613892,
         'joining': 1234,
-        'start_date': '2023-08-07',
-        'end_date': '2023-08-07',
+        'start_date': '08-07',
+        'end_date': '08-07',
       },
       {
         'id': 'YUxKU',
@@ -73,8 +73,8 @@ class placeDataRepo {
         'latitude': 37.567116598039874,
         'longitude': 126.93903923034668,
         'joining': 4321,
-        'start_date': '2023-08-07',
-        'end_date': '2023-08-07',
+        'start_date': '08-07',
+        'end_date': '08-07',
       },
       {
         'id': 'Gangnam',
@@ -82,8 +82,8 @@ class placeDataRepo {
         'latitude': 37.497954687223526,
         'longitude': 127.02761650085449,
         'joining': 1324,
-        'start_date': '2023-08-03',
-        'end_date': '2023-08-07',
+        'start_date': '08-03',
+        'end_date': '08-07',
       },
       {
         'id': 'Lotteworld',
@@ -91,8 +91,8 @@ class placeDataRepo {
         'latitude': 37.511079023882786,
         'longitude': 127.09816932678223,
         'joining': 1324,
-        'start_date': '2023-08-03',
-        'end_date': '2023-08-07',
+        'start_date': '08-03',
+        'end_date': '08-07',
       },
       {
         'id': 'Banporiverpark',
@@ -100,8 +100,8 @@ class placeDataRepo {
         'latitude': 37.51000669383035,
         'longitude': 126.99502229690552,
         'joining': 1324,
-        'start_date': '2023-08-03',
-        'end_date': '2023-08-07',
+        'start_date': '08-03',
+        'end_date': '08-07',
       },
     ];
 

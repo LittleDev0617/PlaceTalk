@@ -1,29 +1,51 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:placex/src/blocs/mainBlocs/main_bloc.dart';
 
 import 'app_router.dart.gr.dart';
 
-List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
+List<BottomNavigationBarItem> bottomNavItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
-    icon: Icon(Icons.home_outlined),
-    label: 'Map',
+    icon: Image.asset(
+      'assets/images/1x/home.png',
+      width: 20,
+      height: 20,
+    ),
+    label: '홈',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.pin_drop_rounded),
-    label: 'Join',
+    icon: Image.asset(
+      'assets/images/1x/join.png',
+      width: 20,
+      height: 20,
+    ),
+    label: '참여 장소',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.grid_3x3),
-    label: 'Explore',
+    icon: Image.asset(
+      'assets/images/1x/explore.png',
+      width: 20,
+      height: 20,
+    ),
+    label: '인기 장소',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.push_pin_rounded),
-    label: 'Notice',
+    icon: Image.asset(
+      'assets/images/1x/notice.png',
+      width: 20,
+      height: 20,
+    ),
+    label: '공지',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.person_2_rounded),
-    label: 'Profile',
+    icon: Image.asset(
+      'assets/images/1x/profile.png',
+      width: 20,
+      height: 20,
+    ),
+    label: '마이페이지',
   ),
 ];
 
@@ -38,20 +60,28 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> with AutoRouteAware {
   @override
   Widget build(BuildContext context) {
-    return AutoTabsScaffold(
-      routes: const [
-        HomeRoute(),
-        JoinRoute(),
-        ExploreRoute(),
-        NoticeRoute(),
-        ProfileRoute(),
-      ],
-      bottomNavigationBuilder: buildNav,
+    return BlocListener<MainBloc, MainBlocState>(
+      listener: (context, state) {
+        if (state is RequestKakaoLoginDenied) {
+          context.router.root.replace(LoginRoute());
+        }
+      },
+      child: AutoTabsScaffold(
+        routes: const [
+          HomeRoute(),
+          JoinRoute(),
+          ExploreRoute(),
+          NoticeRoute(),
+          ProfileRoute(),
+        ],
+        bottomNavigationBuilder: buildNav,
+      ),
     );
   }
 
   Widget buildNav(BuildContext context, TabsRouter tabsRouter) {
     return BottomNavigationBar(
+      elevation: 4,
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.grey,
       currentIndex: tabsRouter.activeIndex,

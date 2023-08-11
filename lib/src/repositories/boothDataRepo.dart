@@ -12,6 +12,7 @@ class boothDataRepo {
         'latitude': 37.5421,
         'longitude': 127.0739,
         'title': 'Booth A',
+        'addr': '상허기념도서관',
         'content': 'This is booth A',
       },
       {
@@ -19,6 +20,7 @@ class boothDataRepo {
         'latitude': 37.5423,
         'longitude': 127.0760,
         'title': 'Booth B',
+        'addr': '상허기념박물관 앞',
         'content': 'This is booth B',
       },
       {
@@ -26,6 +28,7 @@ class boothDataRepo {
         'latitude': 37.5415,
         'longitude': 127.0779,
         'title': 'Booth C',
+        'addr': '노천극장',
         'content': 'This is booth C',
       },
     ];

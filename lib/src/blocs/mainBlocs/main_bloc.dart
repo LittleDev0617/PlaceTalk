@@ -30,6 +30,11 @@ class MainBloc extends Bloc<MainBlocEvent, MainBlocState> {
         rethrow;
       }
     });
+
+    on<RequestKakaoLogout>((event, emit) async {
+      emit(RequestKakaoLoginDenied());
+      await kakaoAuthRepo().kakaoLogin();
+    });
   }
 }
 

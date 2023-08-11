@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placex/src/blocs/mainBlocs/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'routes/app_router.dart.gr.dart';
+
 @RoutePage()
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -26,91 +28,67 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var medh = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFf093fb),
-              Color(0xFFf5576c),
-            ],
-          ),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.8),
         ),
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: const EdgeInsets.symmetric(horizontal: 35),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: medh / 3),
-            SizedBox(
-              height: 30.h,
-              child: Center(
-                child: Text(
-                  '일상 속 모든 핫플',
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 21.sp),
-                ),
+            Text(
+              '일상 속 모든 핫플',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 25.sp,
+                color: Colors.white,
               ),
             ),
-            SizedBox(
-              height: 35.h,
-              child: Center(
-                  child: Text('플레이스X 하나로',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 26.sp))),
+            SizedBox(height: 10.h),
+            Text(
+              '플레이스톡 하나로',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 26.sp,
+                color: Colors.white,
+              ),
             ),
-            SizedBox(
-              height: 35.h,
-              child: Center(
-                  child: Text('축제는 물론 콘서트, 팝업스토어까지!',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w300, fontSize: 16.sp))),
+            SizedBox(height: 45.h),
+            Text(
+              '축제는 물론 콘서트, 팝업스토어까지!',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+                color: Colors.white,
+              ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.32),
           ],
         ),
       ),
-      floatingActionButton: BlocBuilder<MainBloc, MainBlocState>(
-        builder: (context, state) {
-          if (state is MainBlocLoded) {
-            return GestureDetector(
-              onTap: () {
-                AutoRouter.of(context).pushNamed('/');
-              },
-              child: Container(
-                width: double.infinity,
-                height: 45,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Center(
-                  child: Text(
-                    '입장하기',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ),
-            );
-          } else if (state is RequestKakaoLoginGranted) {
-            return const CircularProgressIndicator(color: Colors.black);
-          } else {
-            return FloatingActionButton.extended(
-              onPressed: () {
-                BlocProvider.of<MainBloc>(context).add(
-                  RequestKakaoLogin(),
-                );
-              },
-              label: Image.asset(
-                'assets/images/kakao_login.png',
-                fit: BoxFit.cover,
-              ),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            );
+      floatingActionButton: BlocListener<MainBloc, MainBlocState>(
+        listener: (context, state) {
+          if (state is RequestKakaoLoginGranted) {
+            context.router.root.replace(const HomeRoute());
           }
         },
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            BlocProvider.of<MainBloc>(context).add(
+              RequestKakaoLogin(),
+            );
+          },
+          label: Image.asset(
+            'assets/images/kakao_login.png',
+            fit: BoxFit.cover,
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 4,
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

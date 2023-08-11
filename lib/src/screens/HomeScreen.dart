@@ -2,11 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placex/src/blocs/boothBlocs/booth_bloc.dart';
 import 'package:placex/src/blocs/dropdownBlocs/dropdown_bloc.dart';
 
 import 'package:placex/src/components/buttons.dart';
+import 'package:placex/src/components/modal.dart';
 import '../blocs/placeBlocs/place_bloc.dart';
 import '../components/naverMapOptions.dart';
 
@@ -52,42 +52,87 @@ class HomePageWorld extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(width: 20.w),
-            BlocBuilder<DropdownBloc, DropdownBlocState>(
-              builder: (context, state) {
-                if (state is DropdownInitial) {
-                  return const CircularProgressIndicator();
-                } else if (state is DropdownWithData) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    width: MediaQuery.of(context).size.width / 1.5.sp,
-                    child: DropdownMapButton(
-                      itemList: state.itemsLatLng,
-                      controller: state.controller,
-                    ),
-                  );
-                } else {
-                  return DropdownMapButton(itemList: const {
-                    '등록된 데이터가 없습니다.': {'latitude': 0.0, 'longitude': 0.0}
-                  }, controller: null);
-                }
-              },
-            ),
-            const CircleAvatarIconButton(
-              backgroundColor: Colors.black87,
-              iconColor: Colors.white,
-              icon: Icons.notifications_rounded,
-              onPressed: null,
-            ),
-          ],
+        title: Container(
+          width: double.infinity,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              BlocBuilder<DropdownBloc, DropdownBlocState>(
+                builder: (context, state) {
+                  if (state is DropdownInitial) {
+                    return const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  } else if (state is DropdownWithData) {
+                    return Expanded(
+                      child: DropdownMapButton(
+                        itemList: state.itemsLatLng,
+                        controller: state.controller,
+                      ),
+                    );
+                  } else {
+                    return DropdownMapButtonNull(
+                      itemList: const {
+                        '등록된 데이터가 없습니다.': {'latitude': 0.0, 'longitude': 0.0}
+                      },
+                    );
+                  }
+                },
+              ),
+              const CircleAvatarIconButton(
+                iconSize: 24,
+                backgroundColor: Colors.white,
+                iconColor: Color(0xffFF7D7D),
+                icon: Icons.notifications_outlined,
+                onPressed: null,
+              ),
+            ],
+          ),
         ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     SizedBox(width: 20.w),
+        //     BlocBuilder<DropdownBloc, DropdownBlocState>(
+        //       builder: (context, state) {
+        //         if (state is DropdownInitial) {
+        //           return const CircularProgressIndicator();
+        //         } else if (state is DropdownWithData) {
+        //           return Container(
+        //             padding: const EdgeInsets.symmetric(horizontal: 5),
+        //             decoration: BoxDecoration(
+        //               color: Colors.white,
+        //               borderRadius: BorderRadius.circular(12),
+        //             ),
+        //             width: MediaQuery.of(context).size.width / 1.7,
+        //             child: DropdownMapButton(
+        //               itemList: state.itemsLatLng,
+        //               controller: state.controller,
+        //             ),
+        //           );
+        //         } else {
+        //           return DropdownMapButtonNull(
+        //             itemList: const {
+        //               '등록된 데이터가 없습니다.': {'latitude': 0.0, 'longitude': 0.0}
+        //             },
+        //           );
+        //         }
+        //       },
+        //     ),
+        //     const CircleAvatarIconButton(
+        //       backgroundColor: Colors.black87,
+        //       iconColor: Colors.white,
+        //       icon: Icons.notifications_rounded,
+        //       onPressed: null,
+        //     ),
+        //   ],
+        // ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -150,9 +195,10 @@ class HomePageEvent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CircleAvatarIconButton(
+              iconSize: 24,
               backgroundColor: Colors.transparent,
               iconColor: Colors.black87,
-              icon: Icons.arrow_back,
+              icon: Icons.arrow_back_ios,
               onPressed: () {
                 BlocProvider.of<BoothBloc>(context).add(
                   PopBoothDataEvent(position),
@@ -160,9 +206,10 @@ class HomePageEvent extends StatelessWidget {
               },
             ),
             CircleAvatarIconButton(
-              backgroundColor: Colors.black87,
-              iconColor: Colors.white,
-              icon: Icons.notifications_rounded,
+              iconSize: 24,
+              backgroundColor: Colors.white,
+              iconColor: const Color(0xffFF7D7D),
+              icon: Icons.notifications_outlined,
               onPressed: () {},
             ),
           ],
@@ -180,13 +227,32 @@ class HomePageEvent extends StatelessWidget {
           } else if (state is BoothLoaded) {
             Set<NMarker> markers = state.markers;
 
-            return NaverMap(
-              onMapReady: (NaverMapController controller) {
-                controller.addOverlayAll(markers);
-                controller.addOverlay(state.mainMaker);
-              },
-              onMapTapped: (point, latLng) {}, // 관리자일때
-              options: naverMapOptionsEvent(position: position).option,
+            return Stack(
+              children: [
+                NaverMap(
+                  onMapReady: (NaverMapController controller) {
+                    controller.addOverlayAll(markers);
+                    controller.addOverlay(state.mainMaker);
+
+                    for (NMarker marker in markers) {
+                      marker.setOnTapListener(
+                        (overlay) => {
+                          showBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return BoothItemModal();
+                            },
+                          )
+                        },
+                      );
+                    }
+                  },
+                  forceGesture: false,
+                  onMapTapped: (point, latLng) {}, // 관리자일때
+                  options: naverMapOptionsEvent(position: position).option,
+                ),
+                BoothListModal(),
+              ],
             );
           } else {
             return const Center(child: Text('Error'));

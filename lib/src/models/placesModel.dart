@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -9,8 +7,8 @@ class placeModel extends Equatable {
   final int? joining;
   final String? name;
   final NLatLng position;
-  final DateTime? start_date;
-  final DateTime? end_date;
+  final String? start_date;
+  final String? end_date;
 
   const placeModel({
     required this.id,
@@ -42,8 +40,8 @@ class placeModel extends Equatable {
       ),
       name: json['name'],
       joining: json['joining'],
-      start_date: DateTime.parse(json['start_date']),
-      end_date: DateTime.parse(json['end_date']),
+      start_date: json['start_date'],
+      end_date: json['end_date'],
     );
   }
 
@@ -53,7 +51,10 @@ class placeModel extends Equatable {
       position: position,
       caption: NOverlayCaption(text: name ?? 'error', textSize: 18),
       subCaption: NOverlayCaption(
-          text: '${joining ?? 0}명 참여 중', color: Colors.grey, textSize: 14),
+        text: '${joining ?? 0}명 참여 중',
+        color: Colors.grey,
+        textSize: 14,
+      ),
       captionAligns: [NAlign.top],
     );
   }
