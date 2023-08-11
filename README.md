@@ -25,25 +25,42 @@ level : access level
 {
     "place_id"      : int,
     "name"          : string,
-    "description"   : string,
-    "state"         : int,
+    "category"      : string,
+    "state"         : int,    // 0 : 핫플 / 1 : 행사
     "start_date"    : datetime,
     "end_date"      : datetime,
-    "latitude"      : double,   // 위도
-    "longitude"     : double    // 경도
+    "locations"     : List<Location>
 }
 ```
 
+#### Location
+
+```c
+{
+    "lat"   : double,   // 위도
+    "lon"   : double    // 경도
+}
+```
 <hr />
 
 ### GET /api/places
-모든 핫플레이스 조회  
+핫플레이스 조회  
 
 #### Request
+1. 카테고리별 조회
+2. 현재 위치 반경 n km 이내 조회
+3. date 이후의 행사들 조회
+
+- category : 카테고리 필터
+- lat / lon / dist => 반경 n km 이내 조회 시 사용
+  - lat      : 사용자 위치 위도
+  - lon      : 사용자 위치 경도
+  - dist     : 거리(km)
+- date : date 이후의 행사들 조회 (YYYY-mm-dd 형식)
 
 #### Response
 
-모든 place 들에 대한 정보를 반환합니다.
+조건에 만족하는 place 들에 대한 정보를 반환합니다.
 
 ```json
 [
@@ -54,8 +71,12 @@ level : access level
     "state": 0,
     "start_date": "2023-08-12 12:00:00",
     "end_date": "2023-08-13 12:00:00",
-    "latitude": 34.43,
-    "longitude": 12.34,
+    "locations": [
+          {
+            "lat": 34.43,
+            "lon": 12.34
+          }
+    ],
     "count": 0
   },
   {
@@ -65,8 +86,12 @@ level : access level
     "state": 0,
     "start_date": "2023-08-15 12:00:00",
     "end_date": "2023-08-16 12:00:00",
-    "latitude": 56.78,
-    "longitude": 32.45,
+    "locations": [
+        {
+          "lat": 56.78,
+          "lon": 43.43
+        }
+    ],
     "count": 0
   }
 ]
@@ -84,8 +109,7 @@ place_id - path parameter
 - \*placeName : 핫플 이름
 - \*description : 핫플 설명
 - \*state : 상시 핫플(0) / 일시 핫플(1)
-- \*latitude : 위도
-- \*longitude : 경도
+- \*locations : List<Location>
 
 #### Response
 
@@ -113,8 +137,8 @@ place_id 에 해당하는 place 에 대한 정보를 반환합니다.
     "state": 0,
     "start_date": "2023-08-12 12:00:00",
     "end_date": "2023-08-13 12:00:00",
-    "latitude": 34.43,
-    "longitude": 12.34,
+    "lat": 34.43,
+    "lon": 12.34,
     "count": 0
   }
 ]
@@ -145,8 +169,8 @@ place_id 에 해당하는 place 의 여러 부스들을 조회합니다.
 - \*name : 부스 이름
 - \*content : 부스 설명
 - \*detail : 부스 위치 ex) 예대 앞
-- \*latitude : 위도
-- \*longitude : 경도
+- \*lat : 위도
+- \*lon : 경도
 
 #### Response
 

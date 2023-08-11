@@ -18,7 +18,7 @@ const { auth } = require('../utils/auth');
 //     conn.query('SELECT level FROM tb_user WHERE user_id = ?', [user_id], (err, row, fields) => {
 //         if(!row) throw new UnauthorizedError('User not found.');
 //         const pay = {
-//             uid : user_id,
+//             uid : user_id,       
 //             level : row[0]
 //         };
 

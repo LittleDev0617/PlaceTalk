@@ -3,48 +3,91 @@ var conn = require('../utils/db');
 const jwt = require('../utils/jwt');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
+const { getDistance } = require('../utils/util');
 var router = express.Router();
 
 // jwt 인증 middleware
 router.use(auth);
 
-// 핫플 모두 조회
-router.get('/', (req, res, next) => {
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
 
+// 핫플 조회 / 아래 항목들은 모두 옵션
+// category : 카테고리
+// lat : 내 위도
+// lon : 내 경도
+// dist : 반경 dist km 이내
+router.get('/', (req, res, next) => {
+	const { category, lat, lon, dist } = req.query;
+	var date = req.query['date'];
+	// 기본 날짜 : 오늘
+	if(!date)
+		date = new Date().toISOString().substring(0, 10);
+	
 	// TODO : 쿼리로 startDate, endDate 받아서 일정 기간 내의 핫플만 조회 기능
 	conn.query(`SELECT p.*, (
-				SELECT COUNT(*) 
+				SELECT COUNT(*)
 				FROM tb_join as j 
 				WHERE p.place_id = j.place_id
-				) as \`count\` FROM tb_place as p `, (err, rows) => {
-		res.json(rows);
+				) as \`count\` FROM tb_place as p WHERE DATE(end_date) > ?` + (category ? 'AND category = ?' : ''),
+				[date, category], (err, rows) => {
+		var results = [];
+		// 한 핫플/행사 에 여러 위치 정보가 있을 경우 모두 리턴
+		if(!rows.length)
+			res.json(rows);
+		
+		for (let index = 0; index < rows.length; index++) {
+			rows[index]['locations'] = [];
+			var isInDistance = false;
+			conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [rows[index]['place_id']], (e, rows2) => {				
+				for (let i = 0; i < rows2.length; i++) {				
+					// dist 설정이 안되어있거나 dist 내에 위치한 경우
+					if(!dist || getDistance(lat, lon, rows2[i].lat, rows2[i].lon) <= dist * 1000) {
+						isInDistance = true;
+						break;
+					}
+				}
+				
+				for (let i = 0; i < rows2.length; i++) {					
+					if(isInDistance) {
+						rows[index]['locations'].push(rows2[i]);
+					}
+				}
+				results.push(rows[index]);
+
+				if(index == rows.length - 1)
+					res.json(results);
+			});
+		}
 	});
 });
 
 // 핫플 추가		- 오직 어드민만
 // placeName : string
 // description : string
-// state : 0 or 1
+// state : 0 - 핫플 / 1 - 행사
 // startDate : datetime
 // endDate	 : dateTime
-// latitude, longitude : double
+// lat, lon : double
 router.post('/', (req, res, next) => {    
-	const { placeName, description, state, startDate, endDate, latitude, longitude } = req.body;
+	const { placeName, category, state, startDate, endDate, locations } = req.body;
 	if(req.user.level > 0)
 		throw new UnauthorizedError('Cannot acces');	
 
-	if(!(typeof(placeName) === 'string' && typeof(startDate) == 'string' && typeof(state) === 'number' && typeof(description) === 'string' &&
-		typeof(endDate) === 'string' && typeof(latitude) == 'number' && typeof(longitude) === 'number'))
+	if(!(typeof(placeName) === 'string' && typeof(startDate) == 'string' && typeof(state) === 'number' && typeof(category) === 'string' &&
+		typeof(endDate) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
-	conn.query('INSERT INTO tb_place(name, description, state, start_date, end_date, latitude, longitude) VALUES(?, ?, ?, ?, ?, ?, ?)', 
-				[placeName, description, state, startDate, endDate, latitude, longitude], (err, rows) => {
+	conn.query('INSERT INTO tb_place(name, category, state, start_date, end_date) VALUES(?, ?, ?, ?, ?)', 
+				[placeName, category, state, startDate, endDate], (err, rows) => {
 		if(err)
 			console.log(err);
 		else {
-			conn.query('INSERT INTO tb_board(place_id) VALUES(1)');
+			// insert 한 place 의 place_id
+			conn.query('SELECT LAST_INSERT_ID() as place_id;', (err, rows2) => {
+				conn.query('INSERT INTO tb_board(place_id) VALUES(?)', rows2[0].place_id);
+				for (let i = 0; i < locations.length; i++) {									
+					conn.query('INSERT INTO tb_location(place_id, lat, lon) VALUES(?,?,?)', [rows2[0].place_id, locations[i].lat, locations[i].lon]);	
+				}
+			});
 		}
 	});
 	res.send({ message : "Successful" });
@@ -55,16 +98,23 @@ router.post('/', (req, res, next) => {
 // place_id : int
 router.get('/:place_id(\\d+)', (req, res, next) => {    
 	const pid = parseInt(req.params.place_id);
-	
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
 
 	conn.query(`SELECT p.*, (
 		SELECT COUNT(*) 
 		FROM tb_join as j 
 		WHERE p.place_id = j.place_id
 		) as \`count\` FROM tb_place as p WHERE p.place_id = ?`, [pid], (err, rows) => {
-		res.json(rows);
+		
+			console.log(rows);
+		// 한 핫플/행사 에 여러 위치 정보가 있을 경우 모두 리턴
+		rows[0]['locations'] = [];
+		conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [pid], (e, rows2) => {			
+			console.log(rows2);
+			for (let i = 0; i < rows2.length; i++) {			
+				rows[0]['locations'].push(rows2[i]);				
+			}
+			res.json(rows);
+		});		
 	});
 });
 
@@ -76,12 +126,18 @@ router.get('/:place_id(\\d+)', (req, res, next) => {
 // place_id : int
 router.get('/:place_id(\\d+)/booth', (req, res, next) => {    
 	const place_id = parseInt(req.params.place_id);
-	
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
 
 	conn.query('SELECT * from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
-		res.json(rows);
+		for (let i = 0; i < rows.length; i++) {			
+			rows[i]['locations'] = [];
+			conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [rows[i]['place_id']], (e, rows2) => {								
+				for (let j = 0; j < rows2.length; j++) {
+					rows[i]['locations'].push(rows2[j]);
+				}
+				if(i == rows.length - 1)
+					res.json(rows);
+			});
+		}
 	});
 });
 
@@ -89,27 +145,31 @@ router.get('/:place_id(\\d+)/booth', (req, res, next) => {
 // name : string
 // content : string
 // detail  : string  - 근처 위치 설명 ex) XX대 앞
-// latitude, longitude : double
+// lat, lon : double
 router.post('/:place_id(\\d+)/booth', (req, res, next) => {    
-	const { name, content, detail, latitude, longitude } = req.body;
-
+	const { name, content, detail, lat, lon } = req.body;
 	const place_id = parseInt(req.params.place_id);
 	
 	if(req.user.level > 1)
 		throw new UnauthorizedError('Cannot acces');
 
 	if(!(typeof(name) === 'string' && typeof(content) == 'string' &&
-		typeof(detail) === 'string' && typeof(latitude) == 'number' && typeof(longitude) === 'number'))
+		typeof(detail) === 'string' && typeof(lat) == 'number' && typeof(lon) === 'number'))
 		throw new BadRequestError('Bad data.');
 	
-	conn.query('SELECT * from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
-		if(!rows.length) {
-			conn.query('UPDATE tb_booth SET latitude = ?, longtitude = ?, name = ?, content = ?, detail = ? WHERE place_id = ?', 
-						[latitude, longitude, name, content, detail, place_id]);
+	conn.query('SELECT booth_id from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
+		const booth_id = rows[0].booth_id;
+
+		if(booth_id) {
+			conn.query('UPDATE tb_booth SET name = ?, content = ?, detail = ? WHERE place_id = ?', 
+						[name, content, detail, place_id]);
+			conn.query('UPDATE tb_location SET lat = ?, lon = ? WHERE booth_id = ?', [booth_id]);
 		}
 		else {
-			conn.query('INSERT INTO tb_booth(place_id, latitude, longitude, name, content, detail) VALUES(?,?,?,?,?,?)', 
-						[place_id, latitude, longitude, name, content, detail]);
+			conn.query('INSERT INTO tb_booth(place_id, lat, lon, name, content, detail) VALUES(?,?,?,?)', 
+						[place_id, name, content, detail]);
+			conn.query('INSERT INTO tb_location(booth_id, lat, lon) VALUES(?,?,?)', 
+						[booth_id, lat, lon]);
 		}
 	});
 });
@@ -119,9 +179,6 @@ router.post('/:place_id(\\d+)/booth', (req, res, next) => {
 router.post('/:place_id(\\d+)/join', (req, res, next) => {   
 
 	const place_id = parseInt(req.params.place_id);
-
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
 
 	if(!(typeof(user_id) === 'number' && typeof(place_id) === 'number'))
 		throw new BadRequestError('Bad data.');
@@ -147,9 +204,6 @@ router.post('/:place_id(\\d+)/join', (req, res, next) => {
 // 모든 핫플 피드 조회
 // place_id : int
 router.get('/feed', (req, res, next) => {    
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
-
 	conn.query(`SELECT f.*, (
 						SELECT image_id FROM tb_image as i WHERE i.feed_id = f.feed_id
 					) as image_id from tb_feed as f`, (err, rows) => {		
@@ -162,9 +216,6 @@ router.get('/feed', (req, res, next) => {
 router.get('/:place_id(\\d+)/feed', (req, res, next) => {    
 	const place_id = parseInt(req.params.place_id);
 	
-	if(req.user.level > 2)
-		throw new UnauthorizedError('Cannot acces');
-
 	conn.query(`SELECT f.*, (
 						SELECT image_id FROM tb_image as i WHERE i.feed_id = f.feed_id
 					) as image_id from tb_feed as f WHERE place_id = ?`, [place_id], (err, rows) => {		
