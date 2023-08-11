@@ -254,11 +254,53 @@ post 삭제
 post_id 에 해당하는 게시글 내용을 수정합니다.
 <hr />
 
+### GET /api/posts/:post_id/like
+좋아요 추가 / 해제
+
+#### Request
+
+- \*post_id
+
+#### Response
+좋아요를 누른 상태이면 해제, 안 누른 상태면 등록합니다.
+<hr />
+
+## Comment
+
 ### GET /api/posts/:post_id/comments
 post_id 게시글의 댓글 모두 조회
 
 #### REQUEST
 - \*post_id
 
+#### Response
+게시글 작성자가 작성한 댓글의 user_id 는 0 입니다.  
+이외의 댓글은 날짜순으로 1 2 3.. 으로 설정됩니다.  
 
-## Comment
+<hr />
+
+### POST /api/posts/:post_id/comments
+댓글 등록
+
+#### Request
+
+- \*post_id
+- \*is_reply  : 대댓인지 여부  0 or 1
+- \*reply_id  : 대댓이면 대댓 단 원 댓글 comment_id
+
+#### Response
+post_id 에 해당하는 게시글 내용을 수정합니다.
+<hr />
+
+### DELETE /api/posts/:post_id/comments/:comment_id
+댓글 삭제
+
+#### Request
+
+- \*post_id
+- \*comment_id
+
+#### Response
+post_id 에 해당하는 게시글 내용을 수정합니다.
+<hr />
+
