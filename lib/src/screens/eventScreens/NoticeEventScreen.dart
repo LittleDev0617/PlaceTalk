@@ -1,43 +1,20 @@
 import 'package:auto_route/annotations.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'routes/routes.gr.dart';
-
 @RoutePage()
-class NoticeScreen extends StatelessWidget {
-  const NoticeScreen({super.key});
+class NoticeEventScreen extends StatelessWidget {
+  const NoticeEventScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '전체 피드',
-          style: TextStyle(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        actions: [
-          IconButton(
-            color: const Color(0xffff7d7d),
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 24),
-        ],
-        backgroundColor: const Color(0xfff7f7f7),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(24),
-        child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: ((BuildContext context, index) {
-            return SizedBox(
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: ListView.builder(
+        itemCount: 5,
+        itemBuilder: ((BuildContext context, index) {
+          return SizedBox(
+            child: GestureDetector(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -49,29 +26,12 @@ class NoticeScreen extends StatelessWidget {
                         'assets/images/profile.png',
                       ),
                     ),
-                    title: InkWell(
-                      onTap: () {
-                        AutoRouter.of(context).navigate(
-                          EventsRouter(
-                            children: [
-                              EventLandingRoute(
-                                eventID: index,
-                                name: index.toString(),
-                                children: const [
-                                  NoticeEventRoute(),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      child: Text(
-                        '유저',
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                    title: Text(
+                      '유저',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
                     ),
                     trailing: IconButton(
@@ -128,9 +88,9 @@ class NoticeScreen extends StatelessWidget {
                   const SizedBox(height: 35),
                 ],
               ),
-            );
-          }),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:placex/src/blocs/mainBlocs/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'routes/app_router.dart.gr.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
+import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 @RoutePage()
 class LoginScreen extends StatelessWidget {
@@ -12,72 +12,62 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 716),
-      builder: (context, child) {
-        return const LoginPage();
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthGranted) {
+          context.router.root.replace(const LandingRoute());
+        }
       },
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  const LoginPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+      child: Scaffold(
+        backgroundColor: Colors.black.withOpacity(.8),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '일상 속 모든 핫플',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    'assets/logos/logo.svg',
+                    width: MediaQuery.of(context).size.width * .41,
+                  ),
+                  const SizedBox(width: 5.5),
+                  Text(
+                    '하나로',
+                    style: TextStyle(
+                      fontSize: 25.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '축제는 물론 콘서트, 팝업스토어까지',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withOpacity(.84),
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 35),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '일상 속 모든 핫플',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 25.sp,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              '플레이스톡 하나로',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 26.sp,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 45.h),
-            Text(
-              '축제는 물론 콘서트, 팝업스토어까지!',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.32),
-          ],
-        ),
-      ),
-      floatingActionButton: BlocListener<MainBloc, MainBlocState>(
-        listener: (context, state) {
-          if (state is RequestKakaoLoginGranted) {
-            context.router.root.replace(const HomeRoute());
-          }
-        },
-        child: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<MainBloc>(context).add(
+            BlocProvider.of<AuthBloc>(context).add(
               RequestKakaoLogin(),
             );
           },
@@ -86,8 +76,9 @@ class LoginPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           backgroundColor: Colors.transparent,
-          elevation: 4,
+          elevation: 0,
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

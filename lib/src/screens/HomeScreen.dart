@@ -2,260 +2,206 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:placex/src/blocs/boothBlocs/booth_bloc.dart';
-import 'package:placex/src/blocs/dropdownBlocs/dropdown_bloc.dart';
-
-import 'package:placex/src/components/buttons.dart';
-import 'package:placex/src/components/modal.dart';
-import '../blocs/placeBlocs/place_bloc.dart';
-import '../components/naverMapOptions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:placetalk/src/blocs/PlaceBlocs/place_bloc.dart';
+import 'package:placetalk/src/components/CustomButtons.dart';
+import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key});
+  final NLatLng? position;
+  HomeScreen({super.key, this.position});
+
+  late NaverMapController _controller;
 
   @override
   Widget build(BuildContext context) {
-    return HomePage();
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<BoothBloc, BoothBlocState>(
-      builder: (context, state) {
-        if (state is BoothLoaded) {
-          return HomePageEvent(position: state.position);
-        } else {
-          return HomePageWorld(position: state.position);
+    return BlocListener<PlaceBloc, PlaceState>(
+      listener: (context, state) {
+        if (state is LocationPermissionDenied ||
+            state is LocationPermissionUnknown) {
+          showBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(
+                child: Text('위치 권한을 허용해 주세요'),
+              );
+            },
+          );
         }
       },
-    );
-  }
-}
-
-class HomePageWorld extends StatelessWidget {
-  HomePageWorld({
-    this.position,
-    super.key,
-  });
-
-  NLatLng? position;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Container(
-          width: double.infinity,
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              BlocBuilder<DropdownBloc, DropdownBlocState>(
-                builder: (context, state) {
-                  if (state is DropdownInitial) {
-                    return const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  } else if (state is DropdownWithData) {
-                    return Expanded(
-                      child: DropdownMapButton(
-                        itemList: state.itemsLatLng,
-                        controller: state.controller,
-                      ),
-                    );
-                  } else {
-                    return DropdownMapButtonNull(
-                      itemList: const {
-                        '등록된 데이터가 없습니다.': {'latitude': 0.0, 'longitude': 0.0}
-                      },
-                    );
-                  }
-                },
-              ),
-              const CircleAvatarIconButton(
-                iconSize: 24,
-                backgroundColor: Colors.white,
-                iconColor: Color(0xffFF7D7D),
-                icon: Icons.notifications_outlined,
-                onPressed: null,
-              ),
-            ],
-          ),
-        ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        //     SizedBox(width: 20.w),
-        //     BlocBuilder<DropdownBloc, DropdownBlocState>(
-        //       builder: (context, state) {
-        //         if (state is DropdownInitial) {
-        //           return const CircularProgressIndicator();
-        //         } else if (state is DropdownWithData) {
-        //           return Container(
-        //             padding: const EdgeInsets.symmetric(horizontal: 5),
-        //             decoration: BoxDecoration(
-        //               color: Colors.white,
-        //               borderRadius: BorderRadius.circular(12),
-        //             ),
-        //             width: MediaQuery.of(context).size.width / 1.7,
-        //             child: DropdownMapButton(
-        //               itemList: state.itemsLatLng,
-        //               controller: state.controller,
-        //             ),
-        //           );
-        //         } else {
-        //           return DropdownMapButtonNull(
-        //             itemList: const {
-        //               '등록된 데이터가 없습니다.': {'latitude': 0.0, 'longitude': 0.0}
-        //             },
-        //           );
-        //         }
-        //       },
-        //     ),
-        //     const CircleAvatarIconButton(
-        //       backgroundColor: Colors.black87,
-        //       iconColor: Colors.white,
-        //       icon: Icons.notifications_rounded,
-        //       onPressed: null,
-        //     ),
-        //   ],
-        // ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: BlocBuilder<PlaceBloc, PlaceBlocState>(
+      child: BlocBuilder<PlaceBloc, PlaceState>(
         builder: (context, state) {
-          if (state is NaverMapInitial) {
+          if (state is PlaceInitial) {
+            BlocProvider.of<PlaceBloc>(context).add(
+              RequestLocationPermission(),
+            );
             BlocProvider.of<PlaceBloc>(context).add(
               FetchNaverMapDataEvent(),
             );
+            return const NaverMap();
+          } else if (state is PlaceLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is NaverMapLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is NaverMapLoaded) {
-            Set<NMarker> markers = state.markers;
-
-            return NaverMap(
-              onMapReady: (NaverMapController controller) {
-                controller.addOverlayAll(markers);
-
-                BlocProvider.of<DropdownBloc>(context).add(
-                  FetchDataEvent(controller),
-                );
-
-                for (NMarker marker in markers) {
-                  marker.setOnTapListener(
-                    (overlay) {
-                      BlocProvider.of<BoothBloc>(context).add(
-                        FetchBoothDataEvent(marker.position, marker),
-                      );
-                    },
-                  );
-                }
-              },
-              onSymbolTapped: (symbolInfo) {},
-              onMapTapped: (point, latLng) {},
-              options: naverMapOptionsWorld(position: position).option,
-            );
-          } else {
-            return const Center(child: Text('Error'));
-          }
-        },
-      ),
-    );
-  }
-}
-
-class HomePageEvent extends StatelessWidget {
-  const HomePageEvent({Key? key, required this.position});
-
-  final NLatLng position;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleAvatarIconButton(
-              iconSize: 24,
-              backgroundColor: Colors.transparent,
-              iconColor: Colors.black87,
-              icon: Icons.arrow_back_ios,
-              onPressed: () {
-                BlocProvider.of<BoothBloc>(context).add(
-                  PopBoothDataEvent(position),
-                );
-              },
-            ),
-            CircleAvatarIconButton(
-              iconSize: 24,
-              backgroundColor: Colors.white,
-              iconColor: const Color(0xffFF7D7D),
-              icon: Icons.notifications_outlined,
-              onPressed: () {},
-            ),
-          ],
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: BlocBuilder<BoothBloc, BoothBlocState>(
-        builder: (context, state) {
-          if (state is BoothInitial) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is BoothLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is BoothLoaded) {
-            Set<NMarker> markers = state.markers;
-
-            return Stack(
-              children: [
-                NaverMap(
-                  onMapReady: (NaverMapController controller) {
-                    controller.addOverlayAll(markers);
-                    controller.addOverlay(state.mainMaker);
-
-                    for (NMarker marker in markers) {
-                      marker.setOnTapListener(
-                        (overlay) => {
-                          showBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return BoothItemModal();
-                            },
-                          )
-                        },
-                      );
-                    }
-                  },
-                  forceGesture: false,
-                  onMapTapped: (point, latLng) {}, // 관리자일때
-                  options: naverMapOptionsEvent(position: position).option,
+          } else if (state is PlaceLoaded) {
+            return Scaffold(
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                title: Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.all(12),
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CustomDropdownButton(
+                          itemList: state.itemsLatLng,
+                          customOnChanged: (value) {
+                            WidgetsBinding.instance.addPostFrameCallback(
+                              (_) {
+                                _controller.updateCamera(
+                                  NCameraUpdate.withParams(
+                                    target: NLatLng(
+                                      state.itemsLatLng[value]!['latitude'],
+                                      state.itemsLatLng[value]!['longitude'],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.notifications_outlined,
+                          color: Color(0xffff7d7d),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
                 ),
-                BoothListModal(),
-              ],
+                bottom: PreferredSize(
+                  preferredSize: Size(
+                    MediaQuery.of(context).size.width,
+                    40,
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 30,
+                    margin: const EdgeInsets.symmetric(horizontal: 19.5),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: ((BuildContext context, index) {
+                        List<String> items = [
+                          '콘서트',
+                          '페스티벌',
+                          '지역축제',
+                          '대학축제',
+                          '팝업스토어'
+                        ];
+
+                        List<String> icons = [
+                          'assets/images/concert.png',
+                          'assets/images/festival.png',
+                          'assets/images/local.png',
+                          'assets/images/univ.png',
+                          'assets/images/store.png'
+                        ];
+
+                        return Container(
+                          margin: const EdgeInsets.only(right: 5),
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Image.asset(icons[index], width: 17),
+                              Text(
+                                items[index],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+              ),
+              body: NaverMap(
+                onMapReady: (controller) async {
+                  _controller = controller;
+
+                  for (NMarker marker in state.markers) {
+                    int index = state.markers.toList().toList().indexOf(marker);
+                    marker.setOnTapListener(
+                      (overlay) {
+                        // AutoRouter.of(context).parent<TabsRouter>()!.navigate(
+                        //       EventsRouter(
+                        //         children: [
+                        //           EventLandingRoute(
+                        //             eventID: index,
+                        //             name:
+                        //                 state.itemsLatLng.keys.toList()[index],
+                        //             children: const [
+                        //               InformEventRoute(),
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     );
+
+                        context.router.push(HomeEventRoute(
+                          position: marker.position,
+                          eventID: index,
+                          name: state.itemsLatLng.keys.toList()[index],
+                        ));
+                      },
+                    );
+
+                    marker.setIcon(const NOverlayImage.fromAssetImage(
+                        'assets/images/always_marker.png'));
+                    marker.setSize(const Size(40, 54));
+                  }
+
+                  controller.addOverlayAll(state.markers);
+                },
+                options: NaverMapViewOptions(
+                  locationButtonEnable: true,
+                  initialCameraPosition: NCameraPosition(
+                      target: position ??
+                          const NLatLng(37.54388827708887, 127.07596063613892),
+                      zoom: 14.5),
+                ),
+              ),
             );
           } else {
-            return const Center(child: Text('Error'));
+            return const Center(
+              child: Text(
+                '데이터 불러오기에 실패했어요',
+              ),
+            );
           }
         },
       ),

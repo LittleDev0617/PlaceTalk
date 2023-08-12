@@ -1,49 +1,48 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:placex/src/blocs/mainBlocs/main_bloc.dart';
+import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
 
-import 'app_router.dart.gr.dart';
+import 'routes.gr.dart';
 
 List<BottomNavigationBarItem> bottomNavItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
     icon: Image.asset(
-      'assets/images/1x/home.png',
-      width: 20,
-      height: 20,
+      'assets/images/home.png',
+      width: 24,
+      height: 24,
     ),
     label: '홈',
   ),
   BottomNavigationBarItem(
     icon: Image.asset(
-      'assets/images/1x/join.png',
-      width: 20,
-      height: 20,
+      'assets/images/feed.png',
+      width: 24,
+      height: 24,
     ),
-    label: '참여 장소',
+    label: '피드',
   ),
   BottomNavigationBarItem(
     icon: Image.asset(
-      'assets/images/1x/explore.png',
-      width: 20,
-      height: 20,
+      'assets/images/explore.png',
+      width: 24,
+      height: 24,
     ),
-    label: '인기 장소',
+    label: '둘러보기',
   ),
   BottomNavigationBarItem(
     icon: Image.asset(
-      'assets/images/1x/notice.png',
-      width: 20,
-      height: 20,
+      'assets/images/join.png',
+      width: 24,
+      height: 24,
     ),
-    label: '공지',
+    label: '커뮤니티',
   ),
   BottomNavigationBarItem(
     icon: Image.asset(
-      'assets/images/1x/profile.png',
-      width: 20,
-      height: 20,
+      'assets/images/mypage.png',
+      width: 24,
+      height: 24,
     ),
     label: '마이페이지',
   ),
@@ -60,33 +59,41 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> with AutoRouteAware {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MainBloc, MainBlocState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is RequestKakaoLoginDenied) {
-          context.router.root.replace(LoginRoute());
+        if (state is AuthDenied) {
+          context.router.root.replace(const LoginRoute());
         }
       },
-      child: AutoTabsScaffold(
-        routes: const [
-          HomeRoute(),
-          JoinRoute(),
-          ExploreRoute(),
-          NoticeRoute(),
-          ProfileRoute(),
-        ],
-        bottomNavigationBuilder: buildNav,
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: AutoTabsScaffold(
+          routes: const [
+            PlacesRouter(),
+            NoticeRoute(),
+            ExploreRoute(),
+            EventsRouter(),
+            ProfileRoute(),
+          ],
+          bottomNavigationBuilder: buildNav,
+        ),
       ),
     );
   }
 
   Widget buildNav(BuildContext context, TabsRouter tabsRouter) {
-    return BottomNavigationBar(
-      elevation: 4,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
-      currentIndex: tabsRouter.activeIndex,
-      onTap: tabsRouter.setActiveIndex,
-      items: bottomNavItems,
+    return SizedBox(
+      height: 85,
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        elevation: 5,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        currentIndex: tabsRouter.activeIndex,
+        onTap: tabsRouter.setActiveIndex,
+        items: bottomNavItems,
+      ),
     );
   }
 }

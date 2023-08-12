@@ -1,24 +1,45 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:placetalk/src/repositories/PlaceRepo.dart';
 
-import '../../repositories/placeDataRepo.dart';
+part 'explore_event.dart';
+part 'explore_state.dart';
 
-part 'explore_bloc_event.dart';
-part 'explore_bloc_state.dart';
-
-class ExploreBloc extends Bloc<ExploreBlocEvent, ExploreBloceState> {
-  final placeDataRepo placesDataRepo;
-  ExploreBloc(this.placesDataRepo) : super(ExploreInitial()) {
-    // on<ExploreEvent>((event, emit) {
-    //   // TODO: implement event handler
-    // });
+class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
+  final PlaceRepo _placeRepo;
+  ExploreBloc(this._placeRepo) : super(ExploreInitial()) {
+    on<ExploreEvent>((event, emit) {
+      // TODO: implement event handler
+    });
 
     on<FetchExploreDataEvent>((event, emit) async {
-      emit((ExploreDataLoading()));
-      Map<String, dynamic> datas = await placesDataRepo.fetchData();
+      emit((ExploreLoading()));
+      Map<String, dynamic> datas = await _placeRepo.fetchData();
       Map<String, dynamic> itemsLatLng = datas['itemsLatLng'];
+      Map<String, dynamic> itemsLatLngBound = {};
 
-      emit((ExploreDataLoaded(itemsLatLng)));
+      const latlng = NLatLng(37.5435, 127.0775);
+      var bounds = NLatLngBounds.from([
+        latlng.offsetByMeter(northMeter: 1063, eastMeter: 1063),
+        latlng.offsetByMeter(northMeter: -1063, eastMeter: 1063),
+        latlng.offsetByMeter(northMeter: 1063, eastMeter: -1063),
+        latlng.offsetByMeter(northMeter: -1063, eastMeter: 1063),
+      ]);
+
+      for (var key in itemsLatLng.keys.toList()) {
+        if (bounds.containsPoint(NLatLng(
+            itemsLatLng[key]['latitude'], itemsLatLng[key]['longitude']))) {
+          itemsLatLngBound[key] = {
+            'latitude': itemsLatLng[key]['latitude'],
+            'longitude': itemsLatLng[key]['longitude'],
+            'startDate': itemsLatLng[key]['startDate'],
+            'endDate': itemsLatLng[key]['endDate'],
+          };
+        }
+      }
+
+      emit((ExploreLoaded(itemsLatLngBound)));
     });
   }
 }
