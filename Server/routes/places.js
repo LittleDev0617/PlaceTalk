@@ -326,8 +326,12 @@ router.delete('/:place_id(\\d+)/feed/:feed_id(\\d+)', (req, res, next) => {
 // place_id : int
 router.get('/:place_id(\\d+)/info', (req, res, next) => {    
 	const place_id = parseInt(req.params.place_id);
+	var { is_schedule } = req.query;
 	
-	conn.query(`SELECT info_id, title, content FROM tb_info as f WHERE place_id = ?`, [place_id], (err, rows) => {		
+	if(!is_schedule)
+		is_schedule = 0;
+
+	conn.query(`SELECT info_id, title, content FROM tb_info as f WHERE place_id = ? AND is_schedule = ?`, [place_id, is_schedule], (err, rows) => {		
 		res.json(rows);
 	});
 });
@@ -338,6 +342,11 @@ router.get('/:place_id(\\d+)/info', (req, res, next) => {
 // content : string
 router.post('/:place_id(\\d+)/info', (req, res, next) => {    
 	const { title, content } = req.body;
+	var { is_schedule } = req.body;
+	
+	if(!is_schedule)
+		is_schedule = 0;
+
 	const place_id = parseInt(req.params.place_id);
 	
 	if(req.user.level > 1)
@@ -347,7 +356,7 @@ router.post('/:place_id(\\d+)/info', (req, res, next) => {
 		for (let index = 0; index < rows.length; index++) {
 			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
 				// 관리자 권한 O
-				conn.query('INSERT INTO tb_info(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content], (err, rows) => {		
+				conn.query('INSERT INTO tb_info(place_id, title, content, is_schedule) VALUES(?, ?, ?, ?)', [place_id, title, content, is_schedule], (err, rows) => {
 					res.send({ message : "Successful" });
 				});
 			}			
