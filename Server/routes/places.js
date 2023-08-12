@@ -3,7 +3,7 @@ var conn = require('../utils/db');
 const jwt = require('../utils/jwt');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
-const { getDistance } = require('../utils/util');
+const { getDistance, uploadMW } = require('../utils/util');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -130,9 +130,15 @@ router.get('/:place_id(\\d+)/booth', (req, res, next) => {
 	conn.query('SELECT * from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
 		for (let i = 0; i < rows.length; i++) {			
 			rows[i]['locations'] = [];
+			rows[i]['images'] = [];
 			conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [rows[i]['place_id']], (e, rows2) => {								
 				for (let j = 0; j < rows2.length; j++) {
 					rows[i]['locations'].push(rows2[j]);
+				}
+			});
+			conn.query('SELECT image_id, order FROM tb_image WHERE place_id = ?', [rows[i]['place_id']], (e, rows2) => {								
+				for (let j = 0; j < rows2.length; j++) {
+					rows[i]['images'].push(rows2[j]);
 				}
 				if(i == rows.length - 1)
 					res.json(rows);
@@ -168,6 +174,13 @@ router.post('/:place_id(\\d+)/booth', (req, res, next) => {
 		else {
 			conn.query('INSERT INTO tb_booth(place_id, lat, lon, name, content, detail) VALUES(?,?,?,?)', 
 						[place_id, name, content, detail]);
+			// 이미지 업로드
+			conn.query('SELECT LAST_INSERT_ID() as booth_id', (err, rows2) => {
+				for (let i = 0; i < req.files.length; i++) {
+					conn.query('INSERT INTO tb_image(image_id, booth_id, order) VALUES(?,?,?)',
+								[req.files[i].file_name, rows2[0]['booth_id'], i]);
+				}
+			});
 			conn.query('INSERT INTO tb_location(booth_id, lat, lon) VALUES(?,?,?)', 
 						[booth_id, lat, lon]);
 		}
@@ -207,10 +220,17 @@ router.post('/:place_id(\\d+)/join', (req, res, next) => {
 // 모든 핫플 피드 조회
 // place_id : int
 router.get('/feed', (req, res, next) => {    
-	conn.query(`SELECT f.*, (
-						SELECT image_id FROM tb_image as i WHERE i.feed_id = f.feed_id
-					) as image_id from tb_feed as f`, (err, rows) => {		
-		res.json(rows);
+	conn.query(`SELECT * from tb_feed`, (err, rows) => {	
+		for (let i = 0; i < rows.length; i++) {
+			rows[i]['images'] = [];
+			conn.query('SELECT image_id, order FROM tb_image WHERE feed_id = ?', [rows[i]['feed_id']], (e, rows2) => {
+				for (let j = 0; j < rows2.length; j++) {
+					rows[i]['images'].push(rows2[j]);
+				}
+				if(i == rows.length - 1)
+					res.json(rows);
+			});	
+		}			
 	});
 });
 
@@ -219,18 +239,27 @@ router.get('/feed', (req, res, next) => {
 router.get('/:place_id(\\d+)/feed', (req, res, next) => {    
 	const place_id = parseInt(req.params.place_id);
 	
-	conn.query(`SELECT f.*, (
-						SELECT image_id FROM tb_image as i WHERE i.feed_id = f.feed_id
-					) as image_id from tb_feed as f WHERE place_id = ?`, [place_id], (err, rows) => {		
-		res.json(rows);
+	conn.query(`SELECT * FROM tb_feed WHERE place_id = ?`, [place_id], (err, rows) => {		
+		conn.query(`SELECT * from tb_feed`, (err, rows) => {	
+			for (let i = 0; i < rows.length; i++) {
+				rows[i]['images'] = [];
+				conn.query('SELECT image_id, order FROM tb_image WHERE feed_id = ?', [rows[i]['feed_id']], (e, rows2) => {
+					for (let j = 0; j < rows2.length; j++) {
+						rows[i]['images'].push(rows2[j]);
+					}
+					if(i == rows.length - 1)
+						res.json(rows);
+				});	
+			}			
+		});
 	});
 });
 
-// 핫플 피드 추가 - 관리자		TODO : 이미지 업로드
+// 핫플 피드 추가 - 관리자
 // place_id : int
 // title : string
 // content : string
-router.post('/:place_id(\\d+)/feed', (req, res, next) => {    
+router.post('/:place_id(\\d+)/feed', uploadMW, (req, res, next) => {    
 	const { title, content } = req.body;
 	const place_id = parseInt(req.params.place_id);
 	
@@ -241,8 +270,13 @@ router.post('/:place_id(\\d+)/feed', (req, res, next) => {
 		for (let index = 0; index < rows.length; index++) {
 			if(rows[index]['user_id'] == req.user.uid) {
 				// 관리자 권한 O
-				conn.query('INSERT INTO tb_feed(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content], (err, rows) => {		
-					res.send({ message : "Successful" });
+				conn.query('INSERT INTO tb_feed(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content]);
+				// 이미지 업로드
+				conn.query('SELECT LAST_INSERT_ID() as feed_id', (err, rows2) => {
+					for (let i = 0; i < req.files.length; i++) {
+						conn.query('INSERT INTO tb_image(image_id, feed_id, order) VALUES(?,?,?)',
+									[req.files[i].file_name, rows2[0]['feed_id'], i]);
+					}
 				});
 			}			
 		}
@@ -372,4 +406,5 @@ router.delete('/:place_id(\\d+)/info/:info_id(\\d+)', (req, res, next) => {
 		}
 	});
 });
+
 module.exports = router;
