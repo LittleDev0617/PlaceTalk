@@ -326,7 +326,8 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
     "info_id" : int,
     "place_id" : int,
     "title" : string,
-    "content" : string
+    "content" : string,
+    "is_schedule" : int // 0 : 행사정보 / 1: 일정표
 }
 ```
 
@@ -337,6 +338,7 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 #### Request
 
 \*place_id - path parameter  
+- is_schdule : 일정표면 1로 설정
 
 #### Response
 - `List<Info>`  
@@ -352,6 +354,7 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 \*place_id - path parameter  
 - \*title
 - \*content
+- is_schdule - 일정표면 1로 설정
 
 #### Response
 
