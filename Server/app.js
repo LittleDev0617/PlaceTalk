@@ -11,6 +11,10 @@ app.use(express.static(__dirname + '/images'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+    console.log(req);
+});
+
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/places', placesRouter);
