@@ -21,6 +21,7 @@ app.use((req, res, next) => {
         method, path, cookie, body, url, query
     };
     console.log(request);
+    next();
 });
 
 app.use('/api/users', usersRouter);

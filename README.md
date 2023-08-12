@@ -13,6 +13,26 @@ level : access level
 
 # SERVER API
 
+[GET	/api/users/place](#get-%2fapi%2fusers%2fplace)  
+[GET	/api/places](#get-%2fapi%2fplaces)  
+[POST	/api/places](#post-%2fapi%2fplaces)  
+[GET	/api/places/:place_id](#get-%2fapi%2fplaces%2f:place_id)  
+[GET	/api/places/:place_id/join](#get-%2fapi%2fplaces%2f:place_id%2fjoin)  
+[GET	/api/places/:place_id/booth](#get-%2fapi%2fplaces%2f:place_id%2fbooth)  
+[POST	/api/places/:place_id/booth](#post-%2fapi%2fplaces%2f:place_id%2fbooth)  
+[GET	/api/places/feed](#get-%2fapi%2fplaces%2ffeed)  
+[GET	/api/places/:place_id/feed](#get-%2fapi%2fplaces%2f:place_id%2ffeed)  
+[POST	/api/places/:place_id/feed](#post-%2fapi%2fplaces%2f:place_id%2ffeed)  
+[GET	/api/places/:place_id/info](#get-%2fapi%2fplaces%2f:place_id%2finfo)  
+[POST	/api/places/:place_id/info](#post-%2fapi%2fplaces%2f:place_id%2finfo)  
+[GET	/api/posts/:place_id](#get-%2fapi%2fposts%2f:place_id)  
+[POST	/api/posts/:place_id](#post-%2fapi%2fposts%2f:place_id)  
+[GET	/api/posts/:place_id/:post_id](#get-%2fapi%2fposts%2f:place_id%2f:post_id)  
+[GET	/api/posts/:post_id/like](#get-%2fapi%2fposts%2f:post_id%2flike)  
+[GET	/api/posts/:post_id/comments](#get-%2fapi%2fposts%2f:post_id%2fcomments)  
+[POST	/api/posts/:post_id/comments](#post-%2fapi%2fposts%2f:post_id%2fcomments)  
+
+
 ## User
 
 ### GET /api/users/place
@@ -44,6 +64,8 @@ level : access level
 
 ```c
 {
+    "location_id" : int,
+    "loc_name" : string,
     "lat"   : double,   // 위도
     "lon"   : double    // 경도
 }
@@ -128,7 +150,6 @@ level : access level
 
 place_id - path parameter
 
-- \*placeName : 핫플 이름
 - \*description : 핫플 설명
 - \*state : 상시 핫플(0) / 일시 핫플(1)
 - \*locations : List<Location>
@@ -189,10 +210,10 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 ```c
 {
     "booth_id" : int,
-    "place_id" : int,
     "name" : string,
     "content" : string,
-    "detail" : string,
+    "on_time" : string,
+    "location": Location,
     "images" : List<Image>
 }
 ```
@@ -202,12 +223,51 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 
 #### Request
 
-\*place_id - path parameter
+\*location_id - path parameter
 
 #### Response
 
 - `List<Booth>`  
 place_id 에 등록된 모든 부스 정보를 반환합니다.
+
+```json
+[
+  {
+    "booth_id" : 1,
+    "name" : "경영대 주막",
+    "on_time" : "10:00 ~ 18:00",
+    "content" : "황소상 앞에서 경영대 주막을 오픈했습니다.",
+    "location": {
+      "loc_name" : "황소상 앞",
+      "lat" : 123,
+      "lon" : 23
+    },
+    "images": [
+      {
+        "image_id" : "1234-asbsdf.png",
+        "order" : 0
+      }
+    ]
+  },
+  {
+    "booth_id" : 2,
+    "name" : "사범대 주막",
+    "on_time" : "10:00 ~ 18:00",
+    "content" : "사범대 주막 설명입니다.",
+    "location": {
+      "loc_name" : "교육과학관 앞",
+      "lat" : 124,
+      "lon" : 22
+    },
+    "images": [
+      {
+        "image_id" : "5678-qwer.png",
+        "order" : 0
+      }
+    ]
+  }
+]
+```
 
 <hr />
 
@@ -220,7 +280,7 @@ place_id 에 등록된 모든 부스 정보를 반환합니다.
 
 - \*name : 부스 이름
 - \*content : 부스 설명
-- \*detail : 부스 위치 ex) 예대 앞
+- \*on_time : "18:00 ~ 20:00" 과 같은 문자열
 - \*lat : 위도
 - \*lon : 경도
 - images : 이미지 파일 배열

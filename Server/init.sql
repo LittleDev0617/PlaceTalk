@@ -59,10 +59,10 @@ CREATE TABLE `tb_image` (
 
 CREATE TABLE `tb_booth` (
 	`booth_id`	int auto_increment PRIMARY KEY	NOT NULL,
+	`location_id` int NOT NULL,
 	`place_id`	int	NOT NULL,
 	`name`	varchar(20)	NULL,
-	`content`	varchar(100)	NULL,
-	`detail`	varchar(20)	NULL
+	`on_time`	varchar(100)	NULL	
 );
 
 CREATE TABLE `tb_join` (
@@ -81,8 +81,10 @@ CREATE TABLE `tb_likes` (
 );
 
 CREATE TABLE `tb_location` (
+	`location_id` int auto_increment PRIMARY KEY NOT NULL,
 	`booth_id`	int,
 	`place_id`	int,
+	`loc_name` varchar(20),
 	`lat`	double,
 	`lon`	double
 );
@@ -94,6 +96,7 @@ CREATE TABLE `tb_info` (
 	`content`	varchar(300)	NULL,
 	`is_schedule` int DEFAULT 0 NOT NULL
 );
+
 
 ALTER TABLE `tb_board` ADD CONSTRAINT `FK_tb_place_TO_tb_board_1` FOREIGN KEY (
 	`place_id`
@@ -156,6 +159,13 @@ ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_feed_TO_tb_image_1` FOREIGN KEY (
 )
 REFERENCES `tb_feed` (
 	`feed_id`
+);
+
+ALTER TABLE `tb_booth` ADD CONSTRAINT `FK_tb_location_TO_tb_booth_1` FOREIGN KEY (
+	`location_id`
+)
+REFERENCES `tb_location` (
+	`location_id`
 );
 
 ALTER TABLE `tb_booth` ADD CONSTRAINT `FK_tb_place_TO_tb_booth_1` FOREIGN KEY (
@@ -227,6 +237,7 @@ ALTER TABLE `tb_info` ADD CONSTRAINT `FK_tb_place_TO_tb_info_1` FOREIGN KEY (
 REFERENCES `tb_place` (
 	`place_id`
 );
+
 
 
 INSERT INTO tb_user VALUES(0,0);
