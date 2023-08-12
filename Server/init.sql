@@ -46,7 +46,8 @@ CREATE TABLE `tb_feed` (
 	`feed_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`title`	varchar(50)	NOT NULL,
-	`content`	varchar(1000)	NOT NULL
+	`content`	varchar(1000)	NOT NULL,
+	`write_time` datetime NOT NULL
 );
 
 CREATE TABLE `tb_image` (

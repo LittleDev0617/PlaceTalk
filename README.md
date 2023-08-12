@@ -48,6 +48,16 @@ level : access level
     "lon"   : double    // 경도
 }
 ```
+
+#### Image
+
+```c
+{
+    "image_id" : string,  // http://server_address/images/image_id 로 이미지 url 사용
+    "order" : int // 이미지 순서
+}
+```
+
 <hr />
 
 ### GET /api/places
@@ -67,6 +77,7 @@ level : access level
 
 #### Response
 
+`List<Place>`  
 조건에 만족하는 place 들에 대한 정보를 반환합니다.
 
 ```json
@@ -82,9 +93,13 @@ level : access level
           {
             "lat": 34.43,
             "lon": 12.34
+          }, 
+          {
+            "lat": 34.43,
+            "lon": 12.34
           }
     ],
-    "count": 0
+    "count": 0  // 참여한 사람 수
   },
   {
     "place_id": 2,
@@ -106,7 +121,7 @@ level : access level
 
 <hr />
 
-### POST /api/places/
+### POST /api/places
 핫플레이스 추가  
 
 #### Request
@@ -133,6 +148,7 @@ place_id - path parameter
 
 #### Response
 
+- `Place`  
 place_id 에 해당하는 place 에 대한 정보를 반환합니다.
 
 ```json
@@ -144,14 +160,42 @@ place_id 에 해당하는 place 에 대한 정보를 반환합니다.
     "state": 0,
     "start_date": "2023-08-12 12:00:00",
     "end_date": "2023-08-13 12:00:00",
-    "lat": 34.43,
-    "lon": 12.34,
+    "locations": [
+        {
+          "lat": 56.78,
+          "lon": 43.43
+        }
+    ],
     "count": 0
   }
 ]
 ```
 
+### GET /api/places/:place_id/join
+핫플레이스 참가  
+
+#### Request
+
+\*place_id - path parameter
+
+#### Response
+
+place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
+
 <hr />
+
+## Booth
+
+```c
+{
+    "booth_id" : int,
+    "place_id" : int,
+    "name" : string,
+    "content" : string,
+    "detail" : string,
+    "images" : List<Image>
+}
+```
 
 ### GET /api/places/:place_id/booth
 부스 조회  
@@ -162,7 +206,8 @@ place_id 에 해당하는 place 에 대한 정보를 반환합니다.
 
 #### Response
 
-place_id 에 해당하는 place 의 여러 부스들을 조회합니다.
+- `List<Booth>`  
+place_id 에 등록된 모든 부스 정보를 반환합니다.
 
 <hr />
 
@@ -178,6 +223,7 @@ place_id 에 해당하는 place 의 여러 부스들을 조회합니다.
 - \*detail : 부스 위치 ex) 예대 앞
 - \*lat : 위도
 - \*lon : 경도
+- images : 이미지 파일 배열
 
 #### Response
 
@@ -185,18 +231,165 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 <hr />
 
-### POST /api/places/:place_id/join
-핫플레이스 참가  
+## Feed
+
+```c
+{
+    "feed_id" : int,
+    "place_id" : int,
+    "name" : string,
+    "content" : string,
+    "images" : List<Image>
+}
+```
+
+### GET /api/places/feed
+모든 핫플/행사 피드 조회
 
 #### Request
 
-\*place_id - path parameter
+- offset
+- feedPerPage
+
+#### Response
+- `List<Feed>`  
+
+<hr />
+
+
+### GET /api/places/:place_id/feed
+특정 장소 피드 조회  
+
+#### Request
+
+\*place_id - path parameter  
+- offset
+- feedPerPage
+
+#### Response
+- `List<Feed>`  
+
+<hr />
+
+
+### POST /api/places/:place_id/feed
+장소 피드 추가  
+
+#### Request
+
+\*place_id - path parameter  
+- \*title
+- \*content
+- images
 
 #### Response
 
-place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
+해당 장소에 피드를 등록합니다.  
 
 <hr />
+
+
+### PUT /api/places/:place_id/feed/:feed_id
+장소 피드 수정
+
+#### Request
+
+\*place_id - path parameter  
+\*feed_id - path parameter
+- \*title
+- \*content
+
+#### Response
+
+해당 장소에 피드를 등록합니다.  
+
+<hr />
+
+### DELETE /api/places/:place_id/feed/:feed_id
+장소 피드 삭제
+
+#### Request
+
+\*place_id - path parameter  
+\*feed_id - path parameter
+
+#### Response
+
+해당 장소에 피드를 등록합니다.  
+
+<hr />
+
+## Info
+
+```c
+{
+    "info_id" : int,
+    "place_id" : int,
+    "title" : string,
+    "content" : string
+}
+```
+
+
+### GET /api/places/:place_id/info
+특정 장소 행사 정보 조회  
+
+#### Request
+
+\*place_id - path parameter  
+
+#### Response
+- `List<Info>`  
+
+<hr />
+
+
+### POST /api/places/:place_id/info
+장소 행사 정보 추가  
+
+#### Request
+
+\*place_id - path parameter  
+- \*title
+- \*content
+
+#### Response
+
+해당 장소에 행사 정보를 등록합니다.  
+
+<hr />
+
+
+### PUT /api/places/:place_id/info/:info_id
+장소 행사 정보 수정
+
+#### Request
+
+\*place_id - path parameter  
+\*info_id - path parameter
+- \*title
+- \*content
+
+#### Response
+
+해당 장소에 행사 정보를 등록합니다.  
+
+<hr />
+
+### DELETE /api/places/:place_id/info/:info_id
+장소 행사 정보 삭제
+
+#### Request
+
+\*place_id - path parameter  
+\*feed_id - path parameter
+
+#### Response
+
+해당 장소에 행사 정보를 등록합니다.  
+
+<hr />
+
 
 ## Post - 게시글
 

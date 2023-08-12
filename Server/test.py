@@ -1,5 +1,5 @@
 from requests import post, get, Session
-from pyproj import Transformer
+from naver_parser import link2lat_lon
 import json
 
 url = 'http://localhost:3000/api/'
@@ -16,11 +16,8 @@ url = 'http://localhost:3000/api/'
 #         name = place.split('\n')[0]
 #         for link in place.split('\n')[1:]:
 #             r = get(link)
-#             if 'map.naver.com' in r.history[1].url:
-#                 # print(r.history[1].url)
-#                 lat, lon, a, b = r.history[1].url.split('Card=')[1].split('%7C')
-#                 lat, lon = Transformer.from_crs('EPSG:3857', 'EPSG:4326').transform(float(lat), float(lon))
-#                 print(lat, lon)
+            # lat, lon = link2lat_lon(r.history[1].url)
+            # print(lat, lon)
 
 # add_place()
 # exit()
@@ -55,15 +52,15 @@ def add_place(name, start, end, latitude, longitude):
     print(r.text)
 
 
-add_place(1,2,3,4,5)
+# add_place(1,2,3,4,5)
 
-import time
+# import time
 
-time.sleep(1)
+# time.sleep(1)
 
-r = s.get(url+f'places/1')
+r = s.get(url+f'places/1/join')
 print(r.text)
 
 
-r = s.get(url+f'places')
+r = s.get(url+f'places?lat=')
 print(r.text)
