@@ -171,6 +171,8 @@ router.post('/:place_id(\\d+)/booth', (req, res, next) => {
 			conn.query('INSERT INTO tb_location(booth_id, lat, lon) VALUES(?,?,?)', 
 						[booth_id, lat, lon]);
 		}
+		
+		res.send({ message : "Successful" });
 	});
 });
 
@@ -183,11 +185,12 @@ router.post('/:place_id(\\d+)/join', (req, res, next) => {
 	if(!(typeof(user_id) === 'number' && typeof(place_id) === 'number'))
 		throw new BadRequestError('Bad data.');
 
-	conn.query('SELECT COUNT(*) FROM tb_join WHERE user_id = ?', [req.user.uid], (err, rows) => {
-		if(!rows.length)
-			res.json({ message : 'Empty' });
-
-		// Check duplicate ?
+	conn.query('SELECT place_id FROM tb_join WHERE user_id = ?', [req.user.uid], (err, rows) => {
+		for (let i = 0; i < rows.length; i++) {
+			if(rows[i]['place_id'] == place_id) {
+				res.json({ message : 'Already join in this place.'});
+			}			
+		}
 
 		if(rows.length < 5) {
 			conn.query('INSERT INTO tb_join VALUES(?, ?)', [req.user.uid, place_id], (err, rows) => {
@@ -239,7 +242,7 @@ router.post('/:place_id(\\d+)/feed', (req, res, next) => {
 			if(rows[index]['user_id'] == req.user.uid) {
 				// 관리자 권한 O
 				conn.query('INSERT INTO tb_feed(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content], (err, rows) => {		
-					res.json(rows);
+					res.send({ message : "Successful" });
 				});
 			}			
 		}
@@ -262,7 +265,7 @@ router.put('/:place_id(\\d+)/feed/:feed_id(\\d+)', (req, res, next) => {
 			if(rows[index]['user_id'] == req.user.uid) {
 				// 관리자 권한 O
 				conn.query('UPDATE tb_feed SET title = ?, content = ? WHERE feed_id = ?', [title, content, feed_id], (err, rows) => {		
-					res.json(rows);
+					res.send({ message : "Successful" });
 				});
 			}			
 		}
@@ -281,10 +284,10 @@ router.delete('/:place_id(\\d+)/feed/:feed_id(\\d+)', (req, res, next) => {
 
 	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
 		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid) {
+			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
 				// 관리자 권한 O
 				conn.query('DELETE FROM tb_feed WHERE feed_id = ?', [feed_id], (err, rows) => {		
-					res.json(rows);
+					res.send({ message : "Successful" });
 				});
 			}			
 		}
@@ -292,4 +295,81 @@ router.delete('/:place_id(\\d+)/feed/:feed_id(\\d+)', (req, res, next) => {
 });
 
 
+// 행사/핫플 정보 조회
+// place_id : int
+router.get('/:place_id(\\d+)/info', (req, res, next) => {    
+	const place_id = parseInt(req.params.place_id);
+	
+	conn.query(`SELECT info_id, title, content FROM tb_info as f WHERE place_id = ?`, [place_id], (err, rows) => {		
+		res.json(rows);
+	});
+});
+
+// 행사/핫플 정보 추가 - 관리자
+// place_id : int
+// title : string
+// content : string
+router.post('/:place_id(\\d+)/info', (req, res, next) => {    
+	const { title, content } = req.body;
+	const place_id = parseInt(req.params.place_id);
+	
+	if(req.user.level > 1)
+		throw new UnauthorizedError('Cannot acces');
+
+	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
+		for (let index = 0; index < rows.length; index++) {
+			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
+				// 관리자 권한 O
+				conn.query('INSERT INTO tb_info(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content], (err, rows) => {		
+					res.send({ message : "Successful" });
+				});
+			}			
+		}
+	});
+});
+
+
+// 행사/핫플 정보 수정 - 관리자
+// place_id : int
+router.put('/:place_id(\\d+)/info/:info_id(\\d+)', (req, res, next) => {    
+	const { title, content } = req.body;
+	const place_id = parseInt(req.params.place_id);
+	const info_id = parseInt(req.params.info_id);
+	
+	if(req.user.level > 1)
+		throw new UnauthorizedError('Cannot acces');
+
+	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
+		for (let index = 0; index < rows.length; index++) {
+			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
+				// 관리자 권한 O
+				conn.query('UPDATE tb_info SET title = ?, content = ? WHERE info_id = ?', [title, content, info_id], (err, rows) => {		
+					res.send({ message : "Successful" });
+				});
+			}			
+		}
+	});
+});
+
+
+// 행사/핫플 정보 삭제 - 관리자
+// place_id : int
+router.delete('/:place_id(\\d+)/info/:info_id(\\d+)', (req, res, next) => {    
+	const info_id = parseInt(req.params.info_id);
+	const place_id = parseInt(req.params.place_id);
+	
+	if(req.user.level > 1)
+		throw new UnauthorizedError('Cannot acces');
+
+	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
+		for (let index = 0; index < rows.length; index++) {
+			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
+				// 관리자 권한 O
+				conn.query('DELETE FROM tb_info WHERE info_id = ?', [info_id], (err, rows) => {		
+					res.send({ message : "Successful" });
+				});
+			}			
+		}
+	});
+});
 module.exports = router;
