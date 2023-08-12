@@ -91,7 +91,8 @@ CREATE TABLE `tb_info` (
 	`info_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`title`	varchar(20)	NULL,
-	`content`	varchar(300)	NULL
+	`content`	varchar(300)	NULL,
+	`is_schedule` int DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE `tb_board` ADD CONSTRAINT `FK_tb_place_TO_tb_board_1` FOREIGN KEY (
