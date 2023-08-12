@@ -1,7 +1,7 @@
 from requests import post, get, Session
 from naver_parser import link2lat_lon
 import json
-from urllib.parse import quote
+import string
 
 url = 'http://localhost:3000/api/'
 
@@ -9,7 +9,7 @@ for line in open('../README.md', 'r', encoding='utf-8').readlines():
     if 'GET' in line or 'POST' in line:
         api = line[4:].rstrip()
         method, url = api.split()
-        print(f'[{method}\t{url}](#{api.lower().replace("/", "%2f").replace(" ", "-")})  ')
+        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " ", api.lower())).replace(" ", "-")})  ')
     
     
 exit()
