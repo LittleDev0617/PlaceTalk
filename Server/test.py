@@ -9,7 +9,7 @@ for line in open('../README.md', 'r', encoding='utf-8').readlines():
     if 'GET' in line or 'POST' in line:
         api = line[4:].rstrip()
         method, url = api.split()
-        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " ", api.lower())).replace(" ", "-")})  ')
+        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
     
     
 exit()
