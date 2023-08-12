@@ -15,6 +15,13 @@ level : access level
 
 ## User
 
+### GET /api/users/place
+#### Request
+
+#### Response
+
+
+
 ## Place - 핫플레이스
 
 ### TYPE STRUCTURE
