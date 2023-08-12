@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
 		for (let index = 0; index < rows.length; index++) {
 			rows[index]['locations'] = [];
 			var isInDistance = false;
-			conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [rows[index]['place_id']], (e, rows2) => {				
+			conn.query('SELECT location_id, loc_name, lat, lon FROM tb_location WHERE place_id = ?', [rows[index]['place_id']], (e, rows2) => {				
 				for (let i = 0; i < rows2.length; i++) {				
 					// dist 설정이 안되어있거나 dist 내에 위치한 경우
 					if(!dist || getDistance(lat, lon, rows2[i].lat, rows2[i].lon) <= dist * 1000) {
@@ -66,7 +66,7 @@ router.get('/', (req, res, next) => {
 // state : 0 - 핫플 / 1 - 행사
 // startDate : datetime
 // endDate	 : dateTime
-// lat, lon : double
+// locations : List<Location>
 router.post('/', (req, res, next) => {    
 	const { placeName, category, state, startDate, endDate, locations } = req.body;
 	if(req.user.level > 0)
@@ -85,7 +85,7 @@ router.post('/', (req, res, next) => {
 			conn.query('SELECT LAST_INSERT_ID() as place_id;', (err, rows2) => {
 				conn.query('INSERT INTO tb_board(place_id) VALUES(?)', rows2[0].place_id);
 				for (let i = 0; i < locations.length; i++) {									
-					conn.query('INSERT INTO tb_location(place_id, lat, lon) VALUES(?,?,?)', [rows2[0].place_id, locations[i].lat, locations[i].lon]);	
+					conn.query('INSERT INTO tb_location(place_id, name, lat, lon) VALUES(?,?,?,?)', [rows2[0].place_id, locations[i].name, locations[i].lat, locations[i].lon]);	
 				}
 			});
 		}
@@ -108,7 +108,7 @@ router.get('/:place_id(\\d+)', (req, res, next) => {
 			console.log(rows);
 		// 한 핫플/행사 에 여러 위치 정보가 있을 경우 모두 리턴
 		rows[0]['locations'] = [];
-		conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [pid], (e, rows2) => {			
+		conn.query('SELECT location_id, loc_name, lat, lon FROM tb_location WHERE place_id = ?', [pid], (e, rows2) => {			
 			console.log(rows2);
 			for (let i = 0; i < rows2.length; i++) {			
 				rows[0]['locations'].push(rows2[i]);				
@@ -123,20 +123,20 @@ router.get('/:place_id(\\d+)', (req, res, next) => {
 
 
 // 부스 조회
-// place_id : int
-router.get('/:place_id(\\d+)/booth', (req, res, next) => {    
-	const place_id = parseInt(req.params.place_id);
+// location_id : int
+router.get('/:location_id(\\d+)/booth', (req, res, next) => {    
+	const location_id = parseInt(req.params.location_id);
 
-	conn.query('SELECT * from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
+	conn.query('SELECT booth_id, name, content, on_time from tb_booth WHERE location_id = ?', [location_id], (err, rows) => {
 		for (let i = 0; i < rows.length; i++) {			
 			rows[i]['locations'] = [];
 			rows[i]['images'] = [];
-			conn.query('SELECT lat, lon FROM tb_location WHERE place_id = ?', [rows[i]['place_id']], (e, rows2) => {								
+			conn.query('SELECT loc_name, lat, lon FROM tb_location WHERE booth_id = ?', [rows[i]['booth_id']], (e, rows2) => {								
 				for (let j = 0; j < rows2.length; j++) {
 					rows[i]['locations'].push(rows2[j]);
 				}
 			});
-			conn.query('SELECT image_id, order FROM tb_image WHERE place_id = ?', [rows[i]['place_id']], (e, rows2) => {								
+			conn.query('SELECT image_id, order FROM tb_image WHERE booth_id = ?', [rows[i]['booth_id']], (e, rows2) => {								
 				for (let j = 0; j < rows2.length; j++) {
 					rows[i]['images'].push(rows2[j]);
 				}
@@ -150,31 +150,33 @@ router.get('/:place_id(\\d+)/booth', (req, res, next) => {
 // 부스 등록
 // name : string
 // content : string
-// detail  : string  - 근처 위치 설명 ex) XX대 앞
+// loc_name : string
+// on_time : string
 // lat, lon : double
-router.post('/:place_id(\\d+)/booth', uploadMW, (req, res, next) => {    
-	const { name, content, detail, lat, lon } = req.body;
-	const place_id = parseInt(req.params.place_id);
+router.post('/:location_id(\\d+)/booth', uploadMW, (req, res, next) => {    
+	const { name, content, on_time, loc_name, lat, lon } = req.body;
+	const location_id = parseInt(req.params.location_id);
 	
 	if(req.user.level > 1)
 		throw new UnauthorizedError('Cannot acces');
 
-	if(!(typeof(name) === 'string' && typeof(content) == 'string' &&
-		typeof(detail) === 'string' && typeof(lat) == 'number' && typeof(lon) === 'number') || 
+	if(!(typeof(name) === 'string' && typeof(content) === 'string' && typeof(on_time) == 'string' &&
+		typeof(lat) == 'number' && typeof(lon) === 'number') || 
 		req.files.length > 5)
 		throw new BadRequestError('Bad data.');
 	
-	conn.query('SELECT booth_id from tb_booth WHERE place_id = ?', [place_id], (err, rows) => {
+	conn.query('SELECT booth_id from tb_booth WHERE location_id = ?', [location_id], (err, rows) => {
 		const booth_id = rows[0].booth_id;
 
 		if(booth_id) {
-			conn.query('UPDATE tb_booth SET name = ?, content = ?, detail = ? WHERE place_id = ?', 
-						[name, content, detail, place_id]);
-			conn.query('UPDATE tb_location SET lat = ?, lon = ? WHERE booth_id = ?', [booth_id]);
+			conn.query('UPDATE tb_booth SET name = ?, on_time = ?, content = ? WHERE booth_id = ?', 
+						[name, on_time, content, booth_id]);
+			conn.query('UPDATE tb_location SET lat = ?, lon = ? WHERE booth_id = ?', [lat ,lon, booth_id]);
 		}
 		else {
-			conn.query('INSERT INTO tb_booth(place_id, lat, lon, name, content, detail) VALUES(?,?,?,?)', 
-						[place_id, name, content, detail]);
+			// 부스 추가
+			conn.query('INSERT INTO tb_booth(location_id, name, on_time, content) VALUES(?,?,?,?)', 
+						[location_id, name, on_time, content]);
 			// 이미지 업로드
 			conn.query('SELECT LAST_INSERT_ID() as booth_id', (err, rows2) => {
 				for (let i = 0; i < req.files.length; i++) {
@@ -182,8 +184,9 @@ router.post('/:place_id(\\d+)/booth', uploadMW, (req, res, next) => {
 								[req.files[i].file_name, rows2[0]['booth_id'], i]);
 				}
 			});
-			conn.query('INSERT INTO tb_location(booth_id, lat, lon) VALUES(?,?,?)', 
-						[booth_id, lat, lon]);
+			// 부스 위치 정보 추가
+			conn.query('INSERT INTO tb_location(booth_id, loc_name, lat, lon) VALUES(?,?,?,?)', 
+						[booth_id, loc_name, lat, lon]);
 		}
 		
 		res.send({ message : "Successful" });
