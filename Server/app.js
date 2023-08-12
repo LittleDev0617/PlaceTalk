@@ -1,13 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
-
+const cookieParser = require('cookie-parser');
 const app = express();
 
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
 const placesRouter = require('./routes/places');
 
+app.use(express.static(__dirname + '/images'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 

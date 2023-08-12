@@ -60,4 +60,12 @@ router.get('/place', auth, (req, res, next) => {
     });
 });
 
+
+// 자신이 쓴 게시글 조회
+router.get('/post', auth, (req, res, next) => {
+    conn.query('SELECT * FROM tb_post WHERE user_id = ? ORDER BY create_time', [req.user.uid], (err, rows) => {
+        res.json(rows);
+    });
+});
+
 module.exports = router;

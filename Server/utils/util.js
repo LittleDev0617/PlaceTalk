@@ -1,5 +1,23 @@
 const proj4 = require('proj4');
 
+const multer = require('multer');
+const uuid4 = require('uuid4');
+const path = require('path');
+
+const upload = multer({
+    storage: multer.diskStorage({
+        filename(req, file, done) {
+            var ext = path.extname(file.originalname);
+            done(null, uuid4() + ext);
+        },
+        destination(req, file, done) {
+            done(null, __dirname + '/images');
+        },
+    }),
+});
+
+const uploadMW = upload.array('images');
+
 module.exports = {
     // https://velog.io/@neity16/NodeJS-거리구하기위도-경도
     getDistance : function (lat1, lon1, lat2, lon2) {
@@ -21,5 +39,6 @@ module.exports = {
         else dist = Math.round(dist / 100) * 100;
     
         return dist;
-    }
-}
+    },
+    uploadMW
+};

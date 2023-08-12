@@ -50,7 +50,7 @@ CREATE TABLE `tb_feed` (
 );
 
 CREATE TABLE `tb_image` (
-	`image_id`	int auto_increment PRIMARY KEY	NOT NULL,
+	`image_id`	varchar(40)	NOT NULL,
 	`booth_id`	int,
 	`feed_id`	int,
 	`order`	int	DEFAULT 0
