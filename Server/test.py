@@ -149,6 +149,25 @@ def add_feed():
 r = s.get(HOST_API+f'places/1/feed')
 print(r.text)
 
+def add_info():
+    global s
+
+    txt = open("./info_list.txt", 'r', encoding='utf-8').read()
+    infos = txt.split('\n------------------------------------------------\n')
+    for info in infos:        
+        data = info.split('\n')
+        myInfo = {}        
+        myInfo['title'] = data[0]
+        myInfo['content'] = '\n'.join(data[1:])
+        myInfo['is_schedule'] = myInfo['title'] == '일정표'        
+        
+        r = s.post(HOST_API+f'places/1/info', json=myInfo)
+        print(r.text)
+    
+# add_info()
+    
+r = s.get(HOST_API+f'places/1/info')
+print(r.text)
 exit()
 # print(r.cookies)
 

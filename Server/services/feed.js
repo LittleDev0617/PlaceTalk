@@ -39,7 +39,7 @@ async function getFeeds(options) {
     return res;
 }
 
-// feed : nickname, content, on_time, location
+// feed : nickname, content
 async function createFeed(feedInfo, place_id, user_id) {
     const { content, images } = feedInfo;
 
