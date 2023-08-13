@@ -60,10 +60,14 @@ def add_place():
 r = s.get(HOST_API+f'users/place')
 print(r.text)
 
-lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
-r = s.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=3')
+r = s.get(HOST_API+f'places/1')
 print(r.text)
-exit()
+
+
+lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
+r = s.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
+print(r.text)
+
 
 
 def add_booth():

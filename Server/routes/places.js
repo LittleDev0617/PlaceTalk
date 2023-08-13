@@ -6,6 +6,7 @@ const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { getDistance, uploadMW } = require('../utils/util');
 const { getPlaces, createPlace } = require('../services/places');
 const { joinPlace } = require('../services/user');
+const { getBooths, createBooth } = require('../services/booth');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -34,7 +35,7 @@ router.get('/', async (req, res, next) => {
 // startDate : datetime
 // endDate	 : dateTime
 // locations : List<Location>
-// router.post('/', async (req, res, next) => {    
+// router.put('/', async (req, res, next) => {    
 // 	const { placeName, category, state, startDate, endDate, locations } = req.body;
 // 	if(req.user.level > 0)
 // 		throw new UnauthorizedError('Cannot acces');	
@@ -78,30 +79,17 @@ router.post('/', async (req, res, next) => {
 
 	await createPlace({ placeName, category, state, startDate, endDate, locations });
 
-	res.send({ message : "Successful" });
+	res.json({ message : "Successful" });
 });
 
 
 // 특정 핫플 조회
 // place_id : int
 router.get('/:place_id(\\d+)', async (req, res, next) => {    
-	const pid = parseInt(req.params.place_id);
+	const place_id = parseInt(req.params.place_id);
 
-	conn.query(`SELECT p.*, (
-		SELECT COUNT(*) 
-		FROM tb_join as j 
-		WHERE p.place_id = j.place_id
-		) as \`count\` FROM tb_place as p WHERE p.place_id = ?`, [pid], (err, rows) => {
-		
-		// 한 핫플/행사 에 여러 위치 정보가 있을 경우 모두 리턴
-		rows[0]['locations'] = [];
-		conn.query('SELECT location_id, loc_name, lat, lon FROM tb_location WHERE place_id = ?', [pid], (e, rows2) => {			
-			for (let i = 0; i < rows2.length; i++) {			
-				rows[0]['locations'].push(rows2[i]);				
-			}
-			res.json(rows);
-		});		
-	});
+	let places = await getPlaces({ date: false, place_id });
+	res.json(places);
 });
 
 // TODO : 핫플 검색 기능 - 제목
@@ -112,33 +100,8 @@ router.get('/:place_id(\\d+)', async (req, res, next) => {
 // location_id : int
 router.get('/:location_id(\\d+)/booth', async (req, res, next) => {    
 	const location_id = parseInt(req.params.location_id);
-
-	conn.query('SELECT booth_id, name, content, on_time from tb_booth WHERE location_id = ?', [location_id], (err, rows) => {
-		if(!rows.length)
-			res.json({message : 'Empty.'});
-		
-		for (let i = 0; i < rows.length; i++) {			
-			rows[i]['locations'] = [];
-			rows[i]['images'] = [];
-			conn.query('SELECT loc_name, lat, lon FROM tb_location WHERE booth_id = ?', [rows[i]['booth_id']], (e, rows2) => {								
-				for (let j = 0; j < rows2.length; j++) {
-					rows[i]['locations'].push(rows2[j]);
-				}
-				conn.query('SELECT image_id, `order` FROM tb_image WHERE booth_id = ?', [rows[i]['booth_id']], (e, rows3) => {								
-					
-					if(!rows3.length) 
-						res.json({ message : 'Empty.' });
-
-					for (let j = 0; j < rows3.length; j++) {
-						rows[i]['images'].push(rows3[j]);
-					}
-
-					if(i == rows.length - 1)
-						res.json(rows);
-				});
-			});
-		}
-	});
+	let booths = await getBooths({ location_id });
+	res.json(booths);
 });
 
 // 부스 등록
@@ -150,8 +113,6 @@ router.post('/:location_id(\\d+)/booth', uploadMW, async (req, res, next) => {
 	const { name, content, on_time, location } = req.body;
 	const { lat, lon, loc_name } = location;
 	const location_id = parseInt(req.params.location_id);
-
-	console.log(typeof(lon))
 	
 	if(req.user.level > 1)
 		throw new UnauthorizedError('Cannot acces');
@@ -160,28 +121,9 @@ router.post('/:location_id(\\d+)/booth', uploadMW, async (req, res, next) => {
 		typeof(lat) == 'number' && typeof(lon) === 'number'))
 		throw new BadRequestError('Bad data.');
 	
-	conn.query('SELECT booth_id from tb_booth WHERE location_id = ?', [location_id], (err, rows) => {
-		
-		// 부스 추가
-		conn.query('INSERT INTO tb_booth(location_id, name, on_time, content) VALUES(?,?,?,?)', 
-					[location_id, name, on_time, content]);
-		
-		if(req.files) {
-			// 이미지 업로드
-			conn.query('SELECT LAST_INSERT_ID() as booth_id', (err, rows2) => {
-				for (let i = 0; i < req.files.length; i++) {
-					conn.query('INSERT INTO tb_image(image_id, booth_id, `order`) VALUES(?,?,?)',
-								[req.files[i].file_name, rows2[0]['booth_id'], i]);
-					// 부스 위치 정보 추가
-					conn.query('INSERT INTO tb_location(booth_id, loc_name, lat, lon) VALUES(?,?,?,?)', 
-								[rows2[0]['booth_id'], loc_name, lat, lon]);
-				}
-			});
-		}
+	let result = createBooth({ name, content, on_time, location, images: req.files }, location_id);
 	
-		
-		res.send({ message : "Successful" });
-	});
+	res.json({ message : "Successful" });
 });
 
 // 회원 핫플 참가
