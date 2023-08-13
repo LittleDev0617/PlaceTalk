@@ -4,7 +4,7 @@ const fs = require('fs');
 jwt.secret = fs.readFileSync('./utils/secret');
 jwt.options = {
     algorithm : 'HS256',
-    expiresIn : '10m'
+    expiresIn : '30m'
 }
 
 module.exports = jwt;

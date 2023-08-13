@@ -3,37 +3,117 @@ from naver_parser import link2lat_lon
 import json
 import string
 
-url = 'http://localhost:3000/api/'
+HOST_API = 'http://localhost:3000/api/'
 
-for line in open('../README.md', 'r', encoding='utf-8').readlines():
-    if 'GET' in line or 'POST' in line:
-        api = line[4:].rstrip()
-        method, url = api.split()
-        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
+# for line in open('../README.md', 'r', encoding='utf-8').readlines():
+#     if 'GET' in line or 'POST' in line:
+#         api = line[4:].rstrip()
+#         method, url = api.split()
+#         print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
     
     
-exit()
+# exit()
 
+s = Session()
+r = s.get(HOST_API+'users/auth?token=0')
+
+# 링크 검사
+# import re
+# txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
+
+# for m in re.findall('https://naver.me/.*\n', txt):    
+#     print(m.rstrip())
+#     lat, lon = link2lat_lon(m.rstrip())
+
+# exit()
 
 def add_place():
-    '''
-    https://naver.me/Gh846DFX
-    >>> r.history[1].url
-        'https://map.naver.com/v5?summaryCard=14146210.138743695%7C4516139.686555475%7Cplace%7C31949741'
-    '''
+    global s
     txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
     places = txt.split('\n\n')
     for place in places:
         name = place.split('\n')[0]
-        for link in place.split('\n')[1:]:
-            r = get(link)
-            lat, lon = link2lat_lon(r.history[1].url)
-            print(lat, lon)
+        kind = place.split('\n')[1]
+        category = place.split('\n')[2]
+        myPlace = { 'placeName' : name, 'category' : category, 'state' : ['핫플', '행사'].index(kind), 'locations' : [] }
 
-add_place()
+        start, end = place.split('\n')[3:5]
+        links = place.split('\n')[5:]
+        myPlace['startDate'] = start
+        myPlace['endDate'] = end
+        
+        
+        for link in links:            
+            loc_name, url = link.split(' ')
+            lat, lon = link2lat_lon(url)
+            myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
+
+        r = s.post(HOST_API+f'places', json=myPlace)
+        print(r.text)
+        
+
+# add_place()
+
+# r = s.get(HOST_API+f'places/20/join')
+# print(r.text)
+
+r = s.get(HOST_API+f'users/place')
+print(r.text)
+
+lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
+r = s.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=3')
+print(r.text)
 exit()
-s = Session()
-r = s.get(url+'users/auth?token=0')
+
+
+def add_booth():
+    global s
+    #  name, content, on_time, loc_name, lat, lon 
+    naver_link = ['https://naver.me/x3qUn8vB', 'https://naver.me/xq5mz4jK']
+    # booth_data = [
+    #     {
+    #         "name": "경영대 주막",
+    #         "on_time": "10:00 ~ 18:00",
+    #         "content": "황소상 앞에서 경영대 주막을 오픈했습니다.",
+    #         "location": {
+    #             "loc_name": "황소상 앞",
+    #             "lat": 123,
+    #             "lon": 23
+    #         }
+    #     },
+    #     {
+    #         "name": "사범대 주막",
+    #         "on_time": "10:00 ~ 18:00",
+    #         "content": "사범대 주막 설명입니다.",
+    #         "location": {
+    #             "loc_name": "교육과학관 앞",
+    #             "lat": 124,
+    #             "lon": 22
+    #         }
+    #     }
+    # ]
+    
+    txt = open("./booth_list.txt", 'r', encoding='utf-8').read()
+    booths = txt.split('\n\n')
+    for booth in booths:        
+        data = booth.split('\n')
+        myBooth = {}        
+        myBooth['name'] = data[0]
+        myBooth['on_time'] = data[1]
+        myBooth['content'] = '\n'.join(data[4:])
+        myBooth['location'] = {}
+        myBooth['location']['loc_name'] = data[2]
+        myBooth['location']['lat'], myBooth['location']['lon'] = link2lat_lon(data[3])
+        
+        r = s.post(HOST_API+f'places/1/booth', json=myBooth)
+        print(r.text)
+
+# add_booth()
+
+r = s.get(HOST_API+f'places/1/booth')
+print(r.text)
+
+exit()
 # print(r.cookies)
 
 r = s.get(url+f'users/place')

@@ -292,8 +292,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 - \*name : 부스 이름
 - \*content : 부스 설명
 - \*on_time : "18:00 ~ 20:00" 과 같은 문자열
-- \*lat : 위도
-- \*lon : 경도
+- \*location
 - images : 이미지 파일 배열
 
 #### Response
