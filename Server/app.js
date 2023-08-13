@@ -17,10 +17,10 @@ app.use((req, res, next) => {
     // https://velog.io/@kdkeiie8/NodeJS-%EB%A1%9C%EA%B7%B8%EB%A5%BC-%EC%B0%8D%EC%96%B4%EB%B3%B4%EC%9E%90with-tracer
 
     const {
-        method, path, url, query, headers: { cookie }, body,
+        method, params, path, url, query, headers: { cookie }, body,
     } = req;
     const request = {
-        method, path, cookie, body, url, query
+        method, path, cookie, body, url, query, params
     };
     console.log(request);
     next();

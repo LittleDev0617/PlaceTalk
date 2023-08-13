@@ -3,10 +3,11 @@ var conn = require('../utils/db');
 const jwt = require('../utils/jwt');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
-const { getDistance, uploadMW } = require('../utils/util');
+const { getDistance, uploadMW} = require('../utils/util');
 const { getPlaces, createPlace } = require('../services/places');
-const { joinPlace } = require('../services/user');
+const { joinPlace, isOrganizer, isAdmin } = require('../services/user');
 const { getBooths, createBooth } = require('../services/booth');
+const { getFeeds, createFeed, editFeed, deleteFeed } = require('../services/feed');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -69,7 +70,7 @@ router.get('/', async (req, res, next) => {
 // startDate : datetime
 // endDate	 : dateTime
 // locations : List<Location>
-router.post('/', async (req, res, next) => {    
+router.post('/', isAdmin, async (req, res, next) => {    
 	const { placeName, category, state, startDate, endDate, locations } = req.body;
 	if(req.user.level > 0)
 		throw new UnauthorizedError('Cannot acces');	
@@ -85,8 +86,9 @@ router.post('/', async (req, res, next) => {
 
 // 특정 핫플 조회
 // place_id : int
-router.get('/:place_id(\\d+)', async (req, res, next) => {    
-	const place_id = parseInt(req.params.place_id);
+router.get('/:place_id(\\d+)', isAdmin, async (req, res, next) => {    
+	const { place_id } = req.params;
+	// const { place_id } = req.params;
 
 	let places = await getPlaces({ date: false, place_id });
 	res.json(places);
@@ -99,7 +101,7 @@ router.get('/:place_id(\\d+)', async (req, res, next) => {
 // 부스 조회
 // location_id : int
 router.get('/:location_id(\\d+)/booth', async (req, res, next) => {    
-	const location_id = parseInt(req.params.location_id);
+	const { location_id } = req.params;
 	let booths = await getBooths({ location_id });
 	res.json(booths);
 });
@@ -109,13 +111,11 @@ router.get('/:location_id(\\d+)/booth', async (req, res, next) => {
 // content : string
 // on_time : string
 // location
-router.post('/:location_id(\\d+)/booth', uploadMW, async (req, res, next) => {    
+router.post('/:location_id(\\d+)/booth', isAdmin, uploadMW, async (req, res, next) => {    
 	const { name, content, on_time, location } = req.body;
 	const { lat, lon, loc_name } = location;
-	const location_id = parseInt(req.params.location_id);
+	const { location_id } = req.params;
 	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
 
 	if(!(typeof(name) === 'string' && typeof(content) === 'string' && typeof(on_time) == 'string' &&
 		typeof(lat) == 'number' && typeof(lon) === 'number'))
@@ -129,7 +129,7 @@ router.post('/:location_id(\\d+)/booth', uploadMW, async (req, res, next) => {
 // 회원 핫플 참가
 // place_id : int
 router.get('/:place_id(\\d+)/join', async (req, res, next) => {   
-	const place_id = parseInt(req.params.place_id);
+	const { place_id } = req.params;
 
 	let result = await joinPlace(req.user.uid, place_id);
 	console.log(res);
@@ -137,8 +137,8 @@ router.get('/:place_id(\\d+)/join', async (req, res, next) => {
 });
 
 
-const getFeed = function (req, res, next) {
-	const { offset, feedPerPage } = req.query;
+const getFeed = async function (req, res, next) {
+	let { offset, feedPerPage } = req.query;
 
 	if(!offset || typeof(offset) !== 'number')
 		offset = 0
@@ -148,19 +148,10 @@ const getFeed = function (req, res, next) {
 
 	const place_id = req.params.place_id;
 
-	conn.query(`SELECT * from tb_feed` + (place_id ? 'WHERE place_id = ' + place_id.toString() : '') + ` \`order\` BY write_time LIMIT ?, ?`, [offset * feedPerPage, feedPerPage], (err, rows) => {	
-		for (let i = 0; i < rows.length; i++) {
-			rows[i]['images'] = [];
-			conn.query('SELECT image_id, `order` FROM tb_image WHERE feed_id = ?', [rows[i]['feed_id']], (e, rows2) => {
-				for (let j = 0; j < rows2.length; j++) {
-					rows[i]['images'].push(rows2[j]);
-				}
-				if(i == rows.length - 1)
-					res.json(rows);
-			});	
-		}			
-	});
+	let feeds = await getFeeds({ place_id , offset, feedPerPage });
+	res.json(feeds);
 }
+
 
 // 모든 핫플 피드 조회
 // place_id : int
@@ -174,80 +165,40 @@ router.get('/:place_id(\\d+)/feed', getFeed);
 // place_id : int
 // title : string
 // content : string
-router.post('/:place_id(\\d+)/feed', uploadMW, async (req, res, next) => {    
-	const { title, content } = req.body;
-	const place_id = parseInt(req.params.place_id);
-	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
+router.post('/:place_id(\\d+)/feed', isOrganizer, uploadMW, async (req, res, next) => {
+	const { content } = req.body;
+	const { place_id } = req.params;	
 
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid) {
-				// 관리자 권한 O
-				conn.query('INSERT INTO tb_feed(place_id, title, content, write_time) VALUES(?, ?, ?, NOW())', [place_id, title, content]);
-				// 이미지 업로드
-				conn.query('SELECT LAST_INSERT_ID() as feed_id', (err, rows2) => {
-					for (let i = 0; i < req.files.length; i++) {
-						conn.query('INSERT INTO tb_image(image_id, feed_id, `order`) VALUES(?,?,?)',
-									[req.files[i].file_name, rows2[0]['feed_id'], i]);
-					}
-				});
-			}			
-		}
-	});
+	await createFeed({ content, images: req.files }, place_id, req.user.uid);
+	res.json({ message: 'Successful'});
 });
 
 
 // 핫플 피드 수정 - 관리자
 // place_id : int
-router.put('/:place_id(\\d+)/feed/:feed_id(\\d+)', async (req, res, next) => {    
+router.put('/:place_id(\\d+)/feed/:feed_id(\\d+)', isOrganizer, async (req, res, next) => {    
 	const { title, content } = req.body;
-	const place_id = parseInt(req.params.place_id);
-	const feed_id = parseInt(req.params.feed_id);
-	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
+	const { place_id, feed_id } = req.params;	
 
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid) {
-				// 관리자 권한 O
-				conn.query('UPDATE tb_feed SET title = ?, content = ? WHERE feed_id = ?', [title, content, feed_id], (err, rows) => {		
-					res.send({ message : "Successful" });
-				});
-			}			
-		}
-	});
+	await editFeed({ title, content, feed_id }, place_id);
+	res.json({ message: 'Successful'});
 });
 
 
 // 핫플 피드 삭제 - 관리자
 // place_id : int
-router.delete('/:place_id(\\d+)/feed/:feed_id(\\d+)', async (req, res, next) => {    
-	const feed_id = parseInt(req.params.feed_id);
-	const place_id = parseInt(req.params.place_id);
-	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
+router.delete('/:place_id(\\d+)/feed/:feed_id(\\d+)', isOrganizer, async (req, res, next) => {    	
+	const { place_id, feed_id } = req.params;	
 
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
-				// 관리자 권한 O
-				conn.query('DELETE FROM tb_feed WHERE feed_id = ?', [feed_id], (err, rows) => {		
-					res.send({ message : "Successful" });
-				});
-			}			
-		}
-	});
+	await deleteFeed({ feed_id });
+	res.json({ message: 'Successful' });
 });
 
 
 // 행사/핫플 정보 조회
 // place_id : int
 router.get('/:place_id(\\d+)/info', async (req, res, next) => {    
-	const place_id = parseInt(req.params.place_id);
+	const { place_id } = req.params;
 	var { is_schedule } = req.query;
 	
 	if(!is_schedule)
@@ -269,11 +220,8 @@ router.post('/:place_id(\\d+)/info', async (req, res, next) => {
 	if(!is_schedule)
 		is_schedule = 0;
 
-	const place_id = parseInt(req.params.place_id);
+	const { place_id } = req.params;
 	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
-
 	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
 		for (let index = 0; index < rows.length; index++) {
 			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
@@ -291,11 +239,8 @@ router.post('/:place_id(\\d+)/info', async (req, res, next) => {
 // place_id : int
 router.put('/:place_id(\\d+)/info/:info_id(\\d+)', async (req, res, next) => {    
 	const { title, content } = req.body;
-	const place_id = parseInt(req.params.place_id);
-	const info_id = parseInt(req.params.info_id);
+	const { place_id, info_id } = req.params;
 	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
 
 	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
 		for (let index = 0; index < rows.length; index++) {
@@ -314,10 +259,7 @@ router.put('/:place_id(\\d+)/info/:info_id(\\d+)', async (req, res, next) => {
 // place_id : int
 router.delete('/:place_id(\\d+)/info/:info_id(\\d+)', async (req, res, next) => {    
 	const info_id = parseInt(req.params.info_id);
-	const place_id = parseInt(req.params.place_id);
-	
-	if(req.user.level > 1)
-		throw new UnauthorizedError('Cannot acces');
+	const { place_id } = req.params;
 
 	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
 		for (let index = 0; index < rows.length; index++) {

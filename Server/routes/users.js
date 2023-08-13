@@ -5,7 +5,8 @@ const jwt = require('../utils/jwt');
 const router = express.Router();
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { auth } = require('../utils/auth');
-const { getUsers, createUser, getUserPlace } = require('../services/user');
+const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname } = require('../services/user');
+const { isAdmin, isOrganizer } = require('../services/user')
 
 // deprecate
 // router.post('/login', (req, res, next) => {
@@ -42,8 +43,8 @@ router.get('/auth', async (req, res, next) => {
         await createUser(user_id);
 
     const pay = {
-        uid : token,
-        level : users[0]['level']
+        uid : user_id,
+        // level : users[0]['level']
     };
     
     const jwt_token = jwt.sign(pay, jwt.secret, jwt.options);
@@ -65,4 +66,26 @@ router.get('/post', auth, (req, res, next) => {
     });
 });
 
+router.get('/grant-org', auth, isAdmin, async (req, res, next) => {
+    const { user_id, place_id } = req.query;
+    await grantAdminRole(user_id, place_id);
+    res.json({ message : 'Successful' });
+});
+
+router.get('/remove-org', auth, isAdmin, async (req, res, next) => {
+    const { user_id, place_id } = req.query;
+    await removeAdminRole(user_id, place_id);
+    res.json({ message : 'Successful' });
+});
+
+router.get('/set-nickname', auth, isOrganizer, async (req, res, next) => {
+    const { nickname, user_id, place_id } = req.query;
+    
+    // 운영자 본인만 닉 변경 가능
+    if(req.user.uid != 0 && user_id != req.user.uid)
+        throw new UnauthorizedError('Cannot access');
+
+    await changeNickname(user_id, place_id, nickname);
+    res.json({ message : 'Successful' });
+});
 module.exports = router;

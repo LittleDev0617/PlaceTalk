@@ -117,6 +117,38 @@ def add_booth():
 r = s.get(HOST_API+f'places/1/booth')
 print(r.text)
 
+def add_feed():
+    global s
+
+    feed_session = [Session() for _ in range(3)]
+    feed_author = ['경영대 주막', '총학생회', '사범대 주막']
+    feed_data = [
+        {
+            'content' : '안녕하세요. 경영대에서 안내드립니다.\n금일 경영대 주막 10시부터 개시합니다.'
+        }, 
+        {
+            'content' : '이번 축제 행사는 정말 열심히 준비했습니다\n열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다\n행사당일날 뵙겠습니다^^'
+        },
+        {
+            'content' : '사범대 주막에서 오코노미야끼, 야끼소바 판매합니다.\n맛은 보장드리오니 많이들 와주세요.'
+        }
+    ]
+
+    for i in range(3):
+        r = feed_session[i].get(HOST_API+f'users/auth?token={i+1}')
+
+    for i in range(3):
+        r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id=1')
+        r = s.get(HOST_API+f'users/set-nickname?nickname={feed_author[i]}&user_id={i+1}&place_id=1')        
+        r = feed_session[i].post(HOST_API+f'places/1/feed', json=feed_data[i])
+        print(r.text)
+
+    
+# add_feed()
+    
+r = s.get(HOST_API+f'places/1/feed')
+print(r.text)
+
 exit()
 # print(r.cookies)
 
