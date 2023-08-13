@@ -1,12 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const app = express();
 
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
 const placesRouter = require('./routes/places');
 
+app.use(cors({ origin: "http://localhost:1234", credentials: true }));
 app.use(express.static(__dirname + '/images'));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -30,7 +32,7 @@ app.use('/api/places', placesRouter);
 
 // app.use((err, req, res, next) => {
 //     if(err.status)
-//         res.status(err.status).json({ message : err.message });
+//         res.status(err.status).json({ code : err.status, message : err.message });
 //     next();
 // });
 
