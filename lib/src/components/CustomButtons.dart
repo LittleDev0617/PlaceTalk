@@ -15,13 +15,14 @@ class CustomDropdownButton extends StatelessWidget {
     return DropdownButton2(
         underline: const SizedBox.shrink(),
         dropdownStyleData: DropdownStyleData(
+          maxHeight: MediaQuery.of(context).size.height * .275,
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           offset: const Offset(0, -5),
         ),
         isExpanded: true,
         hint: Text(
-          '내 주변 핫플',
+          '내 주변 핫플 🎪',
           style: TextStyle(
             fontSize: 15.sp,
             fontWeight: FontWeight.w600,
@@ -29,6 +30,11 @@ class CustomDropdownButton extends StatelessWidget {
           ),
         ),
         items: itemList.keys.toList().map((String itemText) {
+          final Map<String, dynamic> itemData = itemList[itemText]!;
+          final String name = itemData['name'];
+          final String locName = itemData['loc_name'];
+          final int state = itemData['state'];
+
           return DropdownMenuItem<String>(
             value: itemText,
             child: Container(
@@ -46,7 +52,9 @@ class CustomDropdownButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    itemText,
+                    ('$name $locName').length > 18
+                        ? '${('$name $locName').substring(0, 18)} ···'
+                        : ('$name $locName'),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -55,11 +63,15 @@ class CustomDropdownButton extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${DateFormat('M.d').format(itemList[itemText]!['startDate'])}~${DateFormat('M.d').format(itemList[itemText]!['endDate'])}',
+                    state == 0
+                        ? '상시'
+                        : '${DateFormat('M.d').format(itemData['startDate'])}~${DateFormat('M.d').format(itemData['endDate'])}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xffff7d7d),
+                      color: state == 0
+                          ? const Color(0xff82E3CD)
+                          : const Color(0xffff7d7d),
                     ),
                   ),
                 ],

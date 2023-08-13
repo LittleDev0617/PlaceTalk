@@ -27,12 +27,27 @@ class PlaceBloc extends Bloc<PlaceEvent, PlaceState> {
         emit(LocationPermissionUnknown());
       }
     });
+
     on<FetchNaverMapDataEvent>((event, emit) async {
       emit(PlaceLoading());
 
       Map<String, dynamic> datas = await _placeRepo.fetchData();
 
-      emit(PlaceLoaded(datas['markers'], datas['itemsLatLng']));
+      Set<NMarker> markers = datas['markers'];
+      Map<String, Map<String, dynamic>> itemsLatLng = datas['itemsLatLng'];
+
+      emit(PlaceLoaded(markers, itemsLatLng, position: event.position));
+    });
+
+    on<FetchCategoryMapDataEvent>((event, emit) async {
+      emit(PlaceLoading());
+      Map<String, dynamic> datas =
+          await _placeRepo.fetchCategoryData(event.category);
+
+      Set<NMarker> markers = datas['markers'];
+      Map<String, Map<String, dynamic>> itemsLatLng = datas['itemsLatLng'];
+
+      emit(PlaceLoaded(markers, itemsLatLng, position: event.position));
     });
   }
 }

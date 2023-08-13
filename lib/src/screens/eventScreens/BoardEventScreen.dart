@@ -78,15 +78,11 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
         ),
         actions: [
           IconButton(
-            color: Colors.black,
-            icon: const Icon(Icons.ios_share),
-            onPressed: () {},
-          ),
-          IconButton(
             color: const Color(0xffff7d7d),
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
           ),
+          const SizedBox(width: 24),
         ],
         backgroundColor: const Color(0xfff7f7f7),
         centerTitle: true,
@@ -112,7 +108,7 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                       ),
                     ),
                     child: const Icon(
-                      Icons.search_rounded,
+                      Icons.search_rounded, // 여기가 검색부분임
                       size: 21,
                     ),
                   ),

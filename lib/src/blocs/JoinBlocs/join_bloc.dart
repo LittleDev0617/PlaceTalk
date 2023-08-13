@@ -15,7 +15,7 @@ class JoinBloc extends Bloc<JoinEvent, JoinState> {
 
     on<FetchJoinDataEvent>((event, emit) async {
       emit((JoinLoading()));
-      Map<String, dynamic> datas = await _placeRepo.fetchData();
+      Map<String, dynamic> datas = await _placeRepo.fetchJoinData();
 
       emit((JoinLoaded(datas['itemsLatLng'])));
     });

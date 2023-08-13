@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:intl/intl.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
@@ -19,7 +19,7 @@ class ExploreScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text(
-          '인기장소 둘러보기',
+          '둘러보기',
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 18,
@@ -36,38 +36,35 @@ class ExploreScreen extends StatelessWidget {
         backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
       ),
-      body: Stack(
-        alignment: Alignment.topRight,
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const PlaceCardPage(),
-          Container(
-            width: 80,
-            height: 30,
-            margin: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '인기 순',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Colors.black,
-                  size: 18,
-                ),
-              ],
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              '플레이스톡',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Color(0xffadadad),
+              ),
             ),
           ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+            child: Text(
+              '플톡이 선별한 전국 행사',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          Expanded(child: PlaceCardPage()),
         ],
       ),
     );
@@ -130,10 +127,12 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
               String item = state.datas.keys.toList()[index];
               double delta = index - _currentPage;
 
+              print(state.datas);
+
               if (delta > 0) {
               } else {}
 
-              double translateY = delta * 15;
+              double translateY = delta * 20;
 
               return Center(
                 child: GestureDetector(
@@ -156,8 +155,8 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                       ),
                       child: Container(
                         padding: const EdgeInsets.all(25),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: MediaQuery.of(context).size.height * 0.8,
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        height: MediaQuery.of(context).size.height * 0.9,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
@@ -171,9 +170,9 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                               ),
                             ),
                             Text(
-                              state.datas.keys.toList()[index],
+                              item,
                               style: const TextStyle(
-                                fontSize: 25,
+                                fontSize: 21,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

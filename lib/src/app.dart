@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
+import 'package:placetalk/src/blocs/BoothBlocs/booth_bloc.dart';
 import 'package:placetalk/src/blocs/ExploreBlocs/explore_bloc.dart';
 import 'package:placetalk/src/blocs/JoinBlocs/join_bloc.dart';
-import 'package:placetalk/src/repositories/AutoRepo.dart';
+import 'package:placetalk/src/blocs/NearBloc/near_bloc.dart';
+import 'package:placetalk/src/repositories/AuthRepo.dart';
+import 'package:placetalk/src/repositories/BoothRepo.dart';
 import 'package:placetalk/src/repositories/PlaceRepo.dart';
+import 'package:placetalk/src/repositories/SessionRepo.dart';
 
 import 'blocs/PlaceBlocs/place_bloc.dart';
 import 'screens/routes/routes.dart';
@@ -21,18 +25,23 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepo()),
-        RepositoryProvider(create: (context) => PlaceRepo()),
+        RepositoryProvider(create: (context) => PlaceRepo(SessionRepo())),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) =>
-                  AuthBloc(AuthRepo())..add(RequestKakaoLogin())),
+              create: (context) => AuthBloc(AuthRepo(), SessionRepo())
+                ..add(RequestKakaoLogin())),
           BlocProvider(
-              create: (context) =>
-                  PlaceBloc(PlaceRepo())..add(RequestLocationPermission())),
-          BlocProvider(create: (context) => JoinBloc(PlaceRepo())),
-          BlocProvider(create: (context) => ExploreBloc(PlaceRepo())),
+              create: (context) => PlaceBloc(
+                    PlaceRepo(SessionRepo()),
+                  )..add(RequestLocationPermission())),
+          BlocProvider(
+              create: (context) => BoothBloc(BoothRepo(SessionRepo()))),
+          BlocProvider(create: (context) => NearBloc(PlaceRepo(SessionRepo()))),
+          BlocProvider(create: (context) => JoinBloc(PlaceRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => ExploreBloc(PlaceRepo(SessionRepo()))),
         ],
         child: ScreenUtilInit(
           designSize: const Size(384, 832),

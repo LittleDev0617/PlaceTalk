@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:placetalk/src/blocs/NearBloc/near_bloc.dart';
 import 'package:placetalk/src/blocs/PlaceBlocs/place_bloc.dart';
 import 'package:placetalk/src/components/CustomButtons.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
@@ -30,55 +31,68 @@ class HomeScreen extends StatelessWidget {
           );
         }
       },
-      child: BlocBuilder<PlaceBloc, PlaceState>(
-        builder: (context, state) {
-          if (state is PlaceInitial) {
-            BlocProvider.of<PlaceBloc>(context).add(
-              RequestLocationPermission(),
-            );
-            BlocProvider.of<PlaceBloc>(context).add(
-              FetchNaverMapDataEvent(),
-            );
-            return const NaverMap();
-          } else if (state is PlaceLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is PlaceLoaded) {
-            return Scaffold(
-              extendBodyBehindAppBar: true,
-              appBar: AppBar(
-                centerTitle: true,
-                backgroundColor: Colors.transparent,
-                title: Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.all(12),
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Row(
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          title: Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(12),
+            height: 50.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: BlocBuilder<NearBloc, NearState>(
+              builder: (context, nearstate) {
+                if (nearstate is NearInitial) {
+                  BlocProvider.of<NearBloc>(context).add(
+                    FetchNearMapDataEvent(),
+                  );
+
+                  return const SizedBox.shrink();
+                } else if (nearstate is NearLoding) {
+                  return const CircularProgressIndicator();
+                } else if (nearstate is NearLoaded) {
+                  return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: CustomDropdownButton(
-                          itemList: state.itemsLatLng,
-                          customOnChanged: (value) {
-                            WidgetsBinding.instance.addPostFrameCallback(
-                              (_) {
+                      if (nearstate.itemsLatLng.isNotEmpty)
+                        Expanded(
+                          child: CustomDropdownButton(
+                            itemList: nearstate.itemsLatLng,
+                            customOnChanged: (value) {
+                              final Map<String, dynamic>? selectedItem =
+                                  nearstate.itemsLatLng[value];
+                              if (selectedItem != null) {
+                                final double latitude =
+                                    selectedItem['latitude'];
+                                final double longitude =
+                                    selectedItem['longitude'];
                                 _controller.updateCamera(
                                   NCameraUpdate.withParams(
-                                    target: NLatLng(
-                                      state.itemsLatLng[value]!['latitude'],
-                                      state.itemsLatLng[value]!['longitude'],
-                                    ),
+                                    target: NLatLng(latitude, longitude),
                                   ),
                                 );
-                              },
-                            );
-                          },
+                              }
+                            },
+                          ),
                         ),
-                      ),
+                      if (nearstate.itemsLatLng.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            "내 주변 핫플이 없어요 😂",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xffadadad),
+                            ),
+                          ),
+                        ),
                       IconButton(
                         icon: const Icon(
                           Icons.notifications_outlined,
@@ -87,123 +101,158 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () {},
                       ),
                     ],
-                  ),
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size(
-                    MediaQuery.of(context).size.width,
-                    40,
-                  ),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 30,
-                    margin: const EdgeInsets.symmetric(horizontal: 19.5),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: ((BuildContext context, index) {
-                        List<String> items = [
-                          '콘서트',
-                          '페스티벌',
-                          '지역축제',
-                          '대학축제',
-                          '팝업스토어'
-                        ];
+                  );
+                } else {
+                  return const Center(child: Text('데이터 불러오기를 실패했습니다.'));
+                }
+              },
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(
+              MediaQuery.of(context).size.width,
+              40,
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              height: 30,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: 7,
+                itemBuilder: ((BuildContext context, index) {
+                  List<String> items = [
+                    '콘서트',
+                    '페스티벌',
+                    '지역 축제',
+                    '대학 축제',
+                    '팝업스토어',
+                    '여가',
+                    '복합문화공간'
+                  ];
 
-                        List<String> icons = [
-                          'assets/images/concert.png',
-                          'assets/images/festival.png',
-                          'assets/images/local.png',
-                          'assets/images/univ.png',
-                          'assets/images/store.png'
-                        ];
+                  List<String> icons = [
+                    'assets/images/concert.png',
+                    'assets/images/festival.png',
+                    'assets/images/local.png',
+                    'assets/images/univ.png',
+                    'assets/images/store.png',
+                    'assets/images/store.png',
+                    'assets/images/store.png',
+                  ];
 
-                        return Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Image.asset(icons[index], width: 17),
-                              Text(
-                                items[index],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                  return Container(
+                    margin: const EdgeInsets.only(right: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: InkWell(
+                      onTap: () async {
+                        final camPosition =
+                            await _controller.getCameraPosition();
+
+                        BlocProvider.of<PlaceBloc>(context).add(
+                          FetchCategoryMapDataEvent(
+                            category: items[index],
+                            position: camPosition,
                           ),
                         );
-                      }),
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image.asset(icons[index], width: 17),
+                          const SizedBox(width: 6),
+                          Text(
+                            items[index],
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
-              body: NaverMap(
+            ),
+          ),
+        ),
+        body: BlocBuilder<PlaceBloc, PlaceState>(
+          builder: (context, state) {
+            if (state is PlaceInitial) {
+              BlocProvider.of<PlaceBloc>(context).add(
+                const FetchNaverMapDataEvent(),
+              );
+              return const NaverMap();
+            } else if (state is PlaceLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is PlaceLoaded) {
+              return NaverMap(
+                onMapTapped: (point, latLng) async {
+                  BlocProvider.of<PlaceBloc>(context).add(
+                    FetchNaverMapDataEvent(
+                        position: await _controller.getCameraPosition()),
+                  );
+                },
                 onMapReady: (controller) async {
                   _controller = controller;
 
                   for (NMarker marker in state.markers) {
-                    int index = state.markers.toList().toList().indexOf(marker);
+                    int index = state.markers.toList().indexOf(marker);
+                    Map<String, dynamic> markerData =
+                        state.itemsLatLng.values.elementAt(index);
+
                     marker.setOnTapListener(
                       (overlay) {
-                        // AutoRouter.of(context).parent<TabsRouter>()!.navigate(
-                        //       EventsRouter(
-                        //         children: [
-                        //           EventLandingRoute(
-                        //             eventID: index,
-                        //             name:
-                        //                 state.itemsLatLng.keys.toList()[index],
-                        //             children: const [
-                        //               InformEventRoute(),
-                        //             ],
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     );
-
                         context.router.push(HomeEventRoute(
                           position: marker.position,
-                          eventID: index,
-                          name: state.itemsLatLng.keys.toList()[index],
+                          eventID: index + 1,
+                          name: markerData['name'],
                         ));
                       },
                     );
 
-                    marker.setIcon(const NOverlayImage.fromAssetImage(
-                        'assets/images/always_marker.png'));
-                    marker.setSize(const Size(40, 54));
-                  }
+                    marker.setSize(const Size(33, 51));
 
-                  controller.addOverlayAll(state.markers);
+                    controller.addOverlay(marker);
+                  }
                 },
                 options: NaverMapViewOptions(
                   locationButtonEnable: true,
                   initialCameraPosition: NCameraPosition(
-                      target: position ??
-                          const NLatLng(37.54388827708887, 127.07596063613892),
-                      zoom: 14.5),
+                    target: (position != null && state.position?.target != null)
+                        ? position!
+                        : (position == null && state.position?.target != null)
+                            ? state.position!.target
+                            : (position != null &&
+                                    state.position?.target == null)
+                                ? position!
+                                : (position == null &&
+                                        state.position?.target == null)
+                                    ? const NLatLng(
+                                        37.54388829908806, 127.07595459999982)
+                                    : state.position!.target,
+                    zoom: state.position?.zoom ?? 13.5,
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return const Center(
-              child: Text(
-                '데이터 불러오기에 실패했어요',
-              ),
-            );
-          }
-        },
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  '데이터 불러오기에 실패했어요',
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

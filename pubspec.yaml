@@ -42,6 +42,8 @@ flutter:
   - assets/images/kakao_login.png
   - assets/images/profile.png
   - assets/images/always_marker.png
+  - assets/images/moment_marker.png
+  - assets/images/booth_marker.png
   - assets/images/concert.png
   - assets/images/festival.png
   - assets/images/local.png
