@@ -222,7 +222,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
     "name" : string,
     "content" : string,
     "on_time" : string,
-    "location": Location,
+    "locations": List<Location>,
     "images" : List<Image>
 }
 ```

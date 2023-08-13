@@ -3,6 +3,7 @@ const proj4 = require('proj4');
 const multer = require('multer');
 const uuid4 = require('uuid4');
 const path = require('path');
+const { UnauthorizedError } = require('./error');
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -40,5 +41,5 @@ module.exports = {
     
         return dist;
     },
-    uploadMW
+    uploadMW    
 };

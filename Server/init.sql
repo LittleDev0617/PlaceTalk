@@ -2,8 +2,7 @@ drop database placetalk;
 create database placetalk;
 use placetalk;
 CREATE TABLE `tb_user` (
-	`user_id`	int PRIMARY KEY	NOT NULL,
-	`level`	int	NULL
+	`user_id`	int PRIMARY KEY	NOT NULL
 );
 
 CREATE TABLE `tb_place` (
@@ -45,7 +44,7 @@ CREATE TABLE `tb_post` (
 CREATE TABLE `tb_feed` (
 	`feed_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
-	`title`	varchar(50)	NOT NULL,
+	`user_id`	int	NOT NULL,
 	`content`	varchar(1000)	NOT NULL,
 	`write_time` datetime NOT NULL
 );
@@ -73,7 +72,8 @@ CREATE TABLE `tb_join` (
 
 CREATE TABLE `tb_organizer` (
 	`place_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL
+	`user_id`	int	NOT NULL,
+	`nickname` varchar(20) DEFAULT "관리자"
 );
 
 CREATE TABLE `tb_likes` (
