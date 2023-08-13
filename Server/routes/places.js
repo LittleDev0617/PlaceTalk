@@ -8,6 +8,7 @@ const { getPlaces, createPlace } = require('../services/places');
 const { joinPlace, isOrganizer, isAdmin } = require('../services/user');
 const { getBooths, createBooth } = require('../services/booth');
 const { getFeeds, createFeed, editFeed, deleteFeed } = require('../services/feed');
+const { getInfos, createInfo, editInfo, deleteInfo } = require('../services/info');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -71,9 +72,7 @@ router.get('/', async (req, res, next) => {
 // endDate	 : dateTime
 // locations : List<Location>
 router.post('/', isAdmin, async (req, res, next) => {    
-	const { placeName, category, state, startDate, endDate, locations } = req.body;
-	if(req.user.level > 0)
-		throw new UnauthorizedError('Cannot acces');	
+	const { placeName, category, state, startDate, endDate, locations } = req.body;	
 
 	if(!(typeof(placeName) === 'string' && typeof(state) === 'number' && typeof(category) === 'string'))
 		throw new BadRequestError('Bad data.');
@@ -88,7 +87,6 @@ router.post('/', isAdmin, async (req, res, next) => {
 // place_id : int
 router.get('/:place_id(\\d+)', isAdmin, async (req, res, next) => {    
 	const { place_id } = req.params;
-	// const { place_id } = req.params;
 
 	let places = await getPlaces({ date: false, place_id });
 	res.json(places);
@@ -204,16 +202,15 @@ router.get('/:place_id(\\d+)/info', async (req, res, next) => {
 	if(!is_schedule)
 		is_schedule = 0;
 
-	conn.query(`SELECT info_id, title, content FROM tb_info as f WHERE place_id = ? AND is_schedule = ?`, [place_id, is_schedule], (err, rows) => {		
-		res.json(rows);
-	});
+	let infos = await getInfos({ place_id, is_schedule });
+	res.json(infos);
 });
 
 // 행사/핫플 정보 추가 - 관리자
 // place_id : int
 // title : string
 // content : string
-router.post('/:place_id(\\d+)/info', async (req, res, next) => {    
+router.post('/:place_id(\\d+)/info', isAdmin, async (req, res, next) => {    
 	const { title, content } = req.body;
 	var { is_schedule } = req.body;
 	
@@ -221,56 +218,31 @@ router.post('/:place_id(\\d+)/info', async (req, res, next) => {
 		is_schedule = 0;
 
 	const { place_id } = req.params;
-	
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
-				// 관리자 권한 O
-				conn.query('INSERT INTO tb_info(place_id, title, content, is_schedule) VALUES(?, ?, ?, ?)', [place_id, title, content, is_schedule], (err, rows) => {
-					res.send({ message : "Successful" });
-				});
-			}			
-		}
-	});
+
+	await createInfo({ title, content, is_schedule }, place_id);
+	res.json({ message: 'Successful' });
 });
 
 
 // 행사/핫플 정보 수정 - 관리자
 // place_id : int
-router.put('/:place_id(\\d+)/info/:info_id(\\d+)', async (req, res, next) => {    
+router.put('/:place_id(\\d+)/info/:info_id(\\d+)', isAdmin, async (req, res, next) => {    
 	const { title, content } = req.body;
 	const { place_id, info_id } = req.params;
 	
-
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
-				// 관리자 권한 O
-				conn.query('UPDATE tb_info SET title = ?, content = ? WHERE info_id = ?', [title, content, info_id], (err, rows) => {		
-					res.send({ message : "Successful" });
-				});
-			}			
-		}
-	});
+	await editInfo({ title, content, info_id });
+	res.json({ message: 'Successful' });	
 });
 
 
 // 행사/핫플 정보 삭제 - 관리자
 // place_id : int
-router.delete('/:place_id(\\d+)/info/:info_id(\\d+)', async (req, res, next) => {    
+router.delete('/:place_id(\\d+)/info/:info_id(\\d+)', isAdmin, async (req, res, next) => {    
 	const info_id = parseInt(req.params.info_id);
 	const { place_id } = req.params;
 
-	conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ?', [place_id], (err, rows) => {
-		for (let index = 0; index < rows.length; index++) {
-			if(rows[index]['user_id'] == req.user.uid || req.user.level == 0) {
-				// 관리자 권한 O
-				conn.query('DELETE FROM tb_info WHERE info_id = ?', [info_id], (err, rows) => {		
-					res.send({ message : "Successful" });
-				});
-			}			
-		}
-	});
+	await deleteInfo({ info_id });
+	res.json({ message: 'Successful' });
 });
 
 module.exports = router;
