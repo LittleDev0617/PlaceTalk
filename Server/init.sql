@@ -11,8 +11,8 @@ CREATE TABLE `tb_place` (
 	`name`	varchar(40)	NOT NULL,
 	`category`	varchar(20)	NULL,
 	`state`	int	NULL	DEFAULT 0,
-	`start_date`	datetime	NOT NULL,
-	`end_date`	datetime	NOT NULL
+	`start_date`	datetime,
+	`end_date`	datetime
 );
 
 CREATE TABLE `tb_board` (
@@ -60,8 +60,9 @@ CREATE TABLE `tb_image` (
 CREATE TABLE `tb_booth` (
 	`booth_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`location_id` int NOT NULL,
-	`place_id`	int	NOT NULL,
+	`place_id`	int,
 	`name`	varchar(20)	NULL,
+	`content`	varchar(100)	NULL,
 	`on_time`	varchar(100)	NULL	
 );
 
