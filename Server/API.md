@@ -243,32 +243,58 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 ```json
 [
   {
-    "booth_id": 1,
+    "booth_id": 11,
     "name": "경영대 주막",
+    "content": "황소상 앞에서 경영대 주막을 오픈했습니다.\n이경영 배우의 컨셉을 빌려 재밌는 행사를 기획했습니다.",
     "on_time": "10:00 ~ 18:00",
-    "content": "황소상 앞에서 경영대 주막을 오픈했습니다.",
-    "location": {
-      "loc_name": "황소상 앞",
-      "lat": 123,
-      "lon": 23
-    },
+    "locations": [
+      {
+        "location_id": 62,
+        "loc_name": "황소상 앞",
+        "lat": 37.54318850007482,
+        "lon": 127.0760683998827
+      }
+    ],
     "images": [
       {
-        "image_id": "1234-asbsdf.png",
+        "image_id": "5678-qwer.png",
         "order": 0
       }
     ]
   },
   {
-    "booth_id": 2,
-    "name": "사범대 주막",
+    "booth_id": 12,
+    "name": "사범대  주막",
+    "content": "교육과학관 앞에서 사범대 주막을 오픈했습니다.",
     "on_time": "10:00 ~ 18:00",
-    "content": "사범대 주막 설명입니다.",
-    "location": {
-      "loc_name": "교육과학관 앞",
-      "lat": 124,
-      "lon": 22
-    },
+    "locations": [
+      {
+        "location_id": 63,
+        "loc_name": "교육과학관 앞",
+        "lat": 37.54403999999994,
+        "lon": 127.07421419999974
+      }
+    ],
+    "images": [
+      {
+        "image_id": "5678-qwer.png",
+        "order": 0
+      }
+    ]
+  },
+  {
+    "booth_id": 13,
+    "name": "동물생명대 주막",
+    "content": "청심대 옆에서 동물생명대 주막을 오픈했습니다.",
+    "on_time": "10:00 ~ 18:00",
+    "locations": [
+      {
+        "location_id": 64,
+        "loc_name": "청심 대 옆",
+        "lat": 37.54241209999992,
+        "lon": 127.0768532999997
+      }
+    ],
     "images": [
       {
         "image_id": "5678-qwer.png",
