@@ -8,6 +8,7 @@ const { auth } = require('../utils/auth');
 const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname } = require('../services/user');
 const { isAdmin, isOrganizer } = require('../services/user');
 const { errorWrapper } = require('../utils/util');
+const { getPosts } = require('../services/post');
 
 // 회원 로그인 및 가입
 router.get('/auth', errorWrapper(async (req, res, next) => {
@@ -35,15 +36,14 @@ router.get('/auth', errorWrapper(async (req, res, next) => {
 // 자신이 참가중인 핫플 조회
 router.get('/place', auth, async (req, res, next) => {
     places = await getUserPlace(req.user.uid);
-    res.json(places);    
+    res.json(places);
 });
 
 
 // 자신이 쓴 게시글 조회
-router.get('/post', auth, (req, res, next) => {
-    conn.query('SELECT * FROM tb_post WHERE user_id = ? ORDER BY create_time', [req.user.uid], (err, rows) => {
-        res.json(rows);
-    });
+router.get('/post', auth, async (req, res, next) => {
+    let posts = await getPosts({ user_id: req.user.uid });
+    res.json(posts); 
 });
 
 // 운영자 권한 부여

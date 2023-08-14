@@ -41,7 +41,7 @@ async function getFeeds(options) {
 
 // feed : nickname, content
 async function createFeed(feedInfo, place_id, user_id) {
-    const { content, images } = feedInfo;
+    const { content,date, images } = feedInfo;
 
     const feed_id = (await conn.query('INSERT INTO tb_feed(place_id, user_id, content, write_time) VALUES(?, ?, ?, ?)', [place_id, user_id, content, date])).insertId;
 

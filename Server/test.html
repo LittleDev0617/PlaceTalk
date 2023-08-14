@@ -1,0 +1,151 @@
+<div id="feedList">
+
+</div>
+<script>
+
+feeds = [
+  {
+    "feed_id": 98,
+    "place_id": 16,
+    "user_id": 1,
+    "content": "이 돌아왔습니다. 10월 14일(금)부터 16일(일)까지 개최..",
+    "write_time": "2023-09-30 18:00:00",
+    "images": [
+      { "image_id": "7606ea88-c5f7-4872-92ce-57281803b86f.png", "order": 0 },
+      { "image_id": "fc22a68d-56d5-4563-ae57-876e9d06db4d.png", "order": 1 },
+      { "image_id": "01df160b-4ba6-48c2-ab1f-efb494d63063.png", "order": 2 },
+      { "image_id": "4830f2f3-ee17-436d-ada5-d5c60ec9bcdd.png", "order": 3 },
+      { "image_id": "23eeb1de-2968-4951-bb45-bbe25b72b161.png", "order": 4 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 107,
+    "place_id": 1,
+    "user_id": 10,
+    "content": "열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다.\n행사 당일날 뵙겠습니다^^",
+    "write_time": "2023-09-12 18:00:00",
+    "images": [
+      { "image_id": "0f7987ac-f43f-49c3-95e0-b5ac42998ef9.png", "order": 0 },
+      { "image_id": "fc0ce722-cc95-42db-86a2-1ccf0b62a4a6.png", "order": 1 },
+      { "image_id": "9a33e5a3-6fda-47ea-b7a0-1e24b8648f98.png", "order": 2 }
+    ],
+    "nickname": "경영대 주점"
+  },
+  {
+    "feed_id": 99,
+    "place_id": 11,
+    "user_id": 2,
+    "content": "축제가 올해 10월 5일 개최됩니다. 사회적..",
+    "write_time": "2023-09-11 18:00:00",
+    "images": [
+      { "image_id": "013d391e-e288-47e6-acc0-3c4c13641116.png", "order": 0 },
+      { "image_id": "9af6e2c6-e90b-470f-9ccf-c74849f84545.png", "order": 1 },
+      { "image_id": "416c3278-ac23-493d-bc5f-0eb6aab83da5.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 108,
+    "place_id": 1,
+    "user_id": 11,
+    "content": "금일 경영대 주막 10시부터 개시합니다.",
+    "write_time": "2023-09-11 18:00:00",
+    "images": [
+      { "image_id": "7444ac7f-bd5b-46bb-ac9f-8524cf9604f9.png", "order": 0 },
+      { "image_id": "ba577a97-98c9-4ced-bc59-e68cd75a2684.png", "order": 1 },
+      { "image_id": "c4533f47-505b-410f-946d-6f50037f670c.png", "order": 2 },
+      { "image_id": "7a9c174a-39f4-4768-ae06-0728153bb07f.png", "order": 3 }
+    ],
+    "nickname": "총학생회"
+  },
+  {
+    "feed_id": 109,
+    "place_id": 1,
+    "user_id": 12,
+    "content": "맛은 보장드리오니 많이들 와주세요.",
+    "write_time": "2023-09-11 18:00:00",
+    "images": [
+      { "image_id": "94d56038-affd-4b1c-ad48-d755872cf8fd.png", "order": 0 },
+      { "image_id": "589437d6-0bf9-4084-aca6-09a8b56e5711.png", "order": 1 },
+      { "image_id": "b63223e6-1f94-41b7-928a-a4446008bacd.png", "order": 2 }
+    ],
+    "nickname": "사범대 주점"
+  },
+  {
+    "feed_id": 100,
+    "place_id": 35,
+    "user_id": 3,
+    "content": "밴드출연으로 더 힙한 공연을 만들어갈 최종라인업!",
+    "write_time": "2023-09-01 18:00:00",
+    "images": [
+      { "image_id": "4116b8e0-af8d-4fe9-a0ea-8372de4c6f56.png", "order": 0 },
+      { "image_id": "05d785c4-ba51-43d3-9ba0-348e7e84884c.png", "order": 1 },
+      { "image_id": "aa31a941-5712-4902-b164-1dfe5a5e1788.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 101,
+    "place_id": 22,
+    "user_id": 4,
+    "content": "이 돌아왔습니다. 10월 14일(금)부터 16일(일)까지 개최..",
+    "write_time": "2023-08-08 18:00:00",
+    "images": [
+      { "image_id": "d2ad4d37-6621-41e9-aa12-9ca7a89fb34b.png", "order": 0 },
+      { "image_id": "70ea56cb-42d5-41a5-b00a-7bffecb69177.png", "order": 1 },
+      { "image_id": "719a0c77-12cf-49ae-a5d2-5e61c07e9d4f.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 102,
+    "place_id": 41,
+    "user_id": 5,
+    "content": "올해 8월 무더위는 한강에서 날리시는건 어떨까요?",
+    "write_time": "2023-08-01 18:00:00",
+    "images": [
+      { "image_id": "514a5334-a176-48b0-9ce1-e9015e8f9fd9.png", "order": 0 },
+      { "image_id": "a3eb2e25-7de9-47f8-b84f-267bbd1647f1.png", "order": 1 },
+      { "image_id": "a4b5afe7-b579-4305-9714-ad977ec11edb.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 103,
+    "place_id": 37,
+    "user_id": 6,
+    "content": "합니다! 1차 라인업 공개 이후 뜨거운 반응에 힘입어..",
+    "write_time": "2023-07-30 18:00:00",
+    "images": [
+      { "image_id": "e3ab0aa1-ee09-4ff7-bd62-19ca7ecf7563.png", "order": 0 },
+      { "image_id": "5e8026cb-8d21-4547-8186-9acbed708fd1.png", "order": 1 },
+      { "image_id": "7b8beb0e-3a84-4d56-9137-94ecd17bfb22.png", "order": 2 },
+      { "image_id": "0296f56b-af6c-426c-975f-10c32bb11880.png", "order": 3 }
+    ],
+    "nickname": "관리자"
+  },
+  {
+    "feed_id": 104,
+    "place_id": 38,
+    "user_id": 7,
+    "content": "대회로 한강의 야경을 걷는 한강나이트워크 42k가 한강..",
+    "write_time": "2023-07-25 18:00:00",
+    "images": [
+      { "image_id": "0bb4d3fa-b868-4438-953a-9d7eef7901ea.png", "order": 0 },
+      { "image_id": "a9cb863b-33df-4d14-b30b-661dcb62488c.png", "order": 1 },
+      { "image_id": "9cd1c760-c108-43eb-804f-b561655cd2ca.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  }
+]
+newLine = document.createElement('br');
+for(let feed of feeds) {
+    for(let image of feed.images) {
+        let img = document.createElement('img');
+        img.src = `http://localhost/images/${image.image_id}`;
+        window.feedList.appendChild(img)
+        window.feedList.appendChild(newLine)
+    }
+}
+</script>

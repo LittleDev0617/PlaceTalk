@@ -15,38 +15,38 @@ level : access level
 
 바로가기
 
-- User
+- User  
 [GET	/api/users/place](#get-apiusersplace)  
 [GET	/api/users/post](#get-apiuserspost)  
 
-- Place
+- Place  
 [GET	/api/places](#get-apiplaces)  
 [POST	/api/places](#post-apiplaces)  
 [GET	/api/places/:place_id](#get-apiplacesplace_id)  
 [GET	/api/places/:place_id/join](#get-apiplacesplace_idjoin)  
 
-- Booth
+- Booth  
 [GET	/api/booths](#get-apibooths)  
 [GET	/api/booths/:location_id](#get-apiboothslocation_id)  
 [POST	/api/booths](#post-apibooths)  
 
-- Feed
+- Feed  
 [GET	/api/feeds](#get-apifeeds)  
 [GET	/api/feeds/feed_id](#get-apifeedsfeed_id)  
 [POST	/api/feeds](#post-apifeeds)  
 
-- Info
+- Info  
 [GET	/api/infos](#get-apiinfos)  
 [GET	/api/infos/:info_id](#get-apiinfosinfo_id)  
 [POST	/api/infos](#post-apiinfos)  
 
-- Post
+- Post  
 [GET	/api/posts](#get-apiposts)  
 [POST	/api/posts](#post-apiposts)  
 [GET	/api/posts/:post_id](#get-apipostspost_id)  
 [GET	/api/posts/:post_id/like](#get-apipostspost_idlike)  
 
-- Comment
+- Comment  
 [GET	/api/comments](#get-apicomments)  
 [POST	/api/comments](#post-apicomments)  
 [GET	/api/comments/:comment_id/like](#get-apicommentscomment_idlike)  
