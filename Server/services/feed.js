@@ -43,11 +43,11 @@ async function getFeeds(options) {
 async function createFeed(feedInfo, place_id, user_id) {
     const { content, images } = feedInfo;
 
-    const feed_id = (await conn.query('INSERT INTO tb_feed(place_id, user_id, content, write_time) VALUES(?, ?, ?, NOW())', [place_id, user_id, content])).insertId;
-    
+    const feed_id = (await conn.query('INSERT INTO tb_feed(place_id, user_id, content, write_time) VALUES(?, ?, ?, ?)', [place_id, user_id, content, date])).insertId;
+
     if(images) {
         for (let i = 0; i < images.length; i++) {
-            createImage({ id: 'feed_id', value: feed_id }, images[i].file_name, i);
+            await createImage({ id: 'feed_id', value: feed_id }, images[i].filename, i);
         }
     }
 }

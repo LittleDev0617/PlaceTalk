@@ -121,44 +121,46 @@ def add_booth():
         r = s.post(HOST_API+f'places/1/booth', data=myBooth, files=images)
         print(r.text)
 
-add_booth()
+# add_booth()
 
 r = s.get(HOST_API+f'places/1/booth')
 print(r.text)
 
+import glob
 def add_feed():
     global s
 
-    feed_session = [Session() for _ in range(3)]
-    feed_author = ['경영대 주막', '총학생회', '사범대 주막']
-    feed_data = [
-        {
-            'content' : '안녕하세요. 경영대에서 안내드립니다.\n금일 경영대 주막 10시부터 개시합니다.'
-        }, 
-        {
-            'content' : '이번 축제 행사는 정말 열심히 준비했습니다\n열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다\n행사당일날 뵙겠습니다^^'
-        },
-        {
-            'content' : '사범대 주막에서 오코노미야끼, 야끼소바 판매합니다.\n맛은 보장드리오니 많이들 와주세요.'
-        }
-    ]
+    files = glob.glob('./media/feed/*.png')
+    fileIndex = 0
+    feeds = open('feed_list.txt', 'r', encoding='utf-8').read().split('\n\n')
+    
+    for i, feed in enumerate(feeds):
+        data = feed.split('\n')
+        placeName, author, date, imageCnt = data[:4]
+        content = '\n'.join(data[5:])
+        imageCnt = int(imageCnt)
+        date += ' 18:00:00'
 
-    for i in range(3):
-        r = feed_session[i].get(HOST_API+f'users/auth?token={i+1}')
+        feed_session = Session()
+        feed_session.get(HOST_API+f'users/auth?token={i+1}')
 
-    for i in range(3):
-        r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id=1')
-        r = s.get(HOST_API+f'users/set-nickname?nickname={feed_author[i]}&user_id={i+1}&place_id=1')         
+        r = s.get(HOST_API+f'places?name={placeName}')
+        place_id = json.loads(r.text)[0]['place_id']
 
-        booth_images = [['image1.png', 'image2.png', 'image3.png'], ['image4.png'], ['image5.png'], ['image6.png'], ['image7.png']]
+        r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
+        r = s.get(HOST_API+f'users/set-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
 
         images = []
-
-        for image in booth_images[i]:
-            images.append(('images', (image, open('media/' + image, 'rb').read())))
-
-        r = feed_session[i].post(HOST_API+f'places/1/feed', data=feed_data[i], files=images)
+        for image in files[fileIndex:fileIndex+imageCnt]:
+            images.append(('images', (image, open(image, 'rb').read())))
+        
+        feed = { 'content': content, 'date':date }
+        r = feed_session.post(HOST_API+f'places/{place_id}/feed', data=feed, files=images)
         print(r.text)
+
+        fileIndex += imageCnt
+
+
 
     
 # add_feed()

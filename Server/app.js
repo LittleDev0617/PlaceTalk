@@ -31,11 +31,11 @@ app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/places', placesRouter);
 
-// app.use((err, req, res, next) => {
-//     if(err.status)
-//         res.status(err.status).json({ code : err.status, message : err.message });
-//     next();
-// });
+app.use(async (err, req, res, next) => {
+    if(err.status)
+        res.status(err.status).json({ code : err.code, message : err.message });
+    next();
+});
 
 const port = 80;
 app.listen(port, () => {

@@ -6,31 +6,11 @@ const router = express.Router();
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { auth } = require('../utils/auth');
 const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname } = require('../services/user');
-const { isAdmin, isOrganizer } = require('../services/user')
-
-// deprecate
-// router.post('/login', (req, res, next) => {
-//     const { user_id } = req.body;
-//     if(!user_id) 
-//         throw new BadRequestError('user_id is required.');
-    
-//     // TODO : oauth kakao token
-    
-
-//     conn.query('SELECT level FROM tb_user WHERE user_id = ?', [user_id], (err, row, fields) => {
-//         if(!row) throw new UnauthorizedError('User not found.');
-//         const pay = {
-//             uid : user_id,       
-//             level : row[0]
-//         };
-
-//         const token = jwt.sign(pay, jwt.secret, jwt.options);
-//         res.json({ token : token });
-//     });
-// });
+const { isAdmin, isOrganizer } = require('../services/user');
+const { errorWrapper } = require('../utils/util');
 
 // 회원 로그인 및 가입
-router.get('/auth', async (req, res, next) => {
+router.get('/auth', errorWrapper(async (req, res, next) => {
     const { token } = req.query;
     if(!token) 
         throw new BadRequestError('token is required.');
@@ -50,7 +30,7 @@ router.get('/auth', async (req, res, next) => {
     const jwt_token = jwt.sign(pay, jwt.secret, jwt.options);
     res.cookie('token', jwt_token);
     res.json({ message : 'Success' });
-});
+}));
 
 // 자신이 참가중인 핫플 조회
 router.get('/place', auth, async (req, res, next) => {
@@ -66,19 +46,21 @@ router.get('/post', auth, (req, res, next) => {
     });
 });
 
+// 운영자 권한 부여
 router.get('/grant-org', auth, isAdmin, async (req, res, next) => {
     const { user_id, place_id } = req.query;
     await grantAdminRole(user_id, place_id);
     res.json({ message : 'Successful' });
 });
 
+// 
 router.get('/remove-org', auth, isAdmin, async (req, res, next) => {
     const { user_id, place_id } = req.query;
     await removeAdminRole(user_id, place_id);
     res.json({ message : 'Successful' });
 });
 
-router.get('/set-nickname', auth, isOrganizer, async (req, res, next) => {
+router.get('/set-nickname', auth, isOrganizer, errorWrapper(async (req, res, next) => {
     const { nickname, user_id, place_id } = req.query;
     
     // 운영자 본인만 닉 변경 가능
@@ -87,5 +69,5 @@ router.get('/set-nickname', auth, isOrganizer, async (req, res, next) => {
 
     await changeNickname(user_id, place_id, nickname);
     res.json({ message : 'Successful' });
-});
+}));
 module.exports = router;

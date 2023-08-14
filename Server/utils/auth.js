@@ -1,7 +1,9 @@
+const { BadRequestError, UnauthorizedError } = require('./error');
 const jwt = require('./jwt');
+const { errorWrapper } = require('./util');
 
 module.exports = {
-    auth : async function(req, res, next) {
+    auth : errorWrapper(async function(req, res, next) {
         const token = req.cookies['token']
         if(!token || typeof(token) != 'string')
             throw new BadRequestError('token is required.');
@@ -12,5 +14,5 @@ module.exports = {
 
         req.user = user;
         next();
-    }
+    })
 }

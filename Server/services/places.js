@@ -21,6 +21,11 @@ async function getPlaces(options) {
         obj.push(options.date);
     }
 
+    if(options.name) {
+        query += ' AND name LIKE ?';
+        obj.push(`%${options.name}%`);
+    }
+    
     if(options.place_id) {
         query += ' AND place_id = ?';
         obj.push(options.place_id);

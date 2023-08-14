@@ -39,5 +39,10 @@ module.exports = {
     
         return dist;
     },
-    upload
+    upload,
+    errorWrapper : function(fn) {
+        return async function(req, res, next) { 
+            fn(req, res, next).catch(next);
+        };
+    }
 };
