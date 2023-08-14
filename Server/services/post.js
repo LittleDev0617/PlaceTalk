@@ -27,21 +27,30 @@ async function getPosts(options) {
     return posts;
 }
 
-// place : placeName, category, state, startDate, endDate, locations
-async function createPost(place) {
-    const { title, content, place_id, user_id } = req.body;
+// post : title, content, place_id, user_id
+async function createPost(post) {
+    const { title, content, place_id, user_id } = post;
     
-    await conn.query('INSERT INTO tb_post(user_id, place_id, create_date, title, content) VALUES(?, ?, ?, NOW(), ?, ?)', 
+    return await conn.query('INSERT INTO tb_post(user_id, place_id, create_date, title, content) VALUES(?, ?, ?, NOW(), ?, ?)', 
 				[user_id, place_id, title, content]);
 }
 
-async function editPost() {
-    
-}
-async function deletePost() {
-    
+async function editPost(post) {
+    const { title, content, post_id } = post;
+    return await conn.query('UPDATE tb_post SET title = ?, content = ? WHERE post_id = ?', [title, content, post_id]);
 }
 
+async function deletePost(post_id) {
+    return await conn.query('DELETE FROM tb_post WHERE AND post_id = ?', [ post_id ]);
+}
+
+async function getPostLikes(post_id) {
+    return (await conn.query('SELECT likes FROM tb_post WHERE post_id = ?', [post_id]))[0].likes;
+}
+
+async function pressLike(post_id, user_id) {
+    
+}
 module.exports = {
-    getPosts, createPost, editPost, deletePost
+    getPosts, createPost, editPost, deletePost, getPostLikes
 };
