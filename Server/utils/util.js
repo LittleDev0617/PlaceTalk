@@ -12,12 +12,10 @@ const upload = multer({
             done(null, uuid4() + ext);
         },
         destination(req, file, done) {
-            done(null, __dirname + '/images');
+            done(null, __dirname + '/../images');
         },
     }),
 });
-
-const uploadMW = upload.array('images');
 
 module.exports = {
     // https://velog.io/@neity16/NodeJS-거리구하기위도-경도
@@ -41,5 +39,5 @@ module.exports = {
     
         return dist;
     },
-    uploadMW    
+    upload
 };

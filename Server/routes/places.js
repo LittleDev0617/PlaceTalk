@@ -1,9 +1,8 @@
 var express = require('express');
 var conn = require('../utils/db');
-const jwt = require('../utils/jwt');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
-const { getDistance, uploadMW} = require('../utils/util');
+const { getDistance, uploadMW, upload } = require('../utils/util');
 const { getPlaces, createPlace } = require('../services/places');
 const { joinPlace, isOrganizer, isAdmin } = require('../services/user');
 const { getBooths, createBooth } = require('../services/booth');
@@ -109,17 +108,13 @@ router.get('/:location_id(\\d+)/booth', async (req, res, next) => {
 // content : string
 // on_time : string
 // location
-router.post('/:location_id(\\d+)/booth', isAdmin, uploadMW, async (req, res, next) => {    
-	const { name, content, on_time, location } = req.body;
-	const { lat, lon, loc_name } = location;
+router.post('/:location_id(\\d+)/booth', isAdmin, 
+	upload.fields([{ name: 'images', maxCount: 5 }, { name: 'name' }, { name: 'content' }, { name: 'on_time' }, { name: 'location' }]), async (req, res, next) => {    	
+	let { name, content, on_time, location } = req.body;
 	const { location_id } = req.params;
-	
+	location = JSON.parse(location);
 
-	if(!(typeof(name) === 'string' && typeof(content) === 'string' && typeof(on_time) == 'string' &&
-		typeof(lat) == 'number' && typeof(lon) === 'number'))
-		throw new BadRequestError('Bad data.');
-	
-	let result = createBooth({ name, content, on_time, location, images: req.files }, location_id);
+	let result = createBooth({ name, content, on_time, location, files: req.files }, location_id);
 	
 	res.json({ message : "Successful" });
 });
@@ -130,7 +125,6 @@ router.get('/:place_id(\\d+)/join', async (req, res, next) => {
 	const { place_id } = req.params;
 
 	let result = await joinPlace(req.user.uid, place_id);
-	console.log(res);
 	res.json({ message : 'Success' });
 });
 
@@ -163,7 +157,7 @@ router.get('/:place_id(\\d+)/feed', getFeed);
 // place_id : int
 // title : string
 // content : string
-router.post('/:place_id(\\d+)/feed', isOrganizer, uploadMW, async (req, res, next) => {
+router.post('/:place_id(\\d+)/feed', isOrganizer, upload.array('images'), async (req, res, next) => {
 	const { content } = req.body;
 	const { place_id } = req.params;	
 
