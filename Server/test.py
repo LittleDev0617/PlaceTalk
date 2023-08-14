@@ -3,7 +3,7 @@ from naver_parser import link2lat_lon
 import json
 import string
 
-HOST_API = 'http://localhost:3000/api/'
+HOST_API = 'http://localhost:80/api/'
 
 # for line in open('../README.md', 'r', encoding='utf-8').readlines():
 #     if 'GET' in line or 'POST' in line:
@@ -96,10 +96,13 @@ def add_booth():
     #         }
     #     }
     # ]
+
+    booth_images = [['image1.png', 'image2.png', 'image3.png'], ['image4.png'], ['image5.png'], ['image6.png'], ['image7.png']]
     
     txt = open("./booth_list.txt", 'r', encoding='utf-8').read()
     booths = txt.split('\n\n')
-    for booth in booths:        
+    for i, booth in enumerate(booths):        
+        
         data = booth.split('\n')
         myBooth = {}        
         myBooth['name'] = data[0]
@@ -109,10 +112,16 @@ def add_booth():
         myBooth['location']['loc_name'] = data[2]
         myBooth['location']['lat'], myBooth['location']['lon'] = link2lat_lon(data[3])
         
-        r = s.post(HOST_API+f'places/1/booth', json=myBooth)
+        images = []
+
+        for image in booth_images[i]:
+            images.append(('images', (image, open('media/' + image, 'rb').read())))
+        
+        myBooth['location'] = json.dumps(myBooth['location'])
+        r = s.post(HOST_API+f'places/1/booth', data=myBooth, files=images)
         print(r.text)
 
-# add_booth()
+add_booth()
 
 r = s.get(HOST_API+f'places/1/booth')
 print(r.text)
@@ -139,8 +148,16 @@ def add_feed():
 
     for i in range(3):
         r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id=1')
-        r = s.get(HOST_API+f'users/set-nickname?nickname={feed_author[i]}&user_id={i+1}&place_id=1')        
-        r = feed_session[i].post(HOST_API+f'places/1/feed', json=feed_data[i])
+        r = s.get(HOST_API+f'users/set-nickname?nickname={feed_author[i]}&user_id={i+1}&place_id=1')         
+
+        booth_images = [['image1.png', 'image2.png', 'image3.png'], ['image4.png'], ['image5.png'], ['image6.png'], ['image7.png']]
+
+        images = []
+
+        for image in booth_images[i]:
+            images.append(('images', (image, open('media/' + image, 'rb').read())))
+
+        r = feed_session[i].post(HOST_API+f'places/1/feed', data=feed_data[i], files=images)
         print(r.text)
 
     

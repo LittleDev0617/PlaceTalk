@@ -36,17 +36,17 @@ async function getBooths(options) {
 
 // booth : name, content, on_time, location
 async function createBooth(boothInfo, location_id) {
-    const { name, content, on_time, location, images } = boothInfo;	
+    const { name, content, on_time, location, files } = boothInfo;	
 
     const booth_id = (await conn.query('INSERT INTO tb_booth(location_id, name, on_time, content) VALUES(?,?,?,?)', [location_id, name, on_time, content])).insertId;
     
-    if(images) {
-        for (let i = 0; i < images.length; i++) {
-            createImage({ id: 'booth_id', value: booth_id }, images[i].file_name, i);
+    if(files.images) {
+        for (let i = 0; i < files.images.length; i++) {
+            await createImage({ id: 'booth_id', value: booth_id }, files.images[i].filename, i);
         }
     }
 
-    createLocation({ id: 'booth_id', value: booth_id }, location);
+    await createLocation({ id: 'booth_id', value: booth_id }, location);
 }
 
 // TODO: Edit

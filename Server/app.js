@@ -9,7 +9,8 @@ const postsRouter = require('./routes/posts');
 const placesRouter = require('./routes/places');
 
 app.use(cors({ origin: "http://localhost:1234", credentials: true }));
-app.use(express.static(__dirname + '/images'));
+console.log(__dirname + '/images')
+app.use('/images', express.static(__dirname + '/images'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
@@ -36,7 +37,7 @@ app.use('/api/places', placesRouter);
 //     next();
 // });
 
-const port = 3000;
+const port = 80;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
