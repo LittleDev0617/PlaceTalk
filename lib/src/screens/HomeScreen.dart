@@ -8,6 +8,8 @@ import 'package:placetalk/src/blocs/PlaceBlocs/place_bloc.dart';
 import 'package:placetalk/src/components/CustomButtons.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
+import '../blocs/BoothBlocs/booth_bloc.dart';
+
 @RoutePage()
 class HomeScreen extends StatelessWidget {
   final NLatLng? position;
@@ -191,6 +193,7 @@ class HomeScreen extends StatelessWidget {
               BlocProvider.of<PlaceBloc>(context).add(
                 const FetchNaverMapDataEvent(),
               );
+
               return const NaverMap();
             } else if (state is PlaceLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -199,7 +202,8 @@ class HomeScreen extends StatelessWidget {
                 onMapTapped: (point, latLng) async {
                   BlocProvider.of<PlaceBloc>(context).add(
                     FetchNaverMapDataEvent(
-                        position: await _controller.getCameraPosition()),
+                      position: await _controller.getCameraPosition(),
+                    ),
                   );
                 },
                 onMapReady: (controller) async {
@@ -217,6 +221,10 @@ class HomeScreen extends StatelessWidget {
                           eventID: index + 1,
                           name: markerData['name'],
                         ));
+
+                        BlocProvider.of<BoothBloc>(context).add(
+                          FetchBoothData(index + 1),
+                        );
                       },
                     );
 

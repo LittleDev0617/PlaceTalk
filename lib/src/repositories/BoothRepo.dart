@@ -10,12 +10,10 @@ class BoothRepo {
 
   Future<Map<String, dynamic>> fetchData(int placeID) async {
     await Future.delayed(const Duration(seconds: 1));
-    final apiData = await _sessionRepo
-        .get('http://192.168.155.223:3000/api/places/$placeID/booth');
+    final apiData = await _sessionRepo.get('api/places/$placeID/booth');
 
-    List<BoothModel> dataList = (apiData as List)
-        .map((jsonData) => BoothModel.fromJson(jsonData))
-        .toList();
+    List<BoothModel> dataList =
+        (apiData).map((jsonData) => BoothModel.fromJson(jsonData)).toList();
 
     // Create a list of NMarker objects from the dataList
     Set<NMarker> markers = dataList.map((booth) => booth.toNMarker()).toSet();
@@ -45,9 +43,8 @@ class BoothRepo {
       final images = data.images.map((image) => image.toJson()).toList();
 
       // Combine booth name and locName if locName is available
-      final combinedName = locName.isNotEmpty ? '$name ($locName)' : name;
 
-      boothDataMap[combinedName] = {
+      boothDataMap[boothId.toString()] = {
         'name': name,
         'loc_name': locName,
         'latitude': latitude,

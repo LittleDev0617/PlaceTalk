@@ -27,8 +27,7 @@ class PlaceRepo {
   Future<Map<String, dynamic>> fetchData() async {
     await Future.delayed(const Duration(seconds: 1));
 
-    final apiData =
-        await _sessionRepo.get('http://192.168.155.223:3000/api/places');
+    final apiData = await _sessionRepo.get('api/places');
 
     List<PlaceModel> dataList =
         apiData.map((jsonData) => PlaceModel.fromJson(jsonData)).toList();
@@ -53,8 +52,8 @@ class PlaceRepo {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    final apiData = await _sessionRepo
-        .get('http://192.168.155.223:3000/api/places?lat=$lat&lon=$lon&dist=3');
+    final apiData =
+        await _sessionRepo.get('api/places?lat=$lat&lon=$lon&dist=3');
 
     return {
       'itemsLatLng': createCoordinatesMap(apiData),
@@ -64,8 +63,7 @@ class PlaceRepo {
   Future<Map<String, dynamic>> fetchCategoryData(String category) async {
     await Future.delayed(const Duration(seconds: 1));
 
-    final apiData = await _sessionRepo
-        .get('http://192.168.155.223:3000/api/places?category=$category');
+    final apiData = await _sessionRepo.get('api/places?category=$category');
 
     List<PlaceModel> dataList =
         apiData.map((jsonData) => PlaceModel.fromJson(jsonData)).toList();
@@ -85,7 +83,7 @@ class PlaceRepo {
     await Future.delayed(const Duration(seconds: 1));
 
     final apiData = await _sessionRepo.get(
-      'http://192.168.155.223:3000/api/users/place',
+      'api/users/place',
     );
 
     return {

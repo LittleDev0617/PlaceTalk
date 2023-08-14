@@ -49,7 +49,7 @@ class JoinScreen extends StatelessWidget {
             return Container(
               margin: const EdgeInsets.only(top: 15),
               padding: const EdgeInsets.all(10),
-              child: state.itemsLatLng.length == 0
+              child: state.itemsLatLng.isEmpty
                   ? const Center(
                       child: Text(
                       '참여 중인 게시판이 없어요',

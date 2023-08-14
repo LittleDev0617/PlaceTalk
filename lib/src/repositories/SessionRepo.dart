@@ -10,9 +10,9 @@ class SessionRepo {
 
   Map<String, String> cookies = {};
 
-  Future<List<Map<String, dynamic>>> get(String url) async {
+  Future<List<Map<String, dynamic>>> get(String api) async {
     headers['Cookie'] = 'token=${await _initCookie()}';
-    print('get() url: $url');
+    final String url = 'http://125.180.98.19:1234/$api';
     http.Response response = await http.get(Uri.parse(url), headers: headers);
     final int statusCode = response.statusCode;
     if (statusCode < 200 || statusCode > 400) {
@@ -21,7 +21,8 @@ class SessionRepo {
     return List.from(json.decode(utf8.decode(response.bodyBytes)));
   }
 
-  Future<dynamic> post(String url, dynamic data, String token) async {
+  Future<dynamic> post(String api, dynamic data, String token) async {
+    final String url = 'http://125.180.98.19:1234/$api';
     http.Response response = await http.post(Uri.parse(url),
         body: json.encode(data), headers: headers);
     final int statusCode = response.statusCode;
@@ -43,7 +44,7 @@ class SessionRepo {
   }
 
   Future<void> getCookieFromHeader() async {
-    final url = Uri.parse('http://192.168.155.223:3000/api/users/auth?token=0');
+    final url = Uri.parse('http://125.180.98.19:1234/api/users/auth?token=0');
 
     final response = await http.get(url);
 
