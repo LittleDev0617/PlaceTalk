@@ -23,10 +23,11 @@ CREATE TABLE `tb_comment` (
 	`comment_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`post_id`	int	NOT NULL,
 	`user_id`	int	NOT NULL,
+	`content` varchar(100) NOT NULL,
 	`is_reply`	tinyint	NOT NULL	DEFAULT 0	COMMENT '대댓',
 	`reply_id`	int	NULL	DEFAULT 0	COMMENT '대댓 참조 댓글',
 	`create_date`	datetime	NULL,
-	`Field`	VARCHAR(255)	NULL
+	`likes`	int	DEFAULT 0
 );
 
 CREATE TABLE `tb_post` (
@@ -53,6 +54,7 @@ CREATE TABLE `tb_image` (
 	`image_id`	varchar(40)	NOT NULL,
 	`booth_id`	int,
 	`feed_id`	int,
+	`place_id`	int,
 	`order`	int	DEFAULT 0
 );
 
@@ -76,7 +78,12 @@ CREATE TABLE `tb_organizer` (
 	`nickname` varchar(20) DEFAULT "관리자"
 );
 
-CREATE TABLE `tb_likes` (
+CREATE TABLE `tb_comment_likes` (
+	`comment_id`	int	NOT NULL,
+	`user_id`	int	NOT NULL
+);
+
+CREATE TABLE `tb_post_likes` (
 	`post_id`	int	NOT NULL,
 	`user_id`	int	NOT NULL
 );

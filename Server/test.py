@@ -5,14 +5,14 @@ import string
 
 HOST_API = 'http://localhost:80/api/'
 
-# for line in open('../README.md', 'r', encoding='utf-8').readlines():
-#     if 'GET' in line or 'POST' in line:
-#         api = line[4:].rstrip()
-#         method, url = api.split()
-#         print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
+for line in open('API.md', 'r', encoding='utf-8').readlines():
+    if 'GET' in line or 'POST' in line:
+        api = line[4:].rstrip()
+        method, url = api.split()
+        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
     
     
-# exit()
+exit()
 
 s = Session()
 r = s.get(HOST_API+'users/auth?token=0')
@@ -130,7 +130,9 @@ import glob
 def add_feed():
     global s
 
-    files = glob.glob('./media/feed/*.png')
+    files = list(glob.glob('./media/feed/*.png'))
+    files.sort(key=lambda x: int(x.split('\\')[1].split('.')[0]))
+
     fileIndex = 0
     feeds = open('feed_list.txt', 'r', encoding='utf-8').read().split('\n\n')
     

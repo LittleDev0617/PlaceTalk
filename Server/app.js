@@ -5,8 +5,12 @@ const cors = require('cors');
 const app = express();
 
 const usersRouter = require('./routes/users');
-const postsRouter = require('./routes/posts');
 const placesRouter = require('./routes/places');
+const boothsRouter = require('./routes/booths');
+const feedsRouter = require('./routes/feeds');
+const infosRouter = require('./routes/infos');
+const postsRouter = require('./routes/posts');
+const commentsRouter = require('./routes/comments');
 
 app.use(cors({ origin: "http://localhost:1234", credentials: true }));
 console.log(__dirname + '/images')
@@ -28,8 +32,12 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/users', usersRouter);
-app.use('/api/posts', postsRouter);
 app.use('/api/places', placesRouter);
+app.use('/api/booths', boothsRouter);
+app.use('/api/feeds', feedsRouter);
+app.use('/api/infos', infosRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/comments', commentsRouter);
 
 app.use(async (err, req, res, next) => {
     if(err.status)
