@@ -333,8 +333,10 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 {
     "feed_id" : int,
     "place_id" : int,
-    "name" : string,
+    "user_id" : int,
     "content" : string,
+    "nickname" : string,
+    "write_time" : datetime,
     "images" : List<Image>
 }
 ```
@@ -351,7 +353,38 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 #### Response
 
 - `List<Feed>`
+```json
+[
+  {
+    "feed_id": 3,
+    "place_id": 1,
+    "user_id": 1,
+    "content": "안녕하세요. 경영대에서 안내드립니다.\n금일 경영대 주막 10시부터 개시합니다.",
+    "write_time": "2023-08-14 03:25:31",
+    "images": [],
+    "nickname": "경영대 주막"
+  },
+  {
+    "feed_id": 4,
+    "place_id": 1,
+    "user_id": 2,
+    "content": "이번 축제 행사는 정말 열심히 준비했습니다\n열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다\n행사당일날 뵙겠습니다^^",
+    "write_time": "2023-08-14 03:25:31",
+    "images": [],
+    "nickname": "총학생회"
+  },
+  {
+    "feed_id": 5,
+    "place_id": 1,
+    "user_id": 3,
+    "content": "사범대 주막에서 오코노미야끼, 야끼소바 판매합니다.\n맛은 보장드리오니 많이들 와주세요.",
+    "write_time": "2023-08-14 03:25:31",
+    "images": [],
+    "nickname": "사범대 주막"
+  }
+]
 
+```
 <hr />
 
 ### GET /api/places/:place_id/feed
