@@ -13,28 +13,54 @@ level : access level
 
 # SERVER API
 
-[GET /api/users/place](#get-apiusersplace)  
-[GET /api/places](#get-apiplaces)  
-[POST /api/places](#post-apiplaces)  
-[GET /api/places/:place_id](#get-apiplacesplace_id)  
-[GET /api/places/:place_id/join](#get-apiplacesplace_idjoin)  
-[GET /api/places/:place_id/booth](#get-apiplacesplace_idbooth)  
-[POST /api/places/:place_id/booth](#post-apiplacesplace_idbooth)  
-[GET /api/places/feed](#get-apiplacesfeed)  
-[GET /api/places/:place_id/feed](#get-apiplacesplace_idfeed)  
-[POST /api/places/:place_id/feed](#post-apiplacesplace_idfeed)  
-[GET /api/places/:place_id/info](#get-apiplacesplace_idinfo)  
-[POST /api/places/:place_id/info](#post-apiplacesplace_idinfo)  
-[GET /api/posts/:place_id](#get-apipostsplace_id)  
-[POST /api/posts/:place_id](#post-apipostsplace_id)  
-[GET /api/posts/:place_id/:post_id](#get-apipostsplace_idpost_id)  
-[GET /api/posts/:post_id/like](#get-apipostspost_idlike)  
-[GET /api/posts/:post_id/comments](#get-apipostspost_idcomments)  
-[POST /api/posts/:post_id/comments](#post-apipostspost_idcomments)
+바로가기
+
+- User
+[GET	/api/users/place](#get-apiusersplace)  
+[GET	/api/users/post](#get-apiuserspost)  
+
+- Place
+[GET	/api/places](#get-apiplaces)  
+[POST	/api/places](#post-apiplaces)  
+[GET	/api/places/:place_id](#get-apiplacesplace_id)  
+[GET	/api/places/:place_id/join](#get-apiplacesplace_idjoin)  
+
+- Booth
+[GET	/api/booths](#get-apibooths)  
+[GET	/api/booths/:location_id](#get-apiboothslocation_id)  
+[POST	/api/booths](#post-apibooths)  
+
+- Feed
+[GET	/api/feeds](#get-apifeeds)  
+[GET	/api/feeds/feed_id](#get-apifeedsfeed_id)  
+[POST	/api/feeds](#post-apifeeds)  
+
+- Info
+[GET	/api/infos](#get-apiinfos)  
+[GET	/api/infos/:info_id](#get-apiinfosinfo_id)  
+[POST	/api/infos](#post-apiinfos)  
+
+- Post
+[GET	/api/posts](#get-apiposts)  
+[POST	/api/posts](#post-apiposts)  
+[GET	/api/posts/:post_id](#get-apipostspost_id)  
+[GET	/api/posts/:post_id/like](#get-apipostspost_idlike)  
+
+- Comment
+[GET	/api/comments](#get-apicomments)  
+[POST	/api/comments](#post-apicomments)  
+[GET	/api/comments/:comment_id/like](#get-apicommentscomment_idlike)  
+
 
 ## User
 
 ### GET /api/users/place
+
+#### Request
+
+#### Response
+
+### GET /api/users/post
 
 #### Request
 
@@ -169,7 +195,7 @@ place_id - path parameter
 
 ### GET /api/places/:place_id
 
-핫플레이스 조회
+특정 핫플레이스 조회
 
 #### Request
 
@@ -227,9 +253,9 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 }
 ```
 
-### GET /api/places/:place_id/booth
+### GET /api/booths
 
-부스 조회
+모든 부스 조회
 
 #### Request
 
@@ -281,18 +307,38 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
         "order": 0
       }
     ]
-  },
+  }
+]
+```
+
+<hr />
+
+### GET /api/booths/:location_id
+
+특정 부스 조회
+
+#### Request
+
+\*location_id - path parameter
+
+#### Response
+
+- `List<Booth>`  
+  location_id 에 등록된 모든 부스 정보를 반환합니다.
+
+```json
+[
   {
-    "booth_id": 13,
-    "name": "동물생명대 주막",
-    "content": "청심대 옆에서 동물생명대 주막을 오픈했습니다.",
+    "booth_id": 11,
+    "name": "경영대 주막",
+    "content": "황소상 앞에서 경영대 주막을 오픈했습니다.\n이경영 배우의 컨셉을 빌려 재밌는 행사를 기획했습니다.",
     "on_time": "10:00 ~ 18:00",
     "locations": [
       {
-        "location_id": 64,
-        "loc_name": "청심 대 옆",
-        "lat": 37.54241209999992,
-        "lon": 127.0768532999997
+        "location_id": 62,
+        "loc_name": "황소상 앞",
+        "lat": 37.54318850007482,
+        "lon": 127.0760683998827
       }
     ],
     "images": [
@@ -304,17 +350,15 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
   }
 ]
 ```
-
 <hr />
 
-### POST /api/places/:place_id/booth
+### POST /api/booths
 
 부스 추가
 
 #### Request
 
-\*place_id - path parameter
-
+- \*location_id
 - \*name : 부스 이름
 - \*content : 부스 설명
 - \*on_time : "18:00 ~ 20:00" 과 같은 문자열
@@ -323,7 +367,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 
 #### Response
 
-place_id 에 해당하는 place 에 부스를 등록합니다.
+location_id 에 해당하는 행사 에 부스를 등록합니다.
 
 <hr />
 
@@ -341,12 +385,13 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 }
 ```
 
-### GET /api/places/feed
+### GET /api/feeds
 
-모든 핫플/행사 피드 조회
+핫플/행사 피드 조회
 
 #### Request
 
+- place_id  : 설정 시 place_id 핫플 피드 조회
 - offset
 - feedPerPage
 
@@ -354,6 +399,7 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 - `List<Feed>`
 ```json
+// /api/feeds
 [
   {
     "feed_id": 26,
@@ -401,13 +447,13 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 ```
 <hr />
 
-### GET /api/places/:place_id/feed
+### GET /api/feeds/feed_id
 
-특정 장소 피드 조회
+특정 피드 조회
 
 #### Request
 
-\*place_id - path parameter
+\*feed_id - path parameter
 
 - offset
 - feedPerPage
@@ -416,6 +462,7 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 - `List<Feed>`
 ```json
+// /api/feeds/33
 [
   {
     "feed_id": 33,
@@ -434,14 +481,13 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 ```
 <hr />
 
-### POST /api/places/:place_id/feed
+### POST /api/feeds
 
 장소 피드 추가
 
 #### Request
 
-\*place_id - path parameter
-
+- \*place_id  : 등록할 장소
 - \*title
 - \*content
 - images
@@ -452,35 +498,9 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 <hr />
 
-### PUT /api/places/:place_id/feed/:feed_id
+### PUT /api/feeds/:feed_id
 
-장소 피드 수정
-
-#### Request
-
-\*place_id - path parameter  
-\*feed_id - path parameter
-
-- \*content
-
-#### Response
-
-해당 장소에 피드를 등록합니다.
-
-<hr />
-
-### DELETE /api/places/:place_id/feed/:feed_id
-
-장소 피드 삭제
-
-#### Request
-
-\*place_id - path parameter  
-\*feed_id - path parameter
-
-#### Response
-
-해당 장소에 피드를 등록합니다.
+### DELETE /api/feeds/:feed_id
 
 <hr />
 
@@ -496,14 +516,13 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 }
 ```
 
-### GET /api/places/:place_id/info
+### GET /api/infos
 
-특정 장소 행사 정보 조회
+행사 정보 조회
 
 #### Request
 
-\*place_id - path parameter
-
+- place_id   : 필터링
 - is_schdule : 일정표면 1로 설정
 
 #### Response
@@ -512,14 +531,27 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 <hr />
 
-### POST /api/places/:place_id/info
+### GET /api/infos/:info_id
+
+특정 행사 정보 조회
+
+#### Request
+
+- info_id
+
+#### Response
+
+- `List<Info>`
+
+<hr />
+
+### POST /api/infos
 
 장소 행사 정보 추가
 
 #### Request
 
-\*place_id - path parameter
-
+- \*place_id
 - \*title
 - \*content
 - is_schdule - 일정표면 1로 설정
@@ -530,48 +562,20 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 
 <hr />
 
-### PUT /api/places/:place_id/info/:info_id
-
-장소 행사 정보 수정
-
-#### Request
-
-\*place_id - path parameter  
-\*info_id - path parameter
-
-- \*title
-- \*content
-
-#### Response
-
-해당 장소에 행사 정보를 등록합니다.
-
-<hr />
-
-### DELETE /api/places/:place_id/info/:info_id
-
-장소 행사 정보 삭제
-
-#### Request
-
-\*place_id - path parameter  
-\*feed_id - path parameter
-
-#### Response
-
-해당 장소에 행사 정보를 등록합니다.
+### PUT /api/infos/:info_id
+### DELETE /api/infos/:info_id
 
 <hr />
 
 ## Post - 게시글
 
-### GET /api/posts/:place_id
+### GET /api/posts
 
 post 조회
 
 #### Request
 
-- \*place_id
+- place_id  : 필터링
 - offset
 - postPerPage
 - likeOrder : 시간순 정렬(0) / 좋아요 정렬(1)
@@ -590,7 +594,7 @@ Post List
 
 <hr />
 
-### POST /api/posts/:place_id
+### POST /api/posts
 
 post 생성
 
@@ -606,18 +610,15 @@ place_id 에 해당하는 핫플레이스에 게시글을 추가합니다.
 
 <hr />
 
-### GET /api/posts/:place_id/:post_id
+### GET /api/posts/:post_id
 
-post 조회
+특정 post 조회
 
 #### Request
 
-- \*place_id
 - \*post_id
 
 #### Response
-
-place_id 핫플레이스의 post_id post 를 조회합니다.
 
 Post
 
@@ -634,6 +635,8 @@ post 수정
 #### Request
 
 - \*post_id
+- \*title
+- \*content
 
 #### Response
 
@@ -651,7 +654,7 @@ post 삭제
 
 #### Response
 
-post_id 에 해당하는 게시글 내용을 수정합니다.
+post_id 에 해당하는 게시글 내용을 삭제합니다.
 
 <hr />
 
@@ -671,9 +674,9 @@ post_id 에 해당하는 게시글 내용을 수정합니다.
 
 ## Comment
 
-### GET /api/posts/:post_id/comments
+### GET /api/comments
 
-post_id 게시글의 댓글 모두 조회
+한 게시글의 댓글 조회
 
 #### REQUEST
 
@@ -686,7 +689,7 @@ post_id 게시글의 댓글 모두 조회
 
 <hr />
 
-### POST /api/posts/:post_id/comments
+### POST /api/comments
 
 댓글 등록
 
@@ -695,14 +698,14 @@ post_id 게시글의 댓글 모두 조회
 - \*post_id
 - \*is_reply : 대댓인지 여부 0 or 1
 - \*reply_id : 대댓이면 대댓 단 원 댓글 comment_id
+- \*content  : 댓글 내용
 
 #### Response
 
-post_id 에 해당하는 게시글 내용을 수정합니다.
 
 <hr />
 
-### DELETE /api/posts/:post_id/comments/:comment_id
+### DELETE /api/comments/:comment_id
 
 댓글 삭제
 
@@ -713,6 +716,18 @@ post_id 에 해당하는 게시글 내용을 수정합니다.
 
 #### Response
 
-post_id 에 해당하는 게시글 내용을 수정합니다.
+
+<hr />
+### GET /api/comments/:comment_id/like
+
+댓글 좋아요 추가 / 해제
+
+#### Request
+
+- \*comment_id
+
+#### Response
+
+좋아요를 누른 상태이면 해제, 안 누른 상태면 등록합니다.
 
 <hr />
