@@ -238,7 +238,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 #### Response
 
 - `List<Booth>`  
-  place_id 에 등록된 모든 부스 정보를 반환합니다.
+  location_id 에 등록된 모든 부스 정보를 반환합니다.
 
 ```json
 [
@@ -356,31 +356,45 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 ```json
 [
   {
-    "feed_id": 3,
-    "place_id": 1,
+    "feed_id": 26,
+    "place_id": 16,
     "user_id": 1,
-    "content": "안녕하세요. 경영대에서 안내드립니다.\n금일 경영대 주막 10시부터 개시합니다.",
-    "write_time": "2023-08-14 03:25:31",
-    "images": [],
-    "nickname": "경영대 주막"
+    "content": "이 돌아왔습니다. 10월 14일(금)부터 16일(일)까지 개최..",
+    "write_time": "2023-09-30 18:00:00",
+    "images": [
+      { "image_id": "9cbb6ffc-58b0-4bda-aaa3-c69c62d7ab62.png", "order": 0 },
+      { "image_id": "2dd98d88-657c-4895-addb-b25848316f2a.png", "order": 1 },
+      { "image_id": "aba8e48c-4bbb-4a71-991e-981992d06987.png", "order": 2 },
+      { "image_id": "2bff558a-f422-4caf-a98d-add9dfa158ea.png", "order": 3 },
+      { "image_id": "619f00e4-62c2-486c-b53f-1170710fbc58.png", "order": 4 }
+    ],
+    "nickname": "관리자"
   },
   {
-    "feed_id": 4,
+    "feed_id": 35,
     "place_id": 1,
+    "user_id": 10,
+    "content": "열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다.\n행사 당일날 뵙겠습니다^^",
+    "write_time": "2023-09-12 18:00:00",
+    "images": [
+      { "image_id": "4252991c-71ef-4fdb-a5f1-da0b5a154cdd.png", "order": 0 },
+      { "image_id": "5cf51577-20a6-4e97-8d53-e7b9dfc83b11.png", "order": 1 },
+      { "image_id": "9ed49e02-1fe8-4526-ae16-9880f1f13c52.png", "order": 2 }
+    ],
+    "nickname": "경영대 주점"
+  },
+  {
+    "feed_id": 27,
+    "place_id": 11,
     "user_id": 2,
-    "content": "이번 축제 행사는 정말 열심히 준비했습니다\n열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다\n행사당일날 뵙겠습니다^^",
-    "write_time": "2023-08-14 03:25:31",
-    "images": [],
-    "nickname": "총학생회"
-  },
-  {
-    "feed_id": 5,
-    "place_id": 1,
-    "user_id": 3,
-    "content": "사범대 주막에서 오코노미야끼, 야끼소바 판매합니다.\n맛은 보장드리오니 많이들 와주세요.",
-    "write_time": "2023-08-14 03:25:31",
-    "images": [],
-    "nickname": "사범대 주막"
+    "content": "축제가 올해 10월 5일 개최됩니다. 사회적..",
+    "write_time": "2023-09-11 18:00:00",
+    "images": [
+      { "image_id": "d1b96bde-a150-4858-a365-54f5dce093bd.png", "order": 0 },
+      { "image_id": "fbaf46c4-5132-43c6-b9b9-3d71cf3f3399.png", "order": 1 },
+      { "image_id": "7e8b4f6a-db4a-4f9d-908c-7482f2dfca19.png", "order": 2 }
+    ],
+    "nickname": "관리자"
   }
 ]
 
@@ -401,7 +415,23 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 #### Response
 
 - `List<Feed>`
-
+```json
+[
+  {
+    "feed_id": 33,
+    "place_id": 31,
+    "user_id": 8,
+    "content": "설레임! 1km구간에 걸쳐 펼쳐진 서핑 전용 해변과 스위..",
+    "write_time": "2023-06-28 18:00:00",
+    "images": [
+      { "image_id": "12708d6f-ba0a-43ab-a27e-da7f53b2dcf6.png", "order": 0 },
+      { "image_id": "3bf7d85c-b7d2-46ab-9e44-90466783a40f.png", "order": 1 },
+      { "image_id": "ba9c3673-8899-49c3-bf61-98a11b98747e.png", "order": 2 }
+    ],
+    "nickname": "관리자"
+  }
+]
+```
 <hr />
 
 ### POST /api/places/:place_id/feed
@@ -431,7 +461,6 @@ place_id 에 해당하는 place 에 부스를 등록합니다.
 \*place_id - path parameter  
 \*feed_id - path parameter
 
-- \*title
 - \*content
 
 #### Response

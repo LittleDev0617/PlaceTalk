@@ -2,6 +2,7 @@ const { userInfo } = require("os");
 const conn = require("../utils/db");
 const { AlreadyJoinError, TooManyJoinError, UnauthorizedError } = require("../utils/error");
 const { getPlaces } = require("./places");
+const { errorWrapper } = require("../utils/util");
 
 async function getUsers(user_id) {        
     return await conn.query('SELECT * FROM tb_user WHERE user_id = ?', [user_id]);    
@@ -47,14 +48,13 @@ async function getNickname(user_id, place_id) {
 }
 
 async function changeNickname(user_id, place_id, nickname) {
-    console.log(nickname)
     return await conn.query('UPDATE tb_organizer SET nickname = ? WHERE user_id = ? AND place_id = ?', [nickname, user_id, place_id]);
 }
 
 module.exports = {
     getUsers, createUser, getUserPlace, joinPlace, isOrganizerOfPlace, grantAdminRole, removeAdminRole, changeNickname, getNickname,
     
-    isOrganizer : async function (req, res, next) {
+    isOrganizer : errorWrapper(async function (req, res, next) {
         let { place_id } = req.params;
         if(!place_id)
             place_id = req.query.place_id;
@@ -63,11 +63,11 @@ module.exports = {
             throw new UnauthorizedError('Cannot acces');
         
         next();
-    },
-    isAdmin : async function (req, res, next) {
+    }),
+    isAdmin : errorWrapper(async function (req, res, next) {
         if(req.user.uid != 0)
             throw new UnauthorizedError('Cannot access.');
 
         next();
-    }
+    })
 };
