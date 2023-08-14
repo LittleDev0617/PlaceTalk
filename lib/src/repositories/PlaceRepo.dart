@@ -103,6 +103,8 @@ class PlaceRepo {
         final locName = location['loc_name'];
         final latitude = location['lat'];
         final longitude = location['lon'];
+        final category = data['category'];
+        final placeID = data['place_id'];
         final state = data['state'];
         final startDate = DateTime.parse(data['start_date']);
         final endDate = DateTime.parse(data['end_date']);
@@ -112,6 +114,8 @@ class PlaceRepo {
           'loc_name': locName,
           'latitude': latitude,
           'longitude': longitude,
+          'place_id': placeID,
+          'category': category,
           'state': state,
           'startDate': startDate,
           'endDate': endDate,

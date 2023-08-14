@@ -19,5 +19,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       final feedList = await _feedRepo.fetchFeedData();
       emit(FeedLoaded(feedList: feedList));
     });
+
+    on<FetchEventFeedData>((event, emit) async {
+      emit(FeedLoading());
+      final feedList = await _feedRepo.fetchEventFeedData(event.placeId);
+      emit(FeedLoaded(feedList: feedList));
+    });
   }
 }

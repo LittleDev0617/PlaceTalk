@@ -6,12 +6,12 @@ import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 @RoutePage()
 class BoardEventScreen extends StatefulWidget {
-  final int eventID;
+  final int placeID;
   final String name;
   const BoardEventScreen({
     super.key,
+    @PathParam('placeID') required this.placeID,
     required this.name,
-    @PathParam('eventID') required this.eventID,
   });
 
   @override

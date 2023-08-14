@@ -127,12 +127,12 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
               String item = state.datas.keys.toList()[index];
               double delta = index - _currentPage;
 
-              print(state.datas);
-
               if (delta > 0) {
               } else {}
 
               double translateY = delta * 20;
+
+              print(state.datas);
 
               return Center(
                 child: GestureDetector(
@@ -162,9 +162,9 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            const Text(
-                              '분류',
-                              style: TextStyle(
+                            Text(
+                              state.datas[item]!['category'],
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -177,7 +177,9 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                               ),
                             ),
                             Text(
-                              '${DateFormat('M.d').format(state.datas[item]!['startDate'])}~${DateFormat('M.d').format(state.datas[item]!['endDate'])}',
+                              state.datas[item]['state'] == 0
+                                  ? '상시'
+                                  : '${DateFormat('M.d').format(state.datas[item]!['startDate'])}~${DateFormat('M.d').format(state.datas[item]!['endDate'])}',
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,

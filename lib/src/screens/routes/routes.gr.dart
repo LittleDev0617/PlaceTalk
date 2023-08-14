@@ -56,8 +56,8 @@ abstract class $AppRouter extends _i17.RootStackRouter {
         routeData: routeData,
         child: _i2.BoardEventScreen(
           key: args.key,
+          placeID: args.placeID,
           name: args.name,
-          eventID: args.eventID,
         ),
       );
     },
@@ -77,7 +77,7 @@ abstract class $AppRouter extends _i17.RootStackRouter {
         routeData: routeData,
         child: _i4.EventLandingScreen(
           key: args.key,
-          eventID: args.eventID,
+          placeID: args.placeID,
           name: args.name,
         ),
       );
@@ -108,7 +108,7 @@ abstract class $AppRouter extends _i17.RootStackRouter {
           key: args.key,
           name: args.name,
           position: args.position,
-          eventID: args.eventID,
+          placeID: args.placeID,
         ),
       );
     },
@@ -124,9 +124,15 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       );
     },
     InformEventRoute.name: (routeData) {
+      final args = routeData.argsAs<InformEventRouteArgs>(
+          orElse: () => const InformEventRouteArgs());
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.InformEventScreen(),
+        child: _i9.InformEventScreen(
+          key: args.key,
+          placeID: args.placeID,
+          name: args.name,
+        ),
       );
     },
     JoinRoute.name: (routeData) {
@@ -148,9 +154,15 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       );
     },
     NoticeEventRoute.name: (routeData) {
+      final args = routeData.argsAs<NoticeEventRouteArgs>(
+          orElse: () => const NoticeEventRouteArgs());
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i13.NoticeEventScreen(),
+        child: _i13.NoticeEventScreen(
+          key: args.key,
+          placeID: args.placeID,
+          name: args.name,
+        ),
       );
     },
     NoticeRoute.name: (routeData) {
@@ -172,9 +184,15 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       );
     },
     TimeEventRoute.name: (routeData) {
+      final args = routeData.argsAs<TimeEventRouteArgs>(
+          orElse: () => const TimeEventRouteArgs());
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i16.TimeEventScreen(),
+        child: _i16.TimeEventScreen(
+          key: args.key,
+          placeID: args.placeID,
+          name: args.name,
+        ),
       );
     },
   };
@@ -230,17 +248,17 @@ class BoardDetailEventRouteArgs {
 class BoardEventRoute extends _i17.PageRouteInfo<BoardEventRouteArgs> {
   BoardEventRoute({
     _i18.Key? key,
+    required int placeID,
     required String name,
-    required int eventID,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           BoardEventRoute.name,
           args: BoardEventRouteArgs(
             key: key,
+            placeID: placeID,
             name: name,
-            eventID: eventID,
           ),
-          rawPathParams: {'eventID': eventID},
+          rawPathParams: {'placeID': placeID},
           initialChildren: children,
         );
 
@@ -253,19 +271,19 @@ class BoardEventRoute extends _i17.PageRouteInfo<BoardEventRouteArgs> {
 class BoardEventRouteArgs {
   const BoardEventRouteArgs({
     this.key,
+    required this.placeID,
     required this.name,
-    required this.eventID,
   });
 
   final _i18.Key? key;
 
-  final String name;
+  final int placeID;
 
-  final int eventID;
+  final String name;
 
   @override
   String toString() {
-    return 'BoardEventRouteArgs{key: $key, name: $name, eventID: $eventID}';
+    return 'BoardEventRouteArgs{key: $key, placeID: $placeID, name: $name}';
   }
 }
 
@@ -313,17 +331,17 @@ class BoardWriteEventRouteArgs {
 class EventLandingRoute extends _i17.PageRouteInfo<EventLandingRouteArgs> {
   EventLandingRoute({
     _i18.Key? key,
-    required int eventID,
+    required int placeID,
     required String name,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           EventLandingRoute.name,
           args: EventLandingRouteArgs(
             key: key,
-            eventID: eventID,
+            placeID: placeID,
             name: name,
           ),
-          rawPathParams: {'eventID': eventID},
+          rawPathParams: {'eventID': placeID},
           initialChildren: children,
         );
 
@@ -336,19 +354,19 @@ class EventLandingRoute extends _i17.PageRouteInfo<EventLandingRouteArgs> {
 class EventLandingRouteArgs {
   const EventLandingRouteArgs({
     this.key,
-    required this.eventID,
+    required this.placeID,
     required this.name,
   });
 
   final _i18.Key? key;
 
-  final int eventID;
+  final int placeID;
 
   final String name;
 
   @override
   String toString() {
-    return 'EventLandingRouteArgs{key: $key, eventID: $eventID, name: $name}';
+    return 'EventLandingRouteArgs{key: $key, placeID: $placeID, name: $name}';
   }
 }
 
@@ -401,7 +419,7 @@ class HomeEventRoute extends _i17.PageRouteInfo<HomeEventRouteArgs> {
     _i18.Key? key,
     required String name,
     required _i19.NLatLng position,
-    required int eventID,
+    required int placeID,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           HomeEventRoute.name,
@@ -409,9 +427,9 @@ class HomeEventRoute extends _i17.PageRouteInfo<HomeEventRouteArgs> {
             key: key,
             name: name,
             position: position,
-            eventID: eventID,
+            placeID: placeID,
           ),
-          rawPathParams: {'eventID': eventID},
+          rawPathParams: {'placeID': placeID},
           initialChildren: children,
         );
 
@@ -426,7 +444,7 @@ class HomeEventRouteArgs {
     this.key,
     required this.name,
     required this.position,
-    required this.eventID,
+    required this.placeID,
   });
 
   final _i18.Key? key;
@@ -435,11 +453,11 @@ class HomeEventRouteArgs {
 
   final _i19.NLatLng position;
 
-  final int eventID;
+  final int placeID;
 
   @override
   String toString() {
-    return 'HomeEventRouteArgs{key: $key, name: $name, position: $position, eventID: $eventID}';
+    return 'HomeEventRouteArgs{key: $key, name: $name, position: $position, placeID: $placeID}';
   }
 }
 
@@ -483,16 +501,45 @@ class HomeRouteArgs {
 
 /// generated route for
 /// [_i9.InformEventScreen]
-class InformEventRoute extends _i17.PageRouteInfo<void> {
-  const InformEventRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class InformEventRoute extends _i17.PageRouteInfo<InformEventRouteArgs> {
+  InformEventRoute({
+    _i18.Key? key,
+    int? placeID,
+    String? name,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           InformEventRoute.name,
+          args: InformEventRouteArgs(
+            key: key,
+            placeID: placeID,
+            name: name,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'InformEventRoute';
 
-  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+  static const _i17.PageInfo<InformEventRouteArgs> page =
+      _i17.PageInfo<InformEventRouteArgs>(name);
+}
+
+class InformEventRouteArgs {
+  const InformEventRouteArgs({
+    this.key,
+    this.placeID,
+    this.name,
+  });
+
+  final _i18.Key? key;
+
+  final int? placeID;
+
+  final String? name;
+
+  @override
+  String toString() {
+    return 'InformEventRouteArgs{key: $key, placeID: $placeID, name: $name}';
+  }
 }
 
 /// generated route for
@@ -539,16 +586,45 @@ class LoginRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i13.NoticeEventScreen]
-class NoticeEventRoute extends _i17.PageRouteInfo<void> {
-  const NoticeEventRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class NoticeEventRoute extends _i17.PageRouteInfo<NoticeEventRouteArgs> {
+  NoticeEventRoute({
+    _i18.Key? key,
+    int? placeID,
+    String? name,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           NoticeEventRoute.name,
+          args: NoticeEventRouteArgs(
+            key: key,
+            placeID: placeID,
+            name: name,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'NoticeEventRoute';
 
-  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+  static const _i17.PageInfo<NoticeEventRouteArgs> page =
+      _i17.PageInfo<NoticeEventRouteArgs>(name);
+}
+
+class NoticeEventRouteArgs {
+  const NoticeEventRouteArgs({
+    this.key,
+    this.placeID,
+    this.name,
+  });
+
+  final _i18.Key? key;
+
+  final int? placeID;
+
+  final String? name;
+
+  @override
+  String toString() {
+    return 'NoticeEventRouteArgs{key: $key, placeID: $placeID, name: $name}';
+  }
 }
 
 /// generated route for
@@ -595,14 +671,43 @@ class ProfileRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i16.TimeEventScreen]
-class TimeEventRoute extends _i17.PageRouteInfo<void> {
-  const TimeEventRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class TimeEventRoute extends _i17.PageRouteInfo<TimeEventRouteArgs> {
+  TimeEventRoute({
+    _i18.Key? key,
+    int? placeID,
+    String? name,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           TimeEventRoute.name,
+          args: TimeEventRouteArgs(
+            key: key,
+            placeID: placeID,
+            name: name,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'TimeEventRoute';
 
-  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+  static const _i17.PageInfo<TimeEventRouteArgs> page =
+      _i17.PageInfo<TimeEventRouteArgs>(name);
+}
+
+class TimeEventRouteArgs {
+  const TimeEventRouteArgs({
+    this.key,
+    this.placeID,
+    this.name,
+  });
+
+  final _i18.Key? key;
+
+  final int? placeID;
+
+  final String? name;
+
+  @override
+  String toString() {
+    return 'TimeEventRouteArgs{key: $key, placeID: $placeID, name: $name}';
+  }
 }

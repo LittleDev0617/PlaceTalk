@@ -78,7 +78,7 @@ class JoinScreen extends StatelessWidget {
                               ));
 
                               BlocProvider.of<PlaceBloc>(context).add(
-                                FetchNaverMapDataEvent(),
+                                const FetchNaverMapDataEvent(),
                               );
                             },
                             child: Text(
@@ -117,7 +117,7 @@ class JoinScreen extends StatelessWidget {
                                     BoardEventRoute(
                                         name: state.itemsLatLng.keys
                                             .toList()[index],
-                                        eventID: 1),
+                                        placeID: 1),
                                   );
                                 },
                                 child: const Icon(
@@ -135,7 +135,7 @@ class JoinScreen extends StatelessWidget {
                                     EventLandingRoute(
                                         name: state.itemsLatLng.keys
                                             .toList()[index],
-                                        eventID: 1),
+                                        placeID: 1),
                                   );
                                 },
                                 child: const Icon(

@@ -9,15 +9,15 @@ import '../routes/routes.gr.dart';
 
 @RoutePage()
 class HomeEventScreen extends StatefulWidget {
-  final int eventID;
+  final int placeID;
   final String name;
   final NLatLng position;
 
-  HomeEventScreen({
+  const HomeEventScreen({
     super.key,
     required this.name,
     required this.position,
-    @PathParam('eventID') required this.eventID,
+    @PathParam('placeID') required this.placeID,
   });
 
   @override
@@ -72,10 +72,13 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                       EventsRouter(
                         children: [
                           EventLandingRoute(
-                            eventID: widget.eventID,
+                            placeID: widget.placeID,
                             name: widget.name,
-                            children: const [
-                              InformEventRoute(),
+                            children: [
+                              InformEventRoute(
+                                placeID: widget.placeID,
+                                name: widget.name,
+                              ),
                             ],
                           ),
                         ],
@@ -113,9 +116,9 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                             EventsRouter(
                               children: [
                                 EventLandingRoute(
-                                  eventID: widget.eventID,
+                                  placeID: widget.placeID,
                                   name: widget.name,
-                                  children: const [
+                                  children: [
                                     InformEventRoute(),
                                   ],
                                 ),
@@ -244,6 +247,9 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                     ),
                                     child: ListTile(
                                       onTap: () {
+                                        print(state.itemsLatLng[itemIndex]
+                                            ['images']);
+
                                         setState(() {
                                           _showBottomSheet = false;
                                         });
@@ -353,9 +359,9 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                 EventsRouter(
                   children: [
                     EventLandingRoute(
-                      eventID: widget.eventID,
+                      placeID: widget.placeID,
                       name: widget.name,
-                      children: const [
+                      children: [
                         TimeEventRoute(),
                       ],
                     ),
@@ -446,8 +452,8 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                 itemCount: imageCount,
                 itemBuilder: (context, index) {
                   return Container(
-                    height: 75,
-                    width: 100,
+                    height: imageCount == 1 ? 150 : 75,
+                    width: imageCount == 1 ? 200 : 100,
                     margin: const EdgeInsets.only(right: 5),
                     decoration: BoxDecoration(
                         image: DecorationImage(

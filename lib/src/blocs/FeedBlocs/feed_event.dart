@@ -8,3 +8,12 @@ sealed class FeedEvent extends Equatable {
 }
 
 class FetchFeedData extends FeedEvent {}
+
+class FetchEventFeedData extends FeedEvent {
+  final int placeId;
+
+  const FetchEventFeedData(this.placeId);
+
+  @override
+  List<Object> get props => [placeId];
+}

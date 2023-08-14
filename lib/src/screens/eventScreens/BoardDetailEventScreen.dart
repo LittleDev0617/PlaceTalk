@@ -11,7 +11,7 @@ class BoardDetailEventScreen extends StatefulWidget {
   const BoardDetailEventScreen({
     super.key,
     required this.name,
-    @PathParam() required this.postID,
+    @PathParam('postID') required this.postID,
   });
 
   @override

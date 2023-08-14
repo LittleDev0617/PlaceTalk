@@ -218,12 +218,14 @@ class HomeScreen extends StatelessWidget {
                       (overlay) {
                         context.router.push(HomeEventRoute(
                           position: marker.position,
-                          eventID: index + 1,
+                          placeID:
+                              state.itemsLatLng[marker.info.id]!['place_id'],
                           name: markerData['name'],
                         ));
 
                         BlocProvider.of<BoothBloc>(context).add(
-                          FetchBoothData(index + 1),
+                          FetchBoothData(
+                              state.itemsLatLng[marker.info.id]!['place_id']),
                         );
                       },
                     );

@@ -5,20 +5,22 @@ import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 @RoutePage()
 class EventLandingScreen extends StatelessWidget {
-  final int eventID;
+  final int placeID;
   final String name;
   const EventLandingScreen(
       {super.key,
-      @PathParam('eventID') required this.eventID,
+      @PathParam('eventID') required this.placeID,
       required this.name});
 
   @override
   Widget build(BuildContext context) {
+    print('$placeID + ' ' + $name');
+
     return AutoTabsRouter.tabBar(
-        routes: const [
-          NoticeEventRoute(),
-          InformEventRoute(),
-          TimeEventRoute(),
+        routes: [
+          NoticeEventRoute(placeID: placeID, name: name),
+          InformEventRoute(placeID: placeID, name: name),
+          TimeEventRoute(placeID: placeID, name: name),
         ],
         builder: (context, child, controller) {
           return Scaffold(

@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +8,10 @@ import '../routes/routes.gr.dart';
 
 @RoutePage()
 class InformEventScreen extends StatelessWidget {
-  const InformEventScreen({super.key});
+  const InformEventScreen({super.key, this.placeID, this.name});
+
+  final int? placeID;
+  final String? name;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +106,7 @@ class InformEventScreen extends StatelessWidget {
                   children: [
                     EventsBoardRouter(
                       children: [
-                        BoardEventRoute(name: 'dasdadasda', eventID: 3),
+                        BoardEventRoute(name: name!, placeID: placeID!),
                       ],
                     ),
                   ],
