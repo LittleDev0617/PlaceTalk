@@ -32,6 +32,10 @@ r = front.get(HOST_API+f'users/auth?token={2955408317}')
 def searchPlace(name):
     return json.loads(admin.get(HOST_API+f'places?name={name}').text)[0]
 
+def searchPost(content):
+    return json.loads(admin.get(HOST_API+f'posts?content={content}').text)[0]
+
+
 def add_place():
     global admin
     txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
@@ -240,6 +244,26 @@ def add_post():
         r = post_session.post(HOST_API+'posts', json=myPost)
         print(r.text)
 
+def add_comment():
+    global admin
+    txt = open("./comment_list.txt", 'r', encoding='utf-8').read()
+    
+    for comments in reversed(txt.split('\n\n')):
+        data = comments.split("\n")
+        placeName, post_content, nickname = data[:3]        
+
+        content = '\n'.join(data[3:])
+
+        post_id = searchPost(post_content)['post_id']
+
+        mycomment = { 'post_id' : post_id, 'content': content, 'is_reply': 0, 'reply_id': 0 }
+
+        comment_session = Session()
+        comment_session.get(HOST_API+f'users/auth?token={randint(300,1000000000)}&nickname={nickname}')
+        # comment_session.get(HOST_API+f'users/join/{post_id}')
+        r = comment_session.post(HOST_API+'comments', json=mycomment)
+        print(r.text)
+
 # myPost = { 'place_id' : 1, 'content': input() }
 # test = Session()
 # test.get(HOST_API+f'users/auth?token={636228018}')
@@ -265,9 +289,26 @@ def add_top10():
 
 # add_top10()
 
+# add_place()
+# add_booth()
+# add_feed()
+# add_info()
+# add_top10()
+# add_post()
+# add_comment()
 
+# 게시글 좋아요
+# for i in range(42):
+#     test = Session()
+#     test.get(HOST_API+f'users/auth?token={353452+i}')
+#     test.get(HOST_API+f'users/join/{1}')
+#     test.get(HOST_API+f'posts/{(randint(1,1000) % 9) + 1}/like')
 
-exit()
+# test = Session()
+# test.get(HOST_API+f'users/auth?token=2966688008')
+# test.get(HOST_API+f'places/1/join')
+# test.get(HOST_API+f'places/33/join')
+# exit()
 # print(r.cookies)
 
 r = admin.get(url+f'users/place')

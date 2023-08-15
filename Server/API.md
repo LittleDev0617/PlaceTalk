@@ -75,9 +75,6 @@ level : access level
 }
 ```
 
-
-
-
 ### GET /api/users/post
 
 #### Request
@@ -930,8 +927,53 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 
 #### Response
 
-게시글 작성자가 작성한 댓글의 user_id 는 0 입니다.  
-이외의 댓글은 날짜순으로 1 2 3.. 으로 설정됩니다.
+- `List<Comment>`
+```json
+[
+  {
+    "comment_id": 1,
+    "post_id": 9,
+    "content": "맛있는거많으면좋겠따",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 388244853,
+      "nickname": "엄마가만들고내가먹는짜장면",
+      "email": "test@example.com"
+    }
+  },
+  {
+    "comment_id": 2,
+    "post_id": 9,
+    "content": "광진구면 어디쪽이지",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 854228789,
+      "nickname": "뉴헤어뉴티",
+      "email": "test@example.com"
+    }
+  },
+  {
+    "comment_id": 3,
+    "post_id": 9,
+    "content": "올 어디임? 추천 좀",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 790511534,
+      "nickname": "가입되지 않은 이용자입니다",
+      "email": "test@example.com"
+    }
+  }
+]
+```
 
 <hr />
 
