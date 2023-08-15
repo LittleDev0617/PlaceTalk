@@ -1,5 +1,5 @@
 const proj4 = require('proj4');
-
+const fs = require('fs');
 const multer = require('multer');
 const uuid4 = require('uuid4');
 const path = require('path');
@@ -16,7 +16,8 @@ const upload = multer({
         },
     }),
 });
-
+const ADMIN_TOKEN = fs.readFileSync('./utils/admin.token', { encoding:'utf-8', flag: 'r'});
+console.log(ADMIN_TOKEN)
 module.exports = {
     // https://velog.io/@neity16/NodeJS-거리구하기위도-경도
     getDistance : function (lat1, lon1, lat2, lon2) {
@@ -41,8 +42,9 @@ module.exports = {
     },
     upload,
     errorWrapper : function(fn) {
-        return async function(req, res, next) { 
+        return function(req, res, next) { 
             fn(req, res, next).catch(next);
         };
-    }
+    },
+    ADMIN_TOKEN
 };

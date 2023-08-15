@@ -4,7 +4,7 @@ const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { errorWrapper, upload } = require('../utils/util');
 const { getPlaces, createPlace, getTop10Places, addTop10Place, removeTop10Place } = require('../services/place');
-const { joinPlace, isAdmin } = require('../services/user');
+const { joinPlace, isAdminMW } = require('../services/user');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -49,7 +49,7 @@ router.delete('/top10', async (req, res, next) => {
 // startDate : datetime
 // endDate	 : dateTime
 // locations : List<Location>
-router.post('/', isAdmin, upload.single('image'), async (req, res, next) => {    
+router.post('/', isAdminMW, upload.single('image'), async (req, res, next) => {    
 	const { placeName, category, state, startDate, endDate, locations } = req.body;	
 
 	if(!(typeof(placeName) === 'string' && typeof(state) === 'number' && typeof(category) === 'string'))
@@ -66,7 +66,7 @@ router.post('/', isAdmin, upload.single('image'), async (req, res, next) => {
 
 // 특정 핫플 조회
 // place_id : int
-router.get('/:place_id(\\d+)', isAdmin, async (req, res, next) => {    
+router.get('/:place_id(\\d+)', isAdminMW, async (req, res, next) => {    
 	const { place_id } = req.params;
 
 	let places = await getPlaces({ date: false, place_id });

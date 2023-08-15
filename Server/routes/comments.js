@@ -58,7 +58,7 @@ router.delete('/:comment_id(\\d+)', errorWrapper(async (req, res, next) => {
 	if(!comment)
 		throw new BadRequestError('No comment');
 
-	if(req.user.uid == 0 || req.user.uid == comment.user_id) {
+	if(isAdmin() || req.user.uid == comment.user_id) {
 		await deleteComment(comment_id);
 	}
 

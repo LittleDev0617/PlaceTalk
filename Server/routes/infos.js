@@ -1,7 +1,7 @@
 var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
-const { isAdmin } = require('../services/user');
+const { isAdminMW } = require('../services/user');
 const { getInfos, createInfo, editInfo, deleteInfo } = require('../services/info');
 var router = express.Router();
 
@@ -29,7 +29,7 @@ router.get('/:info_id(\\d+)', getInfosC);
 // place_id : int
 // title : string
 // content : string
-router.post('/', isAdmin, async (req, res, next) => {    
+router.post('/', isAdminMW, async (req, res, next) => {    
 	const { title, content, place_id } = req.body;
 	var { is_schedule } = req.body;
 	
@@ -43,7 +43,7 @@ router.post('/', isAdmin, async (req, res, next) => {
 
 // 행사/핫플 정보 수정 - 관리자
 // place_id : int
-router.put('/:info_id(\\d+)', isAdmin, async (req, res, next) => {    
+router.put('/:info_id(\\d+)', isAdminMW, async (req, res, next) => {    
 	const { title, content, place_id } = req.body;
 	const { info_id } = req.params;
 	
@@ -54,7 +54,7 @@ router.put('/:info_id(\\d+)', isAdmin, async (req, res, next) => {
 
 // 행사/핫플 정보 삭제 - 관리자
 // place_id : int
-router.delete('/:info_id(\\d+)', isAdmin, async (req, res, next) => {    
+router.delete('/:info_id(\\d+)', isAdminMW, async (req, res, next) => {    
 	const { info_id } = req.params;
 	const { place_id } = req.query;
 

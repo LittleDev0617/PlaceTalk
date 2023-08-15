@@ -3,3 +3,4 @@ INTERNAL/
 *.txt
 media/
 images/
+admin_set.sql
