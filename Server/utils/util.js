@@ -16,6 +16,7 @@ const upload = multer({
         },
     }),
 });
+// test
 const ADMIN_TOKEN = fs.readFileSync('./utils/admin.token', { encoding:'utf-8', flag: 'r'});
 console.log(ADMIN_TOKEN)
 module.exports = {
