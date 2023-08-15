@@ -11,6 +11,7 @@ class PlaceModel extends Equatable {
   final DateTime? startDate;
   final DateTime? endDate;
   final List<Location>? locations;
+  final List<CustomImage>? images;
 
   const PlaceModel({
     required this.placeId,
@@ -20,6 +21,7 @@ class PlaceModel extends Equatable {
     this.startDate,
     this.endDate,
     this.locations,
+    this.images,
   });
 
   @override
@@ -31,6 +33,7 @@ class PlaceModel extends Equatable {
         startDate,
         endDate,
         locations,
+        images, // Include images in the comparison
       ];
 
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +44,10 @@ class PlaceModel extends Equatable {
       return Location.fromJson(locationJson);
     }).toList();
 
+    final List<dynamic> jsonImages = json['images'];
+    final List<CustomImage> images =
+        jsonImages.map((imageJson) => CustomImage.fromJson(imageJson)).toList();
+
     return PlaceModel(
       placeId: json['place_id'],
       name: json['name'],
@@ -49,6 +56,7 @@ class PlaceModel extends Equatable {
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
       locations: locations,
+      images: images,
     );
   }
 
@@ -105,5 +113,29 @@ class Location {
       lat: json['lat'] as double,
       lon: json['lon'] as double,
     );
+  }
+}
+
+class CustomImage {
+  final String imageId;
+  final int order;
+
+  CustomImage({
+    required this.imageId,
+    required this.order,
+  });
+
+  factory CustomImage.fromJson(Map<String, dynamic> json) {
+    return CustomImage(
+      imageId: json['image_id'],
+      order: json['order'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'image_id': imageId,
+      'order': order,
+    };
   }
 }

@@ -93,6 +93,8 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
         body: BlocBuilder<BoardBloc, BoardState>(
           builder: (context, state) {
             if (state is BoardInitial) {
+              BlocProvider.of<BoardBloc>(context)
+                  .add(FetchBoardData(widget.placeID));
               return const SizedBox.shrink();
             } else if (state is BoardLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -245,7 +247,7 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                                                   color: Colors.black,
                                                 ),
                                                 text:
-                                                    '${state.boards[index].content}',
+                                                    '${state.boards[index].commentCnt}',
                                               ),
                                             ],
                                           ),

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 import '../blocs/ExploreBlocs/explore_bloc.dart';
+import '../repositories/SessionRepo.dart';
 
 @RoutePage()
 class ExploreScreen extends StatelessWidget {
@@ -125,7 +126,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
             onPageChanged: _onPageChanged,
             itemBuilder: (BuildContext context, int index) {
               double delta = index - _currentPage;
-
+              print(state.datas);
               String item = state.datas.keys.toList()[index];
 
               if (delta > 0) {
@@ -153,6 +154,14 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(11),
+                          image: DecorationImage(
+                            image: NetworkImage(SessionRepo().getImageUrl(
+                                state.datas[item]!['images'][0]['image_id'])),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         padding: const EdgeInsets.all(25),
                         width: MediaQuery.of(context).size.width * 0.85,
                         height: MediaQuery.of(context).size.height * 0.9,
@@ -166,6 +175,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
@@ -173,6 +183,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                               style: const TextStyle(
                                 fontSize: 21,
                                 fontWeight: FontWeight.w600,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
@@ -181,8 +192,8 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                                   : '${DateFormat('M.d').format(state.datas[item]!['startDate'])}~${DateFormat('M.d').format(state.datas[item]!['endDate'])}',
                               style: const TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white60,
                               ),
                             ),
                           ],

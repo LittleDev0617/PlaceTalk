@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
+import 'package:placetalk/src/blocs/BoardBlocs/board_bloc.dart';
 import 'package:placetalk/src/blocs/BoothBlocs/booth_bloc.dart';
 import 'package:placetalk/src/blocs/ExploreBlocs/explore_bloc.dart';
 import 'package:placetalk/src/blocs/FeedBlocs/feed_bloc.dart';
 import 'package:placetalk/src/blocs/JoinBlocs/join_bloc.dart';
 import 'package:placetalk/src/blocs/NearBloc/near_bloc.dart';
 import 'package:placetalk/src/repositories/AuthRepo.dart';
+import 'package:placetalk/src/repositories/BoardRepo.dart';
 import 'package:placetalk/src/repositories/BoothRepo.dart';
 import 'package:placetalk/src/repositories/FeedRepo.dart';
 import 'package:placetalk/src/repositories/PlaceRepo.dart';
@@ -48,6 +50,8 @@ class App extends StatelessWidget {
               create: (context) => ExploreBloc(PlaceRepo(SessionRepo()))),
           BlocProvider(
               create: (context) => FeedEventBloc(FeedRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => BoardBloc(BoardRepo(SessionRepo()))),
         ],
         child: ScreenUtilInit(
           designSize: const Size(384, 832),

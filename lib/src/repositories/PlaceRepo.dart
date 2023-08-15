@@ -87,7 +87,7 @@ class PlaceRepo {
     );
 
     return {
-      'itemsLatLng': createCoordinatesMap(apiData),
+      'itemsLatLng': createCoordinatesJoin(apiData),
     };
   }
 
@@ -106,7 +106,7 @@ class PlaceRepo {
 
     return {
       'markers': markers,
-      'itemsLatLng': createCoordinatesMap(apiData),
+      'itemsLatLng': createCoordinatesExplore(apiData),
     };
   }
 
@@ -130,6 +130,85 @@ class PlaceRepo {
         final endDate = DateTime.parse(data['end_date']);
 
         itemsLatLng[locName == '' ? name : '$name ($locName)'] = {
+          'name': name,
+          'loc_name': locName,
+          'latitude': latitude,
+          'longitude': longitude,
+          'location_id': locID,
+          'place_id': placeID,
+          'category': category,
+          'state': state,
+          'startDate': startDate,
+          'endDate': endDate,
+        };
+      }
+    }
+
+    return itemsLatLng;
+  }
+
+  Map<String, Map<String, dynamic>> createCoordinatesExplore(
+      List<Map<String, dynamic>> apiData) {
+    Map<String, Map<String, dynamic>> itemsLatLng = {};
+
+    for (final data in apiData) {
+      final locations = data['locations'];
+      final name = data['name'];
+
+      final List<dynamic> imagesJson = data['images'];
+      final List<Map<String, dynamic>> images =
+          imagesJson.cast<Map<String, dynamic>>();
+
+      for (final location in locations) {
+        final locName = location['loc_name'];
+        final latitude = location['lat'];
+        final longitude = location['lon'];
+        final locID = location['location_id'];
+        final category = data['category'];
+        final placeID = data['place_id'];
+        final state = data['state'];
+        final startDate = DateTime.parse(data['start_date']);
+        final endDate = DateTime.parse(data['end_date']);
+
+        itemsLatLng[name] = {
+          'name': name,
+          'loc_name': locName,
+          'latitude': latitude,
+          'longitude': longitude,
+          'location_id': locID,
+          'place_id': placeID,
+          'category': category,
+          'state': state,
+          'startDate': startDate,
+          'endDate': endDate,
+          'images': images,
+        };
+      }
+    }
+
+    return itemsLatLng;
+  }
+
+  Map<String, Map<String, dynamic>> createCoordinatesJoin(
+      List<Map<String, dynamic>> apiData) {
+    Map<String, Map<String, dynamic>> itemsLatLng = {};
+
+    for (final data in apiData) {
+      final locations = data['locations'];
+      final name = data['name'];
+
+      for (final location in locations) {
+        final locName = location['loc_name'];
+        final latitude = location['lat'];
+        final longitude = location['lon'];
+        final locID = location['location_id'];
+        final category = data['category'];
+        final placeID = data['place_id'];
+        final state = data['state'];
+        final startDate = DateTime.parse(data['start_date']);
+        final endDate = DateTime.parse(data['end_date']);
+
+        itemsLatLng[name] = {
           'name': name,
           'loc_name': locName,
           'latitude': latitude,
