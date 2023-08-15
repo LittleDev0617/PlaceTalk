@@ -33,16 +33,6 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 
 ---
 
-### Built With
-- FrontEnd
-    - ![flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white)  
-- BackEnd
-    - ![nodejs](https://img.shields.io/badge/nodejs-339933?style=for-the-badge&logo=Node.js&logoColor=white)
-    - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
-    - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-
-### License
-### References
 ### Contributors
 - 🧑 정덕용
     - Jung Deok Yong
@@ -61,3 +51,18 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
     - littledev0617@naver.com
     - 백엔드 개발    
 
+
+### Built With
+- FrontEnd
+    - ![flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white)  
+- BackEnd
+    - ![nodejs](https://img.shields.io/badge/nodejs-339933?style=for-the-badge&logo=Node.js&logoColor=white)
+    - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
+    - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### License
+Distributed under the MIT License. See LICENSE.md for more information.
+
+### References
+https://flutter.dev/
+https://pub.dev/packages/bloc
