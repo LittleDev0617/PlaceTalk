@@ -64,5 +64,11 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 Distributed under the MIT License. See LICENSE.md for more information.
 
 ### References
-https://flutter.dev/
-https://pub.dev/packages/bloc
+https://flutter.dev/  
+https://pub.dev/packages/flutter_naver_map  
+https://pub.dev/packages/bloc  
+https://pub.dev/packages/auto_route  
+
+nodejs 에러 핸들링  
+https://yohanpro.com/posts/nodejs/error-handling  
+https://velog.io/@mainfn/Node.js-express-multer로-이미지-업로드-구현하기  
