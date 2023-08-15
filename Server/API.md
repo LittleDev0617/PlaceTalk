@@ -126,6 +126,29 @@ level : access level
   }
 ]
 ```
+### GET /api/users/join/:place_id
+
+place_id 에 참가합니다.
+
+#### Request
+
+\*place_id - path parameter  
+
+#### Response
+
+<hr />
+
+### GET /api/users/exit/:place_id
+
+place_id 에서 나옵니다.
+
+#### Request
+
+\*place_id - path parameter  
+
+#### Response
+
+<hr />
 
 ### GET /api/users/post
 
@@ -381,20 +404,6 @@ top10 place 조회
   ...
 ]
 ```
-
-### GET /api/places/:place_id/join
-
-핫플레이스 참가
-
-#### Request
-
-\*place_id - path parameter
-
-#### Response
-
-place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
-
-<hr />
 
 ## Booth
 
