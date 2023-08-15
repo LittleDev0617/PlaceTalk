@@ -445,7 +445,10 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 ```c
 {
     "feed_id" : int,
-    "place_id" : int,
+    "place" : {
+      "place_id": int,
+      "name": string
+    },
     "user_id" : int,
     "content" : string,
     "nickname" : string,
@@ -472,44 +475,47 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 // /api/feeds
 [
   {
-    "feed_id": 26,
+    "feed_id": 67,
     "place_id": 16,
     "user_id": 1,
-    "content": "이 돌아왔습니다. 10월 14일(금)부터 16일(일)까지 개최..",
+    "content": "지성과 감성의 콜라보레이션 스테이 '현대카드 다빈치모텔'이 돌아왔습니다. 10월 14일(금)부터 16일(일)까지 개최..",
     "write_time": "2023-09-30 18:00:00",
     "images": [
-      { "image_id": "9cbb6ffc-58b0-4bda-aaa3-c69c62d7ab62.png", "order": 0 },
-      { "image_id": "2dd98d88-657c-4895-addb-b25848316f2a.png", "order": 1 },
-      { "image_id": "aba8e48c-4bbb-4a71-991e-981992d06987.png", "order": 2 },
-      { "image_id": "2bff558a-f422-4caf-a98d-add9dfa158ea.png", "order": 3 },
-      { "image_id": "619f00e4-62c2-486c-b53f-1170710fbc58.png", "order": 4 }
+      { "image_id": "181093cb-93d0-45fd-b493-657d2ff96714.png", "order": 0 },
+      { "image_id": "3789f396-e896-4e21-8372-0ba9f1f9f07c.png", "order": 1 },
+      { "image_id": "90bc2dfd-7327-4172-a600-fc9c124a1ad8.png", "order": 2 },
+      { "image_id": "979d2f62-3afd-4940-98eb-3e512a2bc928.png", "order": 3 },
+      { "image_id": "2c9fe8b9-35dc-4f98-890e-cb19a3690afc.png", "order": 4 }
     ],
+    "place": { "place_id": 16, "name": "현대카드 다빈치모텔" },
     "nickname": "관리자"
   },
   {
-    "feed_id": 35,
+    "feed_id": 76,
     "place_id": 1,
     "user_id": 10,
-    "content": "열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다.\n행사 당일날 뵙겠습니다^^",
+    "content": "이번 축제 행사는 정말 열심히 준비했습니다.\n열심히 준비한만큼 다들 즐겨주셨으면 좋겠습니다.\n행사 당일날 뵙겠습니다^^",
     "write_time": "2023-09-12 18:00:00",
     "images": [
-      { "image_id": "4252991c-71ef-4fdb-a5f1-da0b5a154cdd.png", "order": 0 },
-      { "image_id": "5cf51577-20a6-4e97-8d53-e7b9dfc83b11.png", "order": 1 },
-      { "image_id": "9ed49e02-1fe8-4526-ae16-9880f1f13c52.png", "order": 2 }
+      { "image_id": "cba931f5-58c6-406a-971d-42732aebf59c.png", "order": 0 },
+      { "image_id": "dd31deb6-78fa-4a33-bf5f-1b34f79b6b05.png", "order": 1 },
+      { "image_id": "b3372ecb-9979-4c50-b4f7-7bd091c92471.png", "order": 2 }
     ],
+    "place": { "place_id": 1, "name": "건국대 X 세종대 축제" },
     "nickname": "경영대 주점"
   },
   {
-    "feed_id": 27,
+    "feed_id": 68,
     "place_id": 11,
     "user_id": 2,
-    "content": "축제가 올해 10월 5일 개최됩니다. 사회적..",
+    "content": "지난해 코로나 확산 우려에 의해 취소되었던 광주충장 축제가 올해 10월 5일 개최됩니다. 사회적..",
     "write_time": "2023-09-11 18:00:00",
     "images": [
-      { "image_id": "d1b96bde-a150-4858-a365-54f5dce093bd.png", "order": 0 },
-      { "image_id": "fbaf46c4-5132-43c6-b9b9-3d71cf3f3399.png", "order": 1 },
-      { "image_id": "7e8b4f6a-db4a-4f9d-908c-7482f2dfca19.png", "order": 2 }
+      { "image_id": "cc264559-adab-47af-a90d-17c2205f60d9.png", "order": 0 },
+      { "image_id": "7cc13e3e-1cc2-40d1-88a7-1aa19e2fd3c8.png", "order": 1 },
+      { "image_id": "09acb4a1-d176-40df-9bd4-e53ab3269933.png", "order": 2 }
     ],
+    "place": { "place_id": 11, "name": "광주 충장축제" },
     "nickname": "관리자"
   }
 ]
