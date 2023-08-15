@@ -1,6 +1,5 @@
 
 <div align="center">
-
 # PlaceTalk
 ![logo](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2)
 
@@ -51,4 +50,3 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 - 김본수 Kim Bon Soo / devbonsu04@gmail.com
 - 유규민 Yu Kyu Min / littledev0617@naver.com
 
-</div>
