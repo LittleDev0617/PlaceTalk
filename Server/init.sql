@@ -1,6 +1,7 @@
 drop database placetalk;
 create database placetalk;
 use placetalk;
+
 CREATE TABLE `tb_user` (
 	`user_id`	int PRIMARY KEY	NOT NULL,
 	`nickname` varchar(30),
@@ -13,8 +14,10 @@ CREATE TABLE `tb_place` (
 	`category`	varchar(20)	NULL,
 	`state`	int	NULL	DEFAULT 0,
 	`start_date`	datetime,
-	`end_date`	datetime
+	`end_date`	datetime,
+	`top10` int DEFAULT 0
 );
+
 
 CREATE TABLE `tb_comment` (
 	`comment_id`	int auto_increment PRIMARY KEY	NOT NULL,
@@ -98,8 +101,6 @@ CREATE TABLE `tb_info` (
 	`content`	varchar(300)	NULL,
 	`is_schedule` int DEFAULT 0 NOT NULL
 );
-
-
 
 ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_place_TO_tb_image_1` FOREIGN KEY (
 	`place_id`
@@ -201,4 +202,4 @@ REFERENCES `tb_user` (
 
 
 
-INSERT INTO tb_user VALUES(0);
+INSERT INTO tb_user VALUES(0, 'Admin', 'admin@admin.com');

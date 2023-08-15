@@ -2,12 +2,9 @@ var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
-const { getDistance, uploadMW, upload, errorWrapper } = require('../utils/util');
-const { getPlaces, createPlace } = require('../services/places');
-const { joinPlace, isOrganizer, isAdmin } = require('../services/user');
-const { getBooths, createBooth } = require('../services/booth');
-const { getFeeds, createFeed, editFeed, deleteFeed } = require('../services/feed');
-const { getInfos, createInfo, editInfo, deleteInfo } = require('../services/info');
+const { errorWrapper, upload } = require('../utils/util');
+const { getPlaces, createPlace, getTop10Places, addTop10Place, removeTop10Place } = require('../services/place');
+const { joinPlace, isAdmin } = require('../services/user');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -27,6 +24,23 @@ router.get('/', async (req, res, next) => {
 	res.json(places);
 });
 
+router.get('/top10', async (req, res, next) => {
+	const { place_id } = req.body;
+	const places = await getTop10Places(place_id);
+	res.json(places);
+});
+
+router.post('/top10', async (req, res, next) => {
+	const { place_id } = req.body;
+	await addTop10Place(place_id);
+	res.json({ message : "Successful" });
+});
+
+router.delete('/top10', async (req, res, next) => {
+	const { place_id } = req.body;
+	await removeTop10Place(place_id);
+	res.json({ message : "Successful" });
+});
 
 // 핫플 추가		- 오직 어드민만
 // placeName : string
@@ -35,13 +49,17 @@ router.get('/', async (req, res, next) => {
 // startDate : datetime
 // endDate	 : dateTime
 // locations : List<Location>
-router.post('/', isAdmin, async (req, res, next) => {    
+router.post('/', isAdmin, upload.single('image'), async (req, res, next) => {    
 	const { placeName, category, state, startDate, endDate, locations } = req.body;	
 
 	if(!(typeof(placeName) === 'string' && typeof(state) === 'number' && typeof(category) === 'string'))
 		throw new BadRequestError('Bad data.');
+	
+	let image;
+	if(req.file)
+		image = req.file.image;
 
-	await createPlace({ placeName, category, state, startDate, endDate, locations });
+	await createPlace({ placeName, category, state, startDate, endDate, locations, image });
 
 	res.json({ message : "Successful" });
 });
