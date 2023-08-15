@@ -35,7 +35,6 @@ CREATE TABLE `tb_post` (
 	`user_id`	int	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`create_date`	datetime	NULL,
-	`title`	varchar(50)	NULL,
 	`content`	varchar(1000)	NOT NULL,
 	`likes`	int	NOT NULL	DEFAULT 0
 );
@@ -199,7 +198,3 @@ ALTER TABLE `tb_comment_likes` ADD CONSTRAINT `FK_tb_user_TO_tb_comment_likes_1`
 REFERENCES `tb_user` (
 	`user_id`
 );
-
-
-
-INSERT INTO tb_user VALUES(0, 'Admin', 'admin@admin.com');

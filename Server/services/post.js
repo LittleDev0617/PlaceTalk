@@ -24,23 +24,24 @@ async function getPosts(options) {
     obj.push(postPerPage);
 
     let posts = await conn.query(query, obj);
+    console.log(posts);
     const user = await getUsers({ user_id: posts[0].user_id });
 
     posts[0].user = user[0];
     return posts;
 }
 
-// post : title, content, place_id, user_id
+// post : content, place_id, user_id
 async function createPost(post) {
-    const { title, content, place_id, user_id } = post;
+    const { content, place_id, user_id } = post;
     
-    return await conn.query('INSERT INTO tb_post(user_id, place_id, create_date, title, content) VALUES(?, ?, NOW(), ?, ?)', 
-				[user_id, place_id, title, content]);
+    return await conn.query('INSERT INTO tb_post(user_id, place_id, create_date, content) VALUES(?, ?, NOW(), ?)', 
+				[user_id, place_id, content]);
 }
 
 async function editPost(post) {
-    const { title, content, post_id } = post;
-    return await conn.query('UPDATE tb_post SET title = ?, content = ? WHERE post_id = ?', [title, content, post_id]);
+    const { content, post_id } = post;
+    return await conn.query('UPDATE tb_post SET content = ? WHERE post_id = ?', [content, post_id]);
 }
 
 async function deletePost(post_id) {

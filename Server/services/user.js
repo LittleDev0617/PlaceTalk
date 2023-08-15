@@ -1,7 +1,7 @@
 const conn = require("../utils/db");
 const { AlreadyJoinError, TooManyJoinError, UnauthorizedError, BadRequestError } = require("../utils/error");
 const { getPlaces } = require("./place");
-const { errorWrapper } = require("../utils/util");
+const { errorWrapper, ADMIN_TOKEN } = require("../utils/util");
 
 async function getUsers(user_id) {        
     return await conn.query('SELECT * FROM tb_user WHERE user_id = ?', [user_id]);    
@@ -61,6 +61,9 @@ async function changeNickname(user_id, nickname) {
     return await conn.query('UPDATE tb_user SET nickname = ? WHERE user_id = ?', [nickname, user_id]);
 }
 
+const isAdmin = function(user_id) {
+    return user_id == ADMIN_TOKEN;
+}
 module.exports = {
     getUsers, createUser, getUserPlace, joinPlace, isOrganizerOfPlace, grantAdminRole, removeAdminRole, changeNickname, getNickname, exitPlace,
     
@@ -71,13 +74,14 @@ module.exports = {
         if(!place_id)
             place_id = req.body.place_id;
         
-        if(req.user.uid != 0 && !(await isOrganizerOfPlace(req.user.uid, place_id)))
+        if(!isAdmin() && !(await isOrganizerOfPlace(req.user.uid, place_id)))
             throw new UnauthorizedError('Cannot acces');
         
         next();
     }),
-    isAdmin : errorWrapper(async function (req, res, next) {
-        if(req.user.uid != 0)
+    isAdmin,
+    isAdminMW : errorWrapper(async function (req, res, next) {
+        if(!isAdmin(req.user.uid))
             throw new UnauthorizedError('Cannot access.');
 
         next();

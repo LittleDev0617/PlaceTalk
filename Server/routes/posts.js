@@ -5,6 +5,7 @@ const { createPost, getPosts, editPost, deletePost, pressPostLike } = require('.
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { errorWrapper } = require('../utils/util');
 const { getComments, createComment, deleteComment } = require('../services/comment');
+const { getPlaces } = require('../services/place');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -35,20 +36,24 @@ router.get('/', getPostsC);
 router.get('/:post_id(\\d+)', getPostsC);
 
 // 게시글 추가
-router.post('', async (req, res, next) => {    
-	const { title, content, place_id } = req.body;
+router.post('', errorWrapper(async (req, res, next) => {    
+	const { content, place_id } = req.body;
 
-	if(!(typeof(title) === 'string' && typeof(content) === 'string'))
+	if(!(typeof(content) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
-	await createPost({ title, content, place_id, user_id: req.user.uid });
+	const userJoinPlaces = await getPlaces({ user_id: req.user.uid, place_id });
+	if(!userJoinPlaces.length)
+		throw new UnauthorizedError('Access denied.');
+
+	await createPost({ content, place_id, user_id: req.user.uid });
 	res.json({ message : "Successful" });
-});
+}));
 
 const isWriter = errorWrapper(async function(req, res, next) {
 	const { post_id } = req.params;
 
-	if(req.user.uid == 0)
+	if(isAdmin())
 		next();
 
 	const posts = await getPosts({ post_id });
@@ -64,13 +69,13 @@ const isWriter = errorWrapper(async function(req, res, next) {
 
 // 게시글 수정
 router.put('/:post_id(\\d+)', isWriter, errorWrapper(async (req, res, next) => {    
-	const { title, content } = req.body;
+	const { content } = req.body;
 	const { post_id } = req.params;
 
-	if(!(typeof(title) === 'string' && typeof(content) === 'string'))
+	if(!(typeof(content) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
-	await editPost({ title, content, post_id });
+	await editPost({ content, post_id });
 	res.json({ message : "Successful" });
 }));
 

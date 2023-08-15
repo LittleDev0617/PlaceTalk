@@ -2,7 +2,7 @@ var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
 const { upload, errorWrapper } = require('../utils/util');
-const { isAdmin } = require('../services/user');
+const { isAdminMW } = require('../services/user');
 const { getBooths, createBooth } = require('../services/booth');
 var router = express.Router();
 
@@ -27,7 +27,7 @@ router.get('/:booth_id(\\d+)', getBoothsC);
 // content : string
 // on_time : string
 // location
-router.post('/', isAdmin, 
+router.post('/', isAdminMW, 
 	upload.fields([{ name: 'images', maxCount: 5 }, { name: 'name' }, { name: 'content' }, { name: 'on_time' }, { name: 'location' }]), 
    errorWrapper(async (req, res, next) => {    	
 	let { name, content, on_time, location, location_id } = req.body;
