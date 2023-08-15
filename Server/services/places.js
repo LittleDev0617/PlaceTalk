@@ -72,10 +72,7 @@ async function createPlace(place) {
     const { placeName, category, state, startDate, endDate, locations } = place;
     const place_id = (await conn.query('INSERT INTO tb_place(name, category, state, start_date, end_date) VALUES(?, ?, ?, ?, ?)', 
 				[placeName, category, state, startDate, endDate])).insertId;
-
-    // create board
-    await conn.query('INSERT INTO tb_board(place_id) VALUES(?)', place_id);
-    
+                
     for (let location of locations) {
         createLocation({ id: 'place_id', value: place_id }, location);
     }

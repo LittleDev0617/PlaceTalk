@@ -33,8 +33,9 @@ router.get('/:feed_id', getFeed);
 // place_id : int
 // title : string
 // content : string
-router.post('/', isOrganizer, 
- upload.fields([{ name: 'images', maxCount: 5 }, { name: 'content' }]), async (req, res, next) => {
+router.post('/',
+ upload.fields([{ name: 'images', maxCount: 5 }, { name: 'content' }]),
+ isOrganizer,  async (req, res, next) => {
 	const { content, date, place_id } = req.body;
 
 	await createFeed({ content, date, images: req.files.images }, place_id, req.user.uid);

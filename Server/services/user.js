@@ -8,8 +8,10 @@ async function getUsers(user_id) {
     return await conn.query('SELECT * FROM tb_user WHERE user_id = ?', [user_id]);    
 }
 
-async function createUser(user_id) {
-    return await conn.query('INSERT INTO tb_user(user_id) VALUES(?)', [user_id]);
+
+async function createUser(user) {
+    const { user_id, nickname, email } = user;
+    return await conn.query('INSERT INTO tb_user(user_id, nickname, email) VALUES(?,?,?)', [user_id, nickname, email]);
 }
 
 async function getUserPlace(user_id) {
@@ -31,7 +33,7 @@ async function joinPlace(user_id, place_id) {
 }
 
 async function isOrganizerOfPlace(user_id, place_id) {
-    const users = await conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ? AND user_id = ?', [place_id, user_id]);
+    const users = await conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ? AND user_id = ?', [place_id, user_id]);    
     return users.length > 0;
 }
 
@@ -43,8 +45,8 @@ async function removeAdminRole(user_id, place_id) {
     return await conn.query('DELETE FROM tb_organizer WHERE user_id = ? AND place_id = ?', [user_id, place_id]);
 }
 
-async function getNickname(user_id, place_id) {
-    return await conn.query('SELECT nickname FROM tb_organizer WHERE user_id = ? AND place_id = ?', [user_id, place_id]);
+async function getNickname(user_id) {
+    return await conn.query('SELECT nickname FROM tb_user WHERE user_id = ?', [user_id]);
 }
 
 async function changeNickname(user_id, place_id, nickname) {
@@ -58,7 +60,9 @@ module.exports = {
         let { place_id } = req.params;
         if(!place_id)
             place_id = req.query.place_id;
-
+        if(!place_id)
+            place_id = req.body.place_id;
+        
         if(req.user.uid != 0 && !(await isOrganizerOfPlace(req.user.uid, place_id)))
             throw new UnauthorizedError('Cannot acces');
         

@@ -21,9 +21,11 @@ async function getComments(options) {
     obj.push(offset * commentsPerPage);
     obj.push(commentsPerPage);
 
-    const posts = await conn.query(query, obj);
+    let comments = await conn.query(query, obj);
+    const user = await getUsers({ user_id: comments[0].user_id });
 
-    return posts;
+    comments[0].user = user[0];
+    return comments;
 }
 
 async function createComment(comment) {
@@ -48,15 +50,16 @@ async function isPressLike(comment_id, user_id) {
 
 async function pressCommentLike(comment_id, user_id) {
     const isPressed = await isPressLike(comment_id, user_id);    
-    const { likes } = await getCommentLikes(comment_id);
+    const likes = await getPostLikes(comment_id);
+    
     // 좋아요 누른 상태면
     if(isPressed) {
         await conn.query('DELETE FROM tb_comment_likes WHERE comment_id = ?', [comment_id]);
-        await conn.query('UPDATE tb_comment SET likes = ? WHERE comment_id = ?', [likes - 1]);
+        await conn.query('UPDATE tb_comment SET likes = ? WHERE comment_id = ?', [likes - 1, comment_id]);
     } else {
         // 안누르면 좋아요 추가
         await conn.query('INSERT INTO tb_comment_likes VALUES(?, ?)', [comment_id, user_id]);
-        await conn.query('UPDATE tb_comment SET likes = ? WHERE comment_id = ?', [likes + 1]);
+        await conn.query('UPDATE tb_comment SET likes = ? WHERE comment_id = ?', [likes + 1, comment_id]);
     }
 }
 

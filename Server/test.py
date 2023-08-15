@@ -3,16 +3,16 @@ from naver_parser import link2lat_lon
 import json
 import string
 
-HOST_API = 'http://localhost:80/api/'
+HOST_API = 'http://localhost:3000/api/'
 
-for line in open('API.md', 'r', encoding='utf-8').readlines():
-    if 'GET' in line or 'POST' in line:
-        api = line[4:].rstrip()
-        method, url = api.split()
-        print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
+# for line in open('API.md', 'r', encoding='utf-8').readlines():
+#     if 'GET' in line or 'POST' in line:
+#         api = line[4:].rstrip()
+#         method, url = api.split()
+#         print(f'[{method}\t{url}](#{"".join(filter(lambda x: x in string.ascii_lowercase + string.digits + " _", api.lower())).replace(" ", "-")})  ')
     
     
-exit()
+# exit()
 
 s = Session()
 r = s.get(HOST_API+'users/auth?token=0')
@@ -105,6 +105,7 @@ def add_booth():
         
         data = booth.split('\n')
         myBooth = {}        
+        myBooth['location_id'] = 1
         myBooth['name'] = data[0]
         myBooth['on_time'] = data[1]
         myBooth['content'] = '\n'.join(data[4:])
@@ -118,12 +119,12 @@ def add_booth():
             images.append(('images', (image, open('media/' + image, 'rb').read())))
         
         myBooth['location'] = json.dumps(myBooth['location'])
-        r = s.post(HOST_API+f'places/1/booth', data=myBooth, files=images)
+        r = s.post(HOST_API+f'booths', data=myBooth, files=images)
         print(r.text)
 
 # add_booth()
 
-r = s.get(HOST_API+f'places/1/booth')
+r = s.get(HOST_API+f'booths/1')
 print(r.text)
 
 import glob
@@ -156,8 +157,8 @@ def add_feed():
         for image in files[fileIndex:fileIndex+imageCnt]:
             images.append(('images', (image, open(image, 'rb').read())))
         
-        feed = { 'content': content, 'date':date }
-        r = feed_session.post(HOST_API+f'places/{place_id}/feed', data=feed, files=images)
+        feed = { 'content': content, 'date':date, 'place_id':place_id }
+        r = feed_session.post(HOST_API+f'feeds', data=feed, files=images)
         print(r.text)
 
         fileIndex += imageCnt
@@ -167,7 +168,7 @@ def add_feed():
     
 # add_feed()
     
-r = s.get(HOST_API+f'places/1/feed')
+r = s.get(HOST_API+f'feeds/1')
 print(r.text)
 
 def add_info():
@@ -177,18 +178,39 @@ def add_info():
     infos = txt.split('\n------------------------------------------------\n')
     for info in infos:        
         data = info.split('\n')
-        myInfo = {}        
+        myInfo = { 'place_id': 1 }
         myInfo['title'] = data[0]
         myInfo['content'] = '\n'.join(data[1:])
         myInfo['is_schedule'] = myInfo['title'] == '일정표'        
         
-        r = s.post(HOST_API+f'places/1/info', json=myInfo)
+        r = s.post(HOST_API+f'infos', json=myInfo)
         print(r.text)
     
 # add_info()
     
-r = s.get(HOST_API+f'places/1/info')
+r = s.get(HOST_API+f'infos?place_id=1')
 print(r.text)
+
+
+# r = s.get(HOST_API+f'places/12/join')
+# print(r.text)
+
+# r = s.get(HOST_API+f'places/33/join')
+# print(r.text)
+
+# r = s.get(HOST_API+f'places/5/join')
+# print(r.text)
+
+def add_post(place_id, title, content):
+    global s
+    r = s.post(HOST_API+'posts', json={ 'place_id': place_id, 'title':title, 'content':content})
+    print(r.text)
+
+# while True:    
+#     add_post(1, input(), input())
+
+
+
 exit()
 # print(r.cookies)
 

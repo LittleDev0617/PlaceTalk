@@ -1,6 +1,7 @@
 const express = require('express');
 const conn = require('../utils/db');
 const jwt = require('../utils/jwt');
+const { getRandomNickname } = require('@woowa-babble/random-nickname');
 
 const router = express.Router();
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
@@ -21,7 +22,7 @@ router.get('/auth', errorWrapper(async (req, res, next) => {
     let users = await getUsers(user_id);
     
     if(!users.length)
-        await createUser(user_id);
+        await createUser({ user_id, nickname: getRandomNickname('animals'), email: 'test@exapmle.com' });
 
     const pay = {
         uid : user_id,

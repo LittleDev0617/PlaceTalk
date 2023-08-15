@@ -10,12 +10,9 @@ var router = express.Router();
 // jwt 인증 middleware
 router.use(auth);
 
-// place_id 핫플의 여러 게시글 조회
-// offset 	   : 시작 페이지
-// postPerPage : 페이지 당 게시글 수
-// likeOrder   : bool / 좋아요 순 정렬 false -> 시간순 정렬
-router.get('/', async (req, res, next) => {    
+const getPostsC = async (req, res, next) => {    
 	let { offset, postPerPage, likeOrder, place_id } = req.query;
+	const { post_id } = req.params;
 
 	if(!offset || typeof(offset) !== 'number')
 		offset = 0
@@ -26,9 +23,16 @@ router.get('/', async (req, res, next) => {
 	if(!likeOrder || typeof(likeOrder) !== 'boolean')
 		likeOrder = false;
 
-	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id });
+	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id, post_id });
 	res.json(posts);
-});
+};
+
+// place_id 핫플의 여러 게시글 조회
+// offset 	   : 시작 페이지
+// postPerPage : 페이지 당 게시글 수
+// likeOrder   : bool / 좋아요 순 정렬 false -> 시간순 정렬
+router.get('/', getPostsC);
+router.get('/:post_id(\\d+)', getPostsC);
 
 // 게시글 추가
 router.post('', async (req, res, next) => {    
