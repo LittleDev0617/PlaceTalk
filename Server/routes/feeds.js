@@ -16,7 +16,7 @@ const getFeed = async function (req, res, next) {
 		offset = 0
 	
 	if(!feedPerPage || typeof(feedPerPage) !== 'number')
-		feedPerPage = 10
+		feedPerPage = 20
 
 	let feeds = await getFeeds({ place_id, feed_id, offset, feedPerPage });
 	res.json(feeds);

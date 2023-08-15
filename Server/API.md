@@ -445,13 +445,10 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 ```c
 {
     "feed_id" : int,
-    "place" : {
-      "place_id": int,
-      "name": string
-    },
+    "place_id" : int,
     "user_id" : int,
     "content" : string,
-    "nickname" : string,
+    "nickname" : string,  // 전체 조회시(필터링 X) 해당 장소 이름. 아니면 게시자 닉네임
     "write_time" : datetime,
     "images" : List<Image>
 }
@@ -487,8 +484,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
       { "image_id": "979d2f62-3afd-4940-98eb-3e512a2bc928.png", "order": 3 },
       { "image_id": "2c9fe8b9-35dc-4f98-890e-cb19a3690afc.png", "order": 4 }
     ],
-    "place": { "place_id": 16, "name": "현대카드 다빈치모텔" },
-    "nickname": "관리자"
+    "nickname": "현대카드 다빈치모텔"
   },
   {
     "feed_id": 76,
@@ -501,8 +497,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
       { "image_id": "dd31deb6-78fa-4a33-bf5f-1b34f79b6b05.png", "order": 1 },
       { "image_id": "b3372ecb-9979-4c50-b4f7-7bd091c92471.png", "order": 2 }
     ],
-    "place": { "place_id": 1, "name": "건국대 X 세종대 축제" },
-    "nickname": "경영대 주점"
+    "nickname": "건국대 X 세종대 축제"
   },
   {
     "feed_id": 68,
@@ -515,8 +510,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
       { "image_id": "7cc13e3e-1cc2-40d1-88a7-1aa19e2fd3c8.png", "order": 1 },
       { "image_id": "09acb4a1-d176-40df-9bd4-e53ab3269933.png", "order": 2 }
     ],
-    "place": { "place_id": 11, "name": "광주 충장축제" },
-    "nickname": "관리자"
+    "nickname": "광주 충장축제"
   }
 ]
 ```
