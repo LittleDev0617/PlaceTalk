@@ -1,9 +1,14 @@
+
+<div align="center">
+
 # PlaceTalk
 ![logo](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2)
 
 ![main](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/4f45b4a3-c0b1-45a7-8fcc-b1c6db1f7ce9)
 
 ***
+
+# About the PlaceTalk
 
 ## 1. What is PlaceTalk?
 지도 기반 핫플레이스 제공 플랫폼  
@@ -27,3 +32,23 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 사용자는 자신의 위치를 기반으로 주변에 있는 핫플레이스와 행사 정보를 확인할 수 있습니다.  
 
 <img width="300" height="633" src="https://github.com/LittleDev0617/PlaceTalk/assets/35802632/f46d5d36-9a15-4935-9139-e9978a4e628a">
+
+---
+
+### Built With
+- FrontEnd
+    - ![flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white)  
+- BackEnd
+    - ![nodejs](https://img.shields.io/badge/nodejs-339933?style=for-the-badge&logo=Node.js&logoColor=white)
+    - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
+    - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### License
+### References
+### Contributors
+- 정덕용 Jung Deok Yong / jdy3378@gmail.com
+- 홍가란 Hong garan / bbi100205@gmail.com
+- 김본수 Kim Bon Soo / devbonsu04@gmail.com
+- 유규민 Yu Kyu Min / littledev0617@naver.com
+
+</div>
