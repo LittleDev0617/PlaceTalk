@@ -16,7 +16,7 @@ class BoothBloc extends Bloc<BoothEvent, BoothState> {
 
     on<FetchBoothData>((event, emit) async {
       emit(BoothLoading());
-      final datas = await _boothRepo.fetchData(event.placeID);
+      final datas = await _boothRepo.fetchData(event.locID);
 
       Set<NMarker> markers = datas['markers'];
       Map<String, dynamic> itemsLatLng = datas['itemsLatLng'];

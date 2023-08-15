@@ -4,27 +4,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/FeedBlocs/feed_bloc.dart';
 
+import '../../repositories/SessionRepo.dart';
+
 @RoutePage()
-class NoticeEventScreen extends StatelessWidget {
+class NoticeEventScreen extends StatefulWidget {
   const NoticeEventScreen({super.key, this.placeID, this.name});
 
   final int? placeID;
   final String? name;
 
   @override
+  State<NoticeEventScreen> createState() => _NoticeEventScreenState();
+}
+
+class _NoticeEventScreenState extends State<NoticeEventScreen> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
-      child: BlocBuilder<FeedBloc, FeedState>(builder: (context, state) {
-        if (state is FeedInitial) {
-          BlocProvider.of<FeedBloc>(context).add(FetchEventFeedData(placeID!));
+      child: BlocBuilder<FeedEventBloc, FeedState>(builder: (context, state) {
+        if (state is FeedEventInitial) {
           return const SizedBox.shrink();
-        } else if (state is FeedLoading) {
+        } else if (state is FeedEventLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is FeedLoaded) {
+        } else if (state is FeedEventLoaded) {
           return ListView.builder(
             itemCount: state.feedList.length,
-            itemBuilder: ((BuildContext context, index) {
+            itemBuilder: ((BuildContext context, feedIndex) {
               return SizedBox(
                 child: GestureDetector(
                   child: Column(
@@ -40,7 +46,7 @@ class NoticeEventScreen extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          state.feedList[index].nickname,
+                          state.feedList[feedIndex].nickname,
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w600,
@@ -51,7 +57,7 @@ class NoticeEventScreen extends StatelessWidget {
                           onPressed: () {},
                           iconSize: 24,
                           icon: const Icon(
-                            Icons.more_vert,
+                            Icons.more_horiz,
                             color: Colors.black,
                           ),
                         ),
@@ -61,7 +67,7 @@ class NoticeEventScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            state.feedList[index].content,
+                            state.feedList[feedIndex].content,
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
@@ -74,16 +80,17 @@ class NoticeEventScreen extends StatelessWidget {
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
-                              itemCount: state.feedList[index].images.length,
+                              itemCount:
+                                  state.feedList[feedIndex].images.length,
                               itemBuilder: (((BuildContext context, index) {
                                 return Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.amber,
                                     borderRadius: BorderRadius.circular(8),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          'http://125.180.98.19:1234/images/${state.feedList[index].images[index].imageId}'),
+                                      image: NetworkImage(SessionRepo()
+                                          .getImageUrl(state.feedList[feedIndex]
+                                              .images[index].imageId)),
                                     ),
                                   ),
                                   margin: const EdgeInsets.only(right: 5),
@@ -95,7 +102,7 @@ class NoticeEventScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 15),
                           Text(
-                            state.feedList[index].writeTime,
+                            state.feedList[feedIndex].writeTime,
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,

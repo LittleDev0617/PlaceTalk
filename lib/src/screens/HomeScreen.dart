@@ -125,22 +125,22 @@ class HomeScreen extends StatelessWidget {
                 itemCount: 7,
                 itemBuilder: ((BuildContext context, index) {
                   List<String> items = [
+                    '여가',
+                    '복합문화공간',
                     '콘서트',
                     '페스티벌',
                     '지역 축제',
                     '대학 축제',
                     '팝업스토어',
-                    '여가',
-                    '복합문화공간'
                   ];
 
                   List<String> icons = [
+                    'assets/images/leisure.png',
+                    'assets/images/space.png',
                     'assets/images/concert.png',
                     'assets/images/festival.png',
                     'assets/images/local.png',
                     'assets/images/univ.png',
-                    'assets/images/store.png',
-                    'assets/images/store.png',
                     'assets/images/store.png',
                   ];
 
@@ -210,22 +210,23 @@ class HomeScreen extends StatelessWidget {
                   _controller = controller;
 
                   for (NMarker marker in state.markers) {
-                    int index = state.markers.toList().indexOf(marker);
-                    Map<String, dynamic> markerData =
-                        state.itemsLatLng.values.elementAt(index);
+                    marker.setIsHideCollidedCaptions(true);
+                    marker.setIsHideCollidedMarkers(true);
 
                     marker.setOnTapListener(
                       (overlay) {
                         context.router.push(HomeEventRoute(
-                          position: marker.position,
                           placeID:
                               state.itemsLatLng[marker.info.id]!['place_id'],
-                          name: markerData['name'],
+                          position: marker.position,
+                          locID:
+                              state.itemsLatLng[marker.info.id]!['location_id'],
+                          name: state.itemsLatLng[marker.info.id]!['name'],
                         ));
 
                         BlocProvider.of<BoothBloc>(context).add(
-                          FetchBoothData(
-                              state.itemsLatLng[marker.info.id]!['place_id']),
+                          FetchBoothData(state
+                              .itemsLatLng[marker.info.id]!['location_id']),
                         );
                       },
                     );

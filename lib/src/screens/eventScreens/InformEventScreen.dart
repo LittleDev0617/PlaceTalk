@@ -101,17 +101,17 @@ class InformEventScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(16), // 둥근 모서리 설정
         ),
         onPressed: () {
-          AutoRouter.of(context).parent<TabsRouter>()!.navigate(
-                EventsRouter(
+          context.navigateTo(
+            EventsRouter(
+              children: [
+                EventsBoardRouter(
                   children: [
-                    EventsBoardRouter(
-                      children: [
-                        BoardEventRoute(name: name!, placeID: placeID!),
-                      ],
-                    ),
+                    BoardEventRoute(name: name!, placeID: placeID!),
                   ],
                 ),
-              );
+              ],
+            ),
+          );
         }, //POST /api/places/:place_id/booth
         label: Text(
           '게시판 입장',

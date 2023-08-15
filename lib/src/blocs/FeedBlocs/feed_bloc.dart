@@ -18,12 +18,26 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       emit(FeedLoading());
       final feedList = await _feedRepo.fetchFeedData();
       emit(FeedLoaded(feedList: feedList));
+      close();
+    });
+  }
+}
+
+class FeedEventBloc extends Bloc<FeedEvent, FeedState> {
+  final FeedRepo _feedEventRepo;
+  FeedEventBloc(this._feedEventRepo) : super(FeedEventInitial()) {
+    on<FetchEventFeedData>((event, emit) async {
+      emit(FeedEventLoading());
+      final feedList = await _feedEventRepo.fetchEventFeedData(event.placeId);
+      emit(FeedEventLoaded(feedList: feedList));
+
+      void dispose() {
+        super.close();
+      }
     });
 
-    on<FetchEventFeedData>((event, emit) async {
-      emit(FeedLoading());
-      final feedList = await _feedRepo.fetchEventFeedData(event.placeId);
-      emit(FeedLoaded(feedList: feedList));
+    on<ToFeedInitial>((event, emit) {
+      emit(FeedInitial());
     });
   }
 }

@@ -17,3 +17,5 @@ class FetchEventFeedData extends FeedEvent {
   @override
   List<Object> get props => [placeId];
 }
+
+class ToFeedInitial extends FeedEvent {}

@@ -2,6 +2,8 @@ import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ipData.dart';
+
 class SessionRepo {
   Map<String, String> headers = {
     'Content-Type': 'application/json',
@@ -12,7 +14,7 @@ class SessionRepo {
 
   Future<List<Map<String, dynamic>>> get(String api) async {
     headers['Cookie'] = 'token=${await _initCookie()}';
-    final String url = 'http://125.180.98.19:1234/$api';
+    final String url = '$kuIP/$api';
     http.Response response = await http.get(Uri.parse(url), headers: headers);
     final int statusCode = response.statusCode;
     if (statusCode < 200 || statusCode > 400) {
@@ -22,7 +24,7 @@ class SessionRepo {
   }
 
   Future<dynamic> post(String api, dynamic data, String token) async {
-    final String url = 'http://125.180.98.19:1234/$api';
+    final String url = '$kuIP/$api';
     http.Response response = await http.post(Uri.parse(url),
         body: json.encode(data), headers: headers);
     final int statusCode = response.statusCode;
@@ -44,7 +46,7 @@ class SessionRepo {
   }
 
   Future<void> getCookieFromHeader() async {
-    final url = Uri.parse('http://125.180.98.19:1234/api/users/auth?token=0');
+    final url = Uri.parse('$kuIP/api/users/auth?token=0');
 
     final response = await http.get(url);
 
@@ -68,5 +70,9 @@ class SessionRepo {
   void _clearCookie() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('cookie');
+  }
+
+  String getImageUrl(String image) {
+    return '$kuIP/images/$image';
   }
 }

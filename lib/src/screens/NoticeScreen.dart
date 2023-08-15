@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:placetalk/src/repositories/SessionRepo.dart';
 
 import '../blocs/FeedBlocs/feed_bloc.dart';
 
@@ -45,7 +46,9 @@ class NoticeScreen extends StatelessWidget {
             } else if (state is FeedLoaded) {
               return ListView.builder(
                 itemCount: state.feedList.length,
-                itemBuilder: ((BuildContext context, index) {
+                itemBuilder: ((BuildContext context, feedindex) {
+                  print(
+                      '디버그1 $feedindex ${state.feedList[feedindex].content} $feedindex');
                   return SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +63,7 @@ class NoticeScreen extends StatelessWidget {
                             ),
                           ),
                           title: Text(
-                            state.feedList[index].nickname,
+                            state.feedList[feedindex].nickname,
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -71,7 +74,7 @@ class NoticeScreen extends StatelessWidget {
                             onPressed: () {},
                             iconSize: 24,
                             icon: const Icon(
-                              Icons.more_vert,
+                              Icons.more_horiz,
                               color: Colors.black,
                             ),
                           ),
@@ -81,7 +84,7 @@ class NoticeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.feedList[index].content,
+                              state.feedList[feedindex].content,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
@@ -94,16 +97,23 @@ class NoticeScreen extends StatelessWidget {
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
-                                itemCount: state.feedList[index].images.length,
+                                itemCount:
+                                    state.feedList[feedindex].images.length,
                                 itemBuilder: (((BuildContext context, index) {
+                                  print(
+                                      '디버그1-1 $index ${state.feedList[feedindex].images[index].imageId}');
+
                                   return Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.amber,
                                       borderRadius: BorderRadius.circular(8),
                                       image: DecorationImage(
                                         fit: BoxFit.cover,
                                         image: NetworkImage(
-                                            'http://125.180.98.19:1234/images/${state.feedList[index].images[index].imageId}'),
+                                          SessionRepo().getImageUrl(state
+                                              .feedList[feedindex]
+                                              .images[index]
+                                              .imageId),
+                                        ),
                                       ),
                                     ),
                                     margin: const EdgeInsets.only(right: 5),
@@ -115,7 +125,7 @@ class NoticeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 15),
                             Text(
-                              state.feedList[index].writeTime,
+                              state.feedList[feedindex].writeTime,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,

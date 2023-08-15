@@ -91,6 +91,25 @@ class PlaceRepo {
     };
   }
 
+  Future<Map<String, dynamic>> fetchExploreData() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    final apiData = await _sessionRepo.get('api/places/top10');
+
+    List<PlaceModel> dataList =
+        apiData.map((jsonData) => PlaceModel.fromJson(jsonData)).toList();
+
+    Set<NMarker> markers = {};
+    for (int i = 0; i < dataList.length; i++) {
+      markers.addAll(dataList[i].toNMarkers());
+    }
+
+    return {
+      'markers': markers,
+      'itemsLatLng': createCoordinatesMap(apiData),
+    };
+  }
+
   Map<String, Map<String, dynamic>> createCoordinatesMap(
       List<Map<String, dynamic>> apiData) {
     Map<String, Map<String, dynamic>> itemsLatLng = {};
@@ -103,6 +122,7 @@ class PlaceRepo {
         final locName = location['loc_name'];
         final latitude = location['lat'];
         final longitude = location['lon'];
+        final locID = location['location_id'];
         final category = data['category'];
         final placeID = data['place_id'];
         final state = data['state'];
@@ -114,6 +134,7 @@ class PlaceRepo {
           'loc_name': locName,
           'latitude': latitude,
           'longitude': longitude,
+          'location_id': locID,
           'place_id': placeID,
           'category': category,
           'state': state,

@@ -8,7 +8,7 @@ class FeedRepo {
 
   Future<List<FeedModel>> fetchFeedData() async {
     await Future.delayed(const Duration(seconds: 1));
-    final apiData = await _sessionRepo.get('api/places/feed');
+    final apiData = await _sessionRepo.get('api/feeds');
 
     List<FeedModel> feedList = List<FeedModel>.from(
         apiData.map((jsonData) => FeedModel.fromJson(jsonData)));
@@ -19,7 +19,7 @@ class FeedRepo {
   Future<List<FeedModel>> fetchEventFeedData(int placeID) async {
     await Future.delayed(const Duration(seconds: 1));
 
-    final apiData = await _sessionRepo.get('api/places/$placeID/feed');
+    final apiData = await _sessionRepo.get('api/feeds?place_id=$placeID');
 
     List<FeedModel> feedList = List<FeedModel>.from(
         apiData.map((jsonData) => FeedModel.fromJson(jsonData)));

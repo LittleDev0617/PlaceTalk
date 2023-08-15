@@ -46,6 +46,8 @@ class App extends StatelessWidget {
           BlocProvider(create: (context) => FeedBloc(FeedRepo(SessionRepo()))),
           BlocProvider(
               create: (context) => ExploreBloc(PlaceRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => FeedEventBloc(FeedRepo(SessionRepo()))),
         ],
         child: ScreenUtilInit(
           designSize: const Size(384, 832),

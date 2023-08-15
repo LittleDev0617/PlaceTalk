@@ -54,9 +54,9 @@ class ExploreScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Text(
-              '플톡이 선별한 전국 행사',
+              '플톡이 뽑은 전국 핫플',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -96,7 +96,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
     if (_pageController.page != index.toDouble()) {
       _pageController.animateToPage(
         index,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
     }
@@ -124,15 +124,14 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
             itemCount: state.datas.length,
             onPageChanged: _onPageChanged,
             itemBuilder: (BuildContext context, int index) {
-              String item = state.datas.keys.toList()[index];
               double delta = index - _currentPage;
+
+              String item = state.datas.keys.toList()[index];
 
               if (delta > 0) {
               } else {}
 
               double translateY = delta * 20;
-
-              print(state.datas);
 
               return Center(
                 child: GestureDetector(
@@ -147,7 +146,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                     );
                   },
                   child: Transform.translate(
-                    offset: Offset(0, translateY),
+                    offset: Offset(0, translateY - 50),
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(

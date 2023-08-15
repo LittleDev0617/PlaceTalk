@@ -130,7 +130,7 @@ class _BoardDetailEventScreenState extends State<BoardDetailEventScreen> {
                     onPressed: () {},
                     iconSize: 28,
                     icon: const Icon(
-                      Icons.more_vert,
+                      Icons.more_horiz,
                       color: Colors.black,
                     ),
                   ),

@@ -8,10 +8,10 @@ sealed class BoothEvent extends Equatable {
 }
 
 class FetchBoothData extends BoothEvent {
-  final int placeID;
+  final int locID;
 
-  const FetchBoothData(this.placeID);
+  const FetchBoothData(this.locID);
 
   @override
-  List<Object> get props => [placeID];
+  List<Object> get props => [locID];
 }

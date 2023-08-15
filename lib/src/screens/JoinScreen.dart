@@ -61,6 +61,9 @@ class JoinScreen extends StatelessWidget {
                   : ListView.separated(
                       itemCount: state.itemsLatLng.length,
                       itemBuilder: ((BuildContext context, index) {
+                        var item = state.itemsLatLng[
+                            state.itemsLatLng.keys.toList()[index]];
+
                         return ListTile(
                           leading: const Icon(
                             Icons.bookmark_outline_rounded,
@@ -95,13 +98,15 @@ class JoinScreen extends StatelessWidget {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
-                                '${DateFormat('M.d').format(state.itemsLatLng[state.itemsLatLng.keys.toList()[index]]!['startDate'])}~${DateFormat('M.d').format(state.itemsLatLng[state.itemsLatLng.keys.toList()[index]]!['endDate'])}',
+                                item!['state'] == 0
+                                    ? '상시'
+                                    : '${DateFormat('M.d').format(item['startDate'])}~${DateFormat('M.d').format(item['endDate'])}',
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.black,
+                                  color: const Color(0xffadadad),
                                 ),
                               ),
                             ],
@@ -109,7 +114,6 @@ class JoinScreen extends StatelessWidget {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const VerticalDivider(),
                               const SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
@@ -117,7 +121,7 @@ class JoinScreen extends StatelessWidget {
                                     BoardEventRoute(
                                         name: state.itemsLatLng.keys
                                             .toList()[index],
-                                        placeID: 1),
+                                        placeID: item['place_id']),
                                   );
                                 },
                                 child: const Icon(
@@ -127,15 +131,21 @@ class JoinScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              const VerticalDivider(),
-                              const SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
                                   context.router.push(
                                     EventLandingRoute(
-                                        name: state.itemsLatLng.keys
-                                            .toList()[index],
-                                        placeID: 1),
+                                      name: state.itemsLatLng.keys
+                                          .toList()[index],
+                                      placeID: item['place_id'],
+                                      children: [
+                                        InformEventRoute(
+                                          name: state.itemsLatLng.keys
+                                              .toList()[index],
+                                          placeID: item['place_id'],
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 },
                                 child: const Icon(

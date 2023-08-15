@@ -19,3 +19,16 @@ class FeedLoaded extends FeedState {
   @override
   List<Object> get props => [feedList];
 }
+
+class FeedEventInitial extends FeedState {}
+
+class FeedEventLoading extends FeedState {}
+
+class FeedEventLoaded extends FeedState {
+  final List<FeedModel> feedList;
+
+  const FeedEventLoaded({required this.feedList});
+
+  @override
+  List<Object> get props => [feedList];
+}

@@ -10,6 +10,7 @@ import '../routes/routes.gr.dart';
 @RoutePage()
 class HomeEventScreen extends StatefulWidget {
   final int placeID;
+  final int locID;
   final String name;
   final NLatLng position;
 
@@ -17,7 +18,8 @@ class HomeEventScreen extends StatefulWidget {
     super.key,
     required this.name,
     required this.position,
-    @PathParam('placeID') required this.placeID,
+    required this.placeID,
+    @PathParam('placeID') required this.locID,
   });
 
   @override
@@ -66,24 +68,11 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
           } else if (state is BoothLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is BoothLoaded) {
-            if (state.itemsLatLng.isEmpty) {
+            if (state.markers.isEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                AutoRouter.of(context).parent<TabsRouter>()!.navigate(
-                      EventsRouter(
-                        children: [
-                          EventLandingRoute(
-                            placeID: widget.placeID,
-                            name: widget.name,
-                            children: [
-                              InformEventRoute(
-                                placeID: widget.placeID,
-                                name: widget.name,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
+                context.router.root.pushAll([
+                  const EventsRouter(),
+                ]);
               });
             }
             return Stack(
@@ -119,7 +108,10 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                   placeID: widget.placeID,
                                   name: widget.name,
                                   children: [
-                                    InformEventRoute(),
+                                    InformEventRoute(
+                                      placeID: widget.placeID,
+                                      name: widget.name,
+                                    ),
                                   ],
                                 ),
                               ],

@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
+import '../../blocs/FeedBlocs/feed_bloc.dart';
+
 @RoutePage()
-class EventLandingScreen extends StatelessWidget {
+class EventLandingScreen extends StatefulWidget {
   final int placeID;
   final String name;
   const EventLandingScreen(
@@ -13,20 +16,26 @@ class EventLandingScreen extends StatelessWidget {
       required this.name});
 
   @override
+  State<EventLandingScreen> createState() => _EventLandingScreenState();
+}
+
+class _EventLandingScreenState extends State<EventLandingScreen> {
+  @override
   Widget build(BuildContext context) {
-    print('$placeID + ' ' + $name');
+    BlocProvider.of<FeedEventBloc>(context)
+        .add(FetchEventFeedData(widget.placeID));
 
     return AutoTabsRouter.tabBar(
         routes: [
-          NoticeEventRoute(placeID: placeID, name: name),
-          InformEventRoute(placeID: placeID, name: name),
-          TimeEventRoute(placeID: placeID, name: name),
+          NoticeEventRoute(placeID: widget.placeID, name: widget.name),
+          InformEventRoute(placeID: widget.placeID, name: widget.name),
+          TimeEventRoute(placeID: widget.placeID, name: widget.name),
         ],
         builder: (context, child, controller) {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                name,
+                widget.name,
                 style: TextStyle(
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w600,
@@ -44,11 +53,14 @@ class EventLandingScreen extends StatelessWidget {
               ],
               backgroundColor: const Color(0xfff7f7f7),
               centerTitle: true,
-              leading: const AutoLeadingButton(color: Colors.black),
+              leading: const AutoLeadingButton(
+                color: Colors.black,
+              ),
               bottom: TabBar(
                 controller: controller,
                 indicatorWeight: 4,
                 labelColor: const Color(0xffff7d7d),
+                indicatorColor: const Color(0xffff7d7d),
                 labelStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

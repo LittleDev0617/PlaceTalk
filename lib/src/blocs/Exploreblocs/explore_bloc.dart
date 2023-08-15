@@ -14,7 +14,7 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
 
     on<FetchExploreDataEvent>((event, emit) async {
       emit((ExploreLoading()));
-      Map<String, dynamic> datas = await _placeRepo.fetchData();
+      Map<String, dynamic> datas = await _placeRepo.fetchExploreData();
       Map<String, dynamic> itemsLatLng = datas['itemsLatLng'];
 
       emit((ExploreLoaded(itemsLatLng)));

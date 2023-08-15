@@ -64,7 +64,8 @@ class PlaceModel extends Equatable {
             locations![i].lat,
             locations![i].lon,
           ),
-          caption: NOverlayCaption(text: '$name $locName', textSize: 16),
+          caption: NOverlayCaption(
+              text: locName.isEmpty ? name : '$name ($locName)', textSize: 16),
           subCaption: NOverlayCaption(
             text: state == 0
                 ? '상시'

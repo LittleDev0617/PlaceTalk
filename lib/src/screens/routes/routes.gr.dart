@@ -109,6 +109,7 @@ abstract class $AppRouter extends _i17.RootStackRouter {
           name: args.name,
           position: args.position,
           placeID: args.placeID,
+          locID: args.locID,
         ),
       );
     },
@@ -420,6 +421,7 @@ class HomeEventRoute extends _i17.PageRouteInfo<HomeEventRouteArgs> {
     required String name,
     required _i19.NLatLng position,
     required int placeID,
+    required int locID,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           HomeEventRoute.name,
@@ -428,8 +430,9 @@ class HomeEventRoute extends _i17.PageRouteInfo<HomeEventRouteArgs> {
             name: name,
             position: position,
             placeID: placeID,
+            locID: locID,
           ),
-          rawPathParams: {'placeID': placeID},
+          rawPathParams: {'placeID': locID},
           initialChildren: children,
         );
 
@@ -445,6 +448,7 @@ class HomeEventRouteArgs {
     required this.name,
     required this.position,
     required this.placeID,
+    required this.locID,
   });
 
   final _i18.Key? key;
@@ -455,9 +459,11 @@ class HomeEventRouteArgs {
 
   final int placeID;
 
+  final int locID;
+
   @override
   String toString() {
-    return 'HomeEventRouteArgs{key: $key, name: $name, position: $position, placeID: $placeID}';
+    return 'HomeEventRouteArgs{key: $key, name: $name, position: $position, placeID: $placeID, locID: $locID}';
   }
 }
 
