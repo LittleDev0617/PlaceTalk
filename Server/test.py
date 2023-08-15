@@ -14,9 +14,11 @@ HOST_API = 'http://localhost:3000/api/'
     
 # exit()
 ADMIN_TOKEN = int(open('./utils/admin.token', 'r').read())
-s = Session()
-r = s.get(HOST_API+f'users/auth?token={ADMIN_TOKEN}')
+admin = Session()
+r = admin.get(HOST_API+f'users/auth?token={ADMIN_TOKEN}')
 
+front = Session()
+r = front.get(HOST_API+f'users/auth?token={2955408317}')
 # 링크 검사
 # import re
 # txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
@@ -28,7 +30,7 @@ r = s.get(HOST_API+f'users/auth?token={ADMIN_TOKEN}')
 # exit()
 
 def add_place():
-    global s
+    global admin
     txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
     places = txt.split('\n\n')
     for place in places:
@@ -48,30 +50,30 @@ def add_place():
             lat, lon = link2lat_lon(url)
             myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
 
-        r = s.post(HOST_API+f'places', json=myPlace)
+        r = admin.post(HOST_API+f'places', json=myPlace)
         print(r.text)
         
 
-add_place()
+#add_place()
 
-# r = s.get(HOST_API+f'places/20/join')
+# r = admin.get(HOST_API+f'places/20/join')
 # print(r.text)
 
-r = s.get(HOST_API+f'users/place')
+r = admin.get(HOST_API+f'users/place')
 print(r.text)
 
-r = s.get(HOST_API+f'places/1')
+r = admin.get(HOST_API+f'places/1')
 print(r.text)
 
 
 lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
-r = s.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
+r = admin.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
 print(r.text)
 
 
 
 def add_booth():
-    global s
+    global admin
     #  name, content, on_time, loc_name, lat, lon 
     naver_link = ['https://naver.me/x3qUn8vB', 'https://naver.me/xq5mz4jK']
     # booth_data = [
@@ -119,17 +121,17 @@ def add_booth():
             images.append(('images', (image, open('media/' + image, 'rb').read())))
         
         myBooth['location'] = json.dumps(myBooth['location'])
-        r = s.post(HOST_API+f'booths', data=myBooth, files=images)
+        r = admin.post(HOST_API+f'booths', data=myBooth, files=images)
         print(r.text)
 
-add_booth()
+#add_booth()
 
-r = s.get(HOST_API+f'booths/1')
+r = admin.get(HOST_API+f'booths/1')
 print(r.text)
 
 import glob
 def add_feed():
-    global s
+    global admin
 
     files = list(glob.glob('./media/feed/*.png'))
     files.sort(key=lambda x: int(x.split('\\')[1].split('.')[0]))
@@ -147,12 +149,12 @@ def add_feed():
         feed_session = Session()
         feed_session.get(HOST_API+f'users/auth?token={i+1}')
 
-        r = s.get(HOST_API+f'places?name={placeName}')
+        r = admin.get(HOST_API+f'places?name={placeName}')
         place_id = json.loads(r.text)[0]['place_id']
 
-        r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
-        r = s.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
-
+        r = admin.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
+        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
+        
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
             images.append(('images', (image, open(image, 'rb').read())))
@@ -167,13 +169,13 @@ def add_feed():
 
 
     
-add_feed()
+# add_feed()
     
-r = s.get(HOST_API+f'feeds/1')
+r = admin.get(HOST_API+f'feeds/1')
 print(r.text)
 
 def add_info():
-    global s
+    global admin
 
     txt = open("./info_list.txt", 'r', encoding='utf-8').read()
     infos = txt.split('\n------------------------------------------------\n')
@@ -184,26 +186,26 @@ def add_info():
         myInfo['content'] = '\n'.join(data[1:])
         myInfo['is_schedule'] = myInfo['title'] == '일정표'        
         
-        r = s.post(HOST_API+f'infos', json=myInfo)
+        r = admin.post(HOST_API+f'infos', json=myInfo)
         print(r.text)
     
-add_info()
+#add_info()
     
-r = s.get(HOST_API+f'infos?place_id=1')
+r = admin.get(HOST_API+f'infos?place_id=1')
 print(r.text)
 
 
-r = s.get(HOST_API+f'users/join/12')
+r = front.get(HOST_API+f'users/join/12')
 print(r.text)
 
-r = s.get(HOST_API+f'users/join/33')
+r = front.get(HOST_API+f'users/join/33')
 print(r.text)
 
-r = s.get(HOST_API+f'users/join/5')
+r = front.get(HOST_API+f'users/join/5')
 print(r.text)
 
 def add_post():
-    global s
+    global admin
     txt = open("./post_list.txt", 'r', encoding='utf-8').read()
     
     for posts in reversed(txt.split('\n\n')):
@@ -212,7 +214,7 @@ def add_post():
         nickname = data[1]
         content = '\n'.join(data[2:])
 
-        place_id = json.loads(s.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
 
         myPost = { 'place_id' : place_id, 'content': content }
 
@@ -222,15 +224,28 @@ def add_post():
         r = post_session.post(HOST_API+'posts', json=myPost)
         print(r.text)
 
-add_post()
+myPost = { 'place_id' : 1, 'content': input() }
+test = Session()
+test.get(HOST_API+f'users/auth?token={636228018}')
+test.get(HOST_API+f'users/join/{1}')
+r = test.delete(HOST_API+'posts/12')
+
+# myPost = { 'place_id' : 1, 'content': input() }
+
+# test = Session()
+# test.get(HOST_API+f'users/auth?token={636228018}')
+# test.get(HOST_API+f'users/join/{1}')
+# r = test.post(HOST_API+'posts', json=myPost)
+
+#add_post()
 
 def add_top10():
-    global s
+    global admin
     txt = open("./top10_list.txt", 'r', encoding='utf-8').read()
     
     for placeName in txt.splitlines():
-        place_id = json.loads(s.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
-        r = s.post(HOST_API+f'places/top10', json={'place_id':place_id})
+        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        r = admin.post(HOST_API+f'places/top10', json={'place_id':place_id})
         print(r.text)
 
 
@@ -240,7 +255,7 @@ def add_top10():
 exit()
 # print(r.cookies)
 
-r = s.get(url+f'users/place')
+r = admin.get(url+f'users/place')
 print(r.text)
 
 # def add_place(name, start, end, latitude, longitude):
@@ -263,7 +278,7 @@ print(r.text)
 #             ]
 #     }
 
-#     r = s.post(url+f'places', json=hot_place)
+#     r = admin.post(url+f'places', json=hot_place)
 #     print(r.text)
 
 
@@ -273,9 +288,9 @@ print(r.text)
 
 # time.sleep(1)
 
-r = s.get(url+f'places/1/join')
+r = admin.get(url+f'places/1/join')
 print(r.text)
 
 
-r = s.get(url+f'places?lat=')
+r = admin.get(url+f'places?lat=')
 print(r.text)
