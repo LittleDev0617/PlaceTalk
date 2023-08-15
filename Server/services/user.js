@@ -1,5 +1,5 @@
 const conn = require("../utils/db");
-const { AlreadyJoinError, TooManyJoinError, UnauthorizedError } = require("../utils/error");
+const { AlreadyJoinError, TooManyJoinError, UnauthorizedError, BadRequestError } = require("../utils/error");
 const { getPlaces } = require("./place");
 const { errorWrapper } = require("../utils/util");
 
@@ -31,6 +31,15 @@ async function joinPlace(user_id, place_id) {
     return await conn.query('INSERT INTO tb_join VALUES(?, ?)', [user_id, place_id]);
 }
 
+async function exitPlace(user_id, place_id) {
+    const places = await conn.query('SELECT place_id FROM tb_join WHERE user_id = ? AND place_id = ?', [user_id, place_id]);
+
+    if(places.length == 0)
+        throw new BadRequestError('not join');
+
+    await conn.query('DELETE FROM tb_join WHERE user_id = ? AND place_id = ?', [user_id, place_id]);    
+}
+
 async function isOrganizerOfPlace(user_id, place_id) {
     const users = await conn.query('SELECT user_id FROM tb_organizer WHERE place_id = ? AND user_id = ?', [place_id, user_id]);    
     return users.length > 0;
@@ -53,7 +62,7 @@ async function changeNickname(user_id, nickname) {
 }
 
 module.exports = {
-    getUsers, createUser, getUserPlace, joinPlace, isOrganizerOfPlace, grantAdminRole, removeAdminRole, changeNickname, getNickname,
+    getUsers, createUser, getUserPlace, joinPlace, isOrganizerOfPlace, grantAdminRole, removeAdminRole, changeNickname, getNickname, exitPlace,
     
     isOrganizer : errorWrapper(async function (req, res, next) {
         let { place_id } = req.params;

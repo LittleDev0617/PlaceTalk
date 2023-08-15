@@ -6,7 +6,7 @@ const { getRandomNickname } = require('@woowa-babble/random-nickname');
 const router = express.Router();
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { auth } = require('../utils/auth');
-const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname } = require('../services/user');
+const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname, exitPlace } = require('../services/user');
 const { isAdmin, isOrganizer } = require('../services/user');
 const { errorWrapper } = require('../utils/util');
 const { getPosts } = require('../services/post');
@@ -40,6 +40,22 @@ router.get('/place', auth, async (req, res, next) => {
     res.json(places);
 });
 
+
+// 핫플 참가
+router.get('/join/:place_id(\\d+)', errorWrapper(async (req, res, next) => {   
+	const { place_id } = req.params;
+
+	let result = await joinPlace(req.user.uid, place_id);
+	res.json({ message : 'Success' });
+}));
+
+// 핫플 나가기
+router.get('/exit/:place_id(\\d+)', errorWrapper(async (req, res, next) => {   
+	const { place_id } = req.params;
+
+	let result = await exitPlace(req.user.uid, place_id);
+	res.json({ message : 'Success' });
+}));
 
 // 자신이 쓴 게시글 조회
 router.get('/post', auth, async (req, res, next) => {

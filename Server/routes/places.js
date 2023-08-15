@@ -73,13 +73,5 @@ router.get('/:place_id(\\d+)', isAdmin, async (req, res, next) => {
 	res.json(places);
 });
 
-// 회원 핫플 참가
-// place_id : int
-router.get('/:place_id(\\d+)/join', errorWrapper(async (req, res, next) => {   
-	const { place_id } = req.params;
-
-	let result = await joinPlace(req.user.uid, place_id);
-	res.json({ message : 'Success' });
-}));
 
 module.exports = router;
