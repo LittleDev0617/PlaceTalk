@@ -183,6 +183,7 @@ level : access level
 2. 현재 위치 반경 n km 이내 조회
 3. date 이후의 행사들 조회
 
+- name : 이름 필터
 - category : 카테고리 필터
 - lat / lon / dist => 반경 n km 이내 조회 시 사용
   - lat : 사용자 위치 위도
@@ -277,19 +278,107 @@ place_id - path parameter
 [
   {
     "place_id": 1,
-    "name": "hot_place1",
-    "description": "description for hot_place1",
-    "state": 0,
-    "start_date": "2023-08-12 12:00:00",
-    "end_date": "2023-08-13 12:00:00",
+    "name": "건국대 X 세종대 축제",
+    "category": "대학 축제",
+    "state": 1,
+    "start_date": "2023-09-14 00:00:00",
+    "end_date": "2023-09-16 00:00:00",
+    "count": 0,
     "locations": [
       {
-        "lat": 56.78,
-        "lon": 43.43
+        "location_id": 1,
+        "loc_name": "건국대",
+        "lat": 37.54388829908806,
+        "lon": 127.07595459999982
+      },
+      {
+        "location_id": 2,
+        "loc_name": "세종대",
+        "lat": 37.55147059908805,
+        "lon": 127.0738839999998
+      }
+    ]
+  }
+]
+```
+
+### GET /api/places/top10
+
+top10 place 조회
+
+#### Request
+
+#### Response
+
+- `List<Place>`  
+  운영진이 설정한 top 10 핫플/행사를 반환합니다.
+
+```json
+[
+  {
+    "place_id": 1,
+    "name": "건국대 X 세종대 축제",
+    "category": "대학 축제",
+    "state": 1,
+    "start_date": "2023-09-14 00:00:00",
+    "end_date": "2023-09-16 00:00:00",
+    "top10": 1,
+    "count": 0,
+    "locations": [
+      {
+        "location_id": 1,
+        "loc_name": "건국대",
+        "lat": 37.54388829908806,
+        "lon": 127.07595459999982
+      },
+      {
+        "location_id": 2,
+        "loc_name": "세종대",
+        "lat": 37.55147059908805,
+        "lon": 127.0738839999998
       }
     ],
-    "count": 0
+    "images": []
+  },
+  {
+    "place_id": 11,
+    "name": "광주 충장축제",
+    "category": "지역 축제",
+    "state": 1,
+    "start_date": "2023-10-05 00:00:00",
+    "end_date": "2023-10-10 00:00:00",
+    "top10": 1,
+    "count": 0,
+    "locations": [
+      {
+        "location_id": 14,
+        "loc_name": "",
+        "lat": 35.146081810230456,
+        "lon": 126.9232859315818
+      }
+    ],
+    "images": []
+  },
+  {
+    "place_id": 16,
+    "name": "현대카드 다빈치모텔",
+    "category": "콘서트",
+    "state": 1,
+    "start_date": "2023-10-14 00:00:00",
+    "end_date": "2023-10-17 00:00:00",
+    "top10": 1,
+    "count": 0,
+    "locations": [
+      {
+        "location_id": 19,
+        "loc_name": "",
+        "lat": 37.53669429999992,
+        "lon": 127.00067419999976
+      }
+    ],
+    "images": []
   }
+  ...
 ]
 ```
 

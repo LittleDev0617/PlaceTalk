@@ -61,14 +61,14 @@ router.get('/remove-org', auth, isAdmin, async (req, res, next) => {
     res.json({ message : 'Successful' });
 });
 
-router.get('/set-nickname', auth, isOrganizer, errorWrapper(async (req, res, next) => {
-    const { nickname, user_id, place_id } = req.query;
+router.get('/change-nickname', auth, errorWrapper(async (req, res, next) => {
+    const { nickname, user_id } = req.query;
     
-    // 운영자 본인만 닉 변경 가능
+    // 본인만 닉 변경 가능
     if(req.user.uid != 0 && user_id != req.user.uid)
         throw new UnauthorizedError('Cannot access');
 
-    await changeNickname(user_id, place_id, nickname);
+    await changeNickname(user_id, nickname);
     res.json({ message : 'Successful' });
 }));
 module.exports = router;

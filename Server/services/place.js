@@ -1,5 +1,7 @@
 const conn = require("../utils/db");
+const { BadRequestError } = require("../utils/error");
 const { getDistance } = require("../utils/util");
+const { getImages, createImage } = require("./image");
 const { getLocations, createLocation } = require("./location");
 
 async function getPlaces(options) {    
@@ -30,6 +32,11 @@ async function getPlaces(options) {
         query += ' AND place_id = ?';
         obj.push(options.place_id);
     }
+
+    if(options.top10) {
+        query += ' AND top10 = ?';
+        obj.push(options.top10);
+    }
         
     if(options.category) {
         query += ' AND category = ?';
@@ -46,6 +53,10 @@ async function getPlaces(options) {
     let results = [];
     for (let place of places) {
         place.locations = [];
+        place.images = [];
+
+        const images = await getImages({ id: 'image_id', value: place.image_id });
+        Object.assign(place.images, images);
 
         const locations = await getLocations({ id: 'place_id', value: place.place_id });
         let isInDistance = false;
@@ -67,12 +78,38 @@ async function getPlaces(options) {
     return results;
 }
 
+async function getTop10Places() {
+    return await getPlaces({ top10: 1 });
+}
+
+async function addTop10Place(place_id) {
+    const places = await getPlaces({ place_id });
+    
+    if(!places.length)
+        throw new BadRequestError('Place not exist');
+
+    return await conn.query('UPDATE tb_place SET top10 = 1 WHERE place_id = ?', [place_id]);
+}
+
+async function removeTop10Place(place_id) {
+    const places = await getPlaces({ place_id });
+    
+    if(!places.length)
+        throw new BadRequestError('Place not exist');
+
+    return await conn.query('UPDATE tb_place SET top10 = 0 WHERE place_id = ?', [place_id]);
+}
+
+
 // place : placeName, category, state, startDate, endDate, locations
 async function createPlace(place) {
-    const { placeName, category, state, startDate, endDate, locations } = place;
+    const { placeName, category, state, startDate, endDate, locations, image } = place;
     const place_id = (await conn.query('INSERT INTO tb_place(name, category, state, start_date, end_date) VALUES(?, ?, ?, ?, ?)', 
 				[placeName, category, state, startDate, endDate])).insertId;
-                
+
+    if(image)
+        await createImage({ id: 'place_id', value: place_id }, image.filename, i);
+
     for (let location of locations) {
         createLocation({ id: 'place_id', value: place_id }, location);
     }
@@ -86,5 +123,5 @@ async function deletePlace() {
 }
 
 module.exports = {
-    getPlaces, createPlace, editPlace, deletePlace
+    getPlaces, createPlace, editPlace, deletePlace, getTop10Places, addTop10Place, removeTop10Place
 };

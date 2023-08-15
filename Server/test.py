@@ -140,7 +140,7 @@ def add_feed():
     for i, feed in enumerate(feeds):
         data = feed.split('\n')
         placeName, author, date, imageCnt = data[:4]
-        content = '\n'.join(data[5:])
+        content = '\n'.join(data[4:])
         imageCnt = int(imageCnt)
         date += ' 18:00:00'
 
@@ -151,13 +151,14 @@ def add_feed():
         place_id = json.loads(r.text)[0]['place_id']
 
         r = s.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
-        r = s.get(HOST_API+f'users/set-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
+        r = s.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
 
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
             images.append(('images', (image, open(image, 'rb').read())))
         
         feed = { 'content': content, 'date':date, 'place_id':place_id }
+        # print(i,feed)
         r = feed_session.post(HOST_API+f'feeds', data=feed, files=images)
         print(r.text)
 
@@ -192,14 +193,14 @@ r = s.get(HOST_API+f'infos?place_id=1')
 print(r.text)
 
 
-# r = s.get(HOST_API+f'places/12/join')
-# print(r.text)
+r = s.get(HOST_API+f'places/12/join')
+print(r.text)
 
-# r = s.get(HOST_API+f'places/33/join')
-# print(r.text)
+r = s.get(HOST_API+f'places/33/join')
+print(r.text)
 
-# r = s.get(HOST_API+f'places/5/join')
-# print(r.text)
+r = s.get(HOST_API+f'places/5/join')
+print(r.text)
 
 def add_post(place_id, title, content):
     global s
@@ -209,8 +210,16 @@ def add_post(place_id, title, content):
 # while True:    
 #     add_post(1, input(), input())
 
+def add_top10():
+    global s
+    txt = open("./top10_list.txt", 'r', encoding='utf-8').read()
+    
+    for placeName in txt.splitlines():
+        place_id = json.loads(s.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        s.post(HOST_API+f'places/top10', json={'place_id':place_id})
 
 
+add_top10()
 exit()
 # print(r.cookies)
 

@@ -1,7 +1,6 @@
-const { userInfo } = require("os");
 const conn = require("../utils/db");
 const { AlreadyJoinError, TooManyJoinError, UnauthorizedError } = require("../utils/error");
-const { getPlaces } = require("./places");
+const { getPlaces } = require("./place");
 const { errorWrapper } = require("../utils/util");
 
 async function getUsers(user_id) {        
@@ -38,7 +37,7 @@ async function isOrganizerOfPlace(user_id, place_id) {
 }
 
 async function grantAdminRole(user_id, place_id) {
-    return await conn.query('INSERT INTO tb_organizer VALUES(?,?,"관리자")', [place_id, user_id]);
+    return await conn.query('INSERT INTO tb_organizer VALUES(?,?)', [place_id, user_id]);
 }
 
 async function removeAdminRole(user_id, place_id) {
@@ -49,8 +48,8 @@ async function getNickname(user_id) {
     return await conn.query('SELECT nickname FROM tb_user WHERE user_id = ?', [user_id]);
 }
 
-async function changeNickname(user_id, place_id, nickname) {
-    return await conn.query('UPDATE tb_organizer SET nickname = ? WHERE user_id = ? AND place_id = ?', [nickname, user_id, place_id]);
+async function changeNickname(user_id, nickname) {
+    return await conn.query('UPDATE tb_user SET nickname = ? WHERE user_id = ?', [nickname, user_id]);
 }
 
 module.exports = {
