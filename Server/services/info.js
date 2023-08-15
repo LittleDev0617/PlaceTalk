@@ -4,7 +4,7 @@ const { getLocations, createLocation } = require("./location");
 const { isOrganizerOfPlace, getNickname } = require("./user");
 
 async function getInfos(options) {
-    let query = 'SELECT info_id, title, content FROM tb_info as f WHERE is_schedule = ?';
+    let query = 'SELECT * FROM tb_info as f WHERE is_schedule = ?';
     let obj = [options.is_schedule];
 
     if(options.place_id) {

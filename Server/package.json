@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@woowa-babble/random-nickname": "^1.0.2",
     "body-parser": "^1.20.2",
     "cls-rtracer": "^2.6.3",
     "cookie-parser": "^1.4.6",

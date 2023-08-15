@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
 	let users = {};
 
 	for (let i = 0; i < comments.length; i++) {
-		comment_user_id = comments[i]['user_id'];
+		let comment_user_id = comments[i]['user_id'];
 		if(writer !== comment_user_id) {
 			if(!users[comment_user_id])
 				users[comment_user_id] = i + 1;

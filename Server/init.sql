@@ -2,7 +2,9 @@ drop database placetalk;
 create database placetalk;
 use placetalk;
 CREATE TABLE `tb_user` (
-	`user_id`	int PRIMARY KEY	NOT NULL
+	`user_id`	int PRIMARY KEY	NOT NULL,
+	`nickname` varchar(30),
+	`email` varchar(30)
 );
 
 CREATE TABLE `tb_place` (
@@ -12,11 +14,6 @@ CREATE TABLE `tb_place` (
 	`state`	int	NULL	DEFAULT 0,
 	`start_date`	datetime,
 	`end_date`	datetime
-);
-
-CREATE TABLE `tb_board` (
-	`board_id`	int auto_increment PRIMARY KEY	NOT NULL,
-	`place_id`	int	NOT NULL
 );
 
 CREATE TABLE `tb_comment` (
@@ -33,12 +30,10 @@ CREATE TABLE `tb_comment` (
 CREATE TABLE `tb_post` (
 	`post_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`user_id`	int	NOT NULL,
-	`board_id`	int	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`create_date`	datetime	NULL,
 	`title`	varchar(50)	NULL,
 	`content`	varchar(1000)	NOT NULL,
-	`view`	int	NOT NULL	DEFAULT 0,
 	`likes`	int	NOT NULL	DEFAULT 0
 );
 
@@ -74,8 +69,7 @@ CREATE TABLE `tb_join` (
 
 CREATE TABLE `tb_organizer` (
 	`place_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL,
-	`nickname` varchar(20) DEFAULT "관리자"
+	`user_id`	int	NOT NULL
 );
 
 CREATE TABLE `tb_comment_likes` (
@@ -106,67 +100,12 @@ CREATE TABLE `tb_info` (
 );
 
 
-ALTER TABLE `tb_board` ADD CONSTRAINT `FK_tb_place_TO_tb_board_1` FOREIGN KEY (
+
+ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_place_TO_tb_image_1` FOREIGN KEY (
 	`place_id`
 )
 REFERENCES `tb_place` (
 	`place_id`
-);
-
-ALTER TABLE `tb_comment` ADD CONSTRAINT `FK_tb_post_TO_tb_comment_1` FOREIGN KEY (
-	`post_id`
-)
-REFERENCES `tb_post` (
-	`post_id`
-);
-
-ALTER TABLE `tb_comment` ADD CONSTRAINT `FK_tb_user_TO_tb_comment_1` FOREIGN KEY (
-	`user_id`
-)
-REFERENCES `tb_user` (
-	`user_id`
-);
-
-ALTER TABLE `tb_post` ADD CONSTRAINT `FK_tb_user_TO_tb_post_1` FOREIGN KEY (
-	`user_id`
-)
-REFERENCES `tb_user` (
-	`user_id`
-);
-
-ALTER TABLE `tb_post` ADD CONSTRAINT `FK_tb_board_TO_tb_post_1` FOREIGN KEY (
-	`board_id`
-)
-REFERENCES `tb_board` (
-	`board_id`
-);
-
-ALTER TABLE `tb_post` ADD CONSTRAINT `FK_tb_board_TO_tb_post_2` FOREIGN KEY (
-	`place_id`
-)
-REFERENCES `tb_board` (
-	`place_id`
-);
-
-ALTER TABLE `tb_feed` ADD CONSTRAINT `FK_tb_place_TO_tb_feed_1` FOREIGN KEY (
-	`place_id`
-)
-REFERENCES `tb_place` (
-	`place_id`
-);
-
-ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_booth_TO_tb_image_1` FOREIGN KEY (
-	`booth_id`
-)
-REFERENCES `tb_booth` (
-	`booth_id`
-);
-
-ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_feed_TO_tb_image_1` FOREIGN KEY (
-	`feed_id`
-)
-REFERENCES `tb_feed` (
-	`feed_id`
 );
 
 ALTER TABLE `tb_booth` ADD CONSTRAINT `FK_tb_location_TO_tb_booth_1` FOREIGN KEY (
@@ -211,14 +150,14 @@ REFERENCES `tb_user` (
 	`user_id`
 );
 
-ALTER TABLE `tb_likes` ADD CONSTRAINT `FK_tb_post_TO_tb_likes_1` FOREIGN KEY (
+ALTER TABLE `tb_post_likes` ADD CONSTRAINT `FK_tb_post_TO_tb_post_likes_1` FOREIGN KEY (
 	`post_id`
 )
 REFERENCES `tb_post` (
 	`post_id`
 );
 
-ALTER TABLE `tb_likes` ADD CONSTRAINT `FK_tb_user_TO_tb_likes_1` FOREIGN KEY (
+ALTER TABLE `tb_post_likes` ADD CONSTRAINT `FK_tb_user_TO_tb_post_likes_1` FOREIGN KEY (
 	`user_id`
 )
 REFERENCES `tb_user` (
@@ -246,6 +185,20 @@ REFERENCES `tb_place` (
 	`place_id`
 );
 
+ALTER TABLE `tb_comment_likes` ADD CONSTRAINT `FK_tb_comment_TO_tb_comment_likes_1` FOREIGN KEY (
+	`comment_id`
+)
+REFERENCES `tb_comment` (
+	`comment_id`
+);
+
+ALTER TABLE `tb_comment_likes` ADD CONSTRAINT `FK_tb_user_TO_tb_comment_likes_1` FOREIGN KEY (
+	`user_id`
+)
+REFERENCES `tb_user` (
+	`user_id`
+);
 
 
-INSERT INTO tb_user VALUES(0,0);
+
+INSERT INTO tb_user VALUES(0);

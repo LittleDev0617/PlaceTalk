@@ -16,49 +16,116 @@ level : access level
 바로가기
 
 - User  
-[GET	/api/users/place](#get-apiusersplace)  
-[GET	/api/users/post](#get-apiuserspost)  
+  [GET /api/users/place](#get-apiusersplace)  
+  [GET /api/users/post](#get-apiuserspost)
 
 - Place  
-[GET	/api/places](#get-apiplaces)  
-[POST	/api/places](#post-apiplaces)  
-[GET	/api/places/:place_id](#get-apiplacesplace_id)  
-[GET	/api/places/:place_id/join](#get-apiplacesplace_idjoin)  
+  [GET /api/places](#get-apiplaces)  
+  [POST /api/places](#post-apiplaces)  
+  [GET /api/places/:place_id](#get-apiplacesplace_id)  
+  [GET /api/places/:place_id/join](#get-apiplacesplace_idjoin)
 
 - Booth  
-[GET	/api/booths](#get-apibooths)  
-[GET	/api/booths/:location_id](#get-apiboothslocation_id)  
-[POST	/api/booths](#post-apibooths)  
+  [GET /api/booths](#get-apibooths)  
+  [GET /api/booths/:location_id](#get-apiboothslocation_id)  
+  [POST /api/booths](#post-apibooths)
 
 - Feed  
-[GET	/api/feeds](#get-apifeeds)  
-[GET	/api/feeds/feed_id](#get-apifeedsfeed_id)  
-[POST	/api/feeds](#post-apifeeds)  
+  [GET /api/feeds](#get-apifeeds)  
+  [GET /api/feeds/feed_id](#get-apifeedsfeed_id)  
+  [POST /api/feeds](#post-apifeeds)
 
 - Info  
-[GET	/api/infos](#get-apiinfos)  
-[GET	/api/infos/:info_id](#get-apiinfosinfo_id)  
-[POST	/api/infos](#post-apiinfos)  
+  [GET /api/infos](#get-apiinfos)  
+  [GET /api/infos/:info_id](#get-apiinfosinfo_id)  
+  [POST /api/infos](#post-apiinfos)
 
 - Post  
-[GET	/api/posts](#get-apiposts)  
-[POST	/api/posts](#post-apiposts)  
-[GET	/api/posts/:post_id](#get-apipostspost_id)  
-[GET	/api/posts/:post_id/like](#get-apipostspost_idlike)  
+  [GET /api/posts](#get-apiposts)  
+  [POST /api/posts](#post-apiposts)  
+  [GET /api/posts/:post_id](#get-apipostspost_id)  
+  [GET /api/posts/:post_id/like](#get-apipostspost_idlike)
 
 - Comment  
-[GET	/api/comments](#get-apicomments)  
-[POST	/api/comments](#post-apicomments)  
-[GET	/api/comments/:comment_id/like](#get-apicommentscomment_idlike)  
-
+  [GET /api/comments](#get-apicomments)  
+  [POST /api/comments](#post-apicomments)  
+  [GET /api/comments/:comment_id/like](#get-apicommentscomment_idlike)
 
 ## User
 
+```c
+{
+  "user_id" : int,
+  "nickname" : string,
+  "email" : string
+}
+```
+
 ### GET /api/users/place
+
+유저가 참여중인 행사/핫플 목록을 조회합니다.
 
 #### Request
 
 #### Response
+
+- `List<Location>`
+
+```json
+[
+  {
+    "place_id": 12,
+    "name": "강릉 커피 축제",
+    "category": "지역 축제",
+    "state": 1,
+    "start_date": "2023-10-12 00:00:00",
+    "end_date": "2023-10-16 00:00:00",
+    "count": 1,
+    "locations": [
+      {
+        "location_id": 15,
+        "loc_name": "",
+        "lat": 37.77979410091278,
+        "lon": 128.8968565000015
+      }
+    ]
+  },
+  {
+    "place_id": 33,
+    "name": "서울밤도깨비야시장 – 여의도한강공원",
+    "category": "여가",
+    "state": 0,
+    "start_date": "1001-01-01 00:00:00",
+    "end_date": "9998-12-30 00:00:00",
+    "count": 1,
+    "locations": [
+      {
+        "location_id": 36,
+        "loc_name": "",
+        "lat": 37.53124899999992,
+        "lon": 126.9286831999997
+      }
+    ]
+  },
+  {
+    "place_id": 5,
+    "name": "숭실대 축제",
+    "category": "대학 축제",
+    "state": 1,
+    "start_date": "2023-09-27 00:00:00",
+    "end_date": "2023-10-01 00:00:00",
+    "count": 1,
+    "locations": [
+      {
+        "location_id": 8,
+        "loc_name": "",
+        "lat": 37.49668954890789,
+        "lon": 126.95750406798976
+      }
+    ]
+  }
+]
+```
 
 ### GET /api/users/post
 
@@ -255,11 +322,11 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 
 ### GET /api/booths
 
-모든 부스 조회
+부스 조회
 
 #### Request
 
-\*location_id - path parameter
+\*location_id : 필터링
 
 #### Response
 
@@ -267,6 +334,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
   location_id 에 등록된 모든 부스 정보를 반환합니다.
 
 ```json
+// /api/booths?location_id=1
 [
   {
     "booth_id": 11,
@@ -313,18 +381,18 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
 
 <hr />
 
-### GET /api/booths/:location_id
+### GET /api/booths/:booth_id
 
 특정 부스 조회
 
 #### Request
 
-\*location_id - path parameter
+\*booth_id
 
 #### Response
 
 - `List<Booth>`  
-  location_id 에 등록된 모든 부스 정보를 반환합니다.
+  booth_id 부스 정보를 반환합니다.
 
 ```json
 [
@@ -350,6 +418,7 @@ place_id 에 해당하는 place 에 현재 사용자가 참여합니다.
   }
 ]
 ```
+
 <hr />
 
 ### POST /api/booths
@@ -391,13 +460,14 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 
 #### Request
 
-- place_id  : 설정 시 place_id 핫플 피드 조회
+- place_id : 설정 시 place_id 핫플 피드 조회
 - offset
 - feedPerPage
 
 #### Response
 
 - `List<Feed>`
+
 ```json
 // /api/feeds
 [
@@ -443,8 +513,8 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
     "nickname": "관리자"
   }
 ]
-
 ```
+
 <hr />
 
 ### GET /api/feeds/feed_id
@@ -461,6 +531,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 #### Response
 
 - `List<Feed>`
+
 ```json
 // /api/feeds/33
 [
@@ -479,6 +550,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
   }
 ]
 ```
+
 <hr />
 
 ### POST /api/feeds
@@ -487,7 +559,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 
 #### Request
 
-- \*place_id  : 등록할 장소
+- \*place_id : 등록할 장소
 - \*title
 - \*content
 - images
@@ -522,12 +594,33 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 
 #### Request
 
-- place_id   : 필터링
+- place_id : 필터링
 - is_schdule : 일정표면 1로 설정
 
 #### Response
 
 - `List<Info>`
+
+/api/infos
+
+```json
+[
+  {
+    "info_id": 1,
+    "place_id": 1,
+    "title": "공연 안내",
+    "content": "**공연명**      건국대학교 x 세종대학교 축제  \n**행사 일정**   2023년 9월 12일 ~ 9월 14일  \n**공연장**      건국대학교 서울캠퍼스 대강당  ",
+    "is_schedule": 0
+  },
+  {
+    "info_id": 2,
+    "place_id": 1,
+    "title": "초청 가수",
+    "content": "### 9월 12일 (1일 차)\n비비(BIBI), 우원재  \n  \n### 9월 13일 (2일 차)\n에스파(aespa), 박재범, 데이식스, 효린  \n  \n### 9월 14일 (3일 차)\n볼빨간사춘기, 뉴진스(New jeans)  ",
+    "is_schedule": 0
+  }
+]
+```
 
 <hr />
 
@@ -542,6 +635,18 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 #### Response
 
 - `List<Info>`
+
+/api/infos/1
+
+```json
+[
+  {
+    "info_id": 1,
+    "title": "공연 안내",
+    "content": "**공연명**      건국대학교 x 세종대학교 축제  \n**행사 일정**   2023년 9월 12일 ~ 9월 14일  \n**공연장**      건국대학교 서울캠퍼스 대강당  "
+  }
+]
+```
 
 <hr />
 
@@ -563,11 +668,23 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
 <hr />
 
 ### PUT /api/infos/:info_id
+
 ### DELETE /api/infos/:info_id
 
 <hr />
 
 ## Post - 게시글
+
+```c
+{
+  "post_id": int,
+  "user": User,
+  "place_id": int,
+  "create_date": datetime,
+  "content": string,
+  "likes": int
+}
+```
 
 ### GET /api/posts
 
@@ -575,7 +692,7 @@ post 조회
 
 #### Request
 
-- place_id  : 필터링
+- place_id : 필터링
 - offset
 - postPerPage
 - likeOrder : 시간순 정렬(0) / 좋아요 정렬(1)
@@ -588,8 +705,62 @@ ex) offset - 2 / postPerPage - 5 / likeOrder - 0
 
 Post List
 
-```json
+/api/posts
 
+```json
+[
+  {
+    "post_id": 3,
+    "user_id": 0,
+    "place_id": 1,
+    "create_date": "2023-08-14 22:44:08",
+    "content": "내요내용",
+    "likes": 0
+  },
+  {
+    "post_id": 2,
+    "user_id": 0,
+    "place_id": 1,
+    "create_date": "2023-08-14 22:44:03",
+    "content": "동해물과",
+    "likes": 0
+  },
+  {
+    "post_id": 1,
+    "user_id": 0,
+    "place_id": 1,
+    "create_date": "2023-08-14 22:43:58",
+    "content": "게시글 내용부분",
+    "likes": 0
+  }
+]
+```
+
+<hr />
+
+### GET /api/posts/:post_id
+
+특정 post 조회
+
+#### Request
+
+- \*post_id
+
+#### Response
+
+Post
+
+```json
+[
+  {
+    "post_id": 3,
+    "user_id": 0,
+    "place_id": 1,
+    "create_date": "2023-08-14 22:44:08",
+    "content": "내요내용",
+    "likes": 0
+  }
+]
 ```
 
 <hr />
@@ -607,24 +778,6 @@ post 생성
 #### Response
 
 place_id 에 해당하는 핫플레이스에 게시글을 추가합니다.
-
-<hr />
-
-### GET /api/posts/:post_id
-
-특정 post 조회
-
-#### Request
-
-- \*post_id
-
-#### Response
-
-Post
-
-```json
-[{}]
-```
 
 <hr />
 
@@ -674,6 +827,19 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 
 ## Comment
 
+```c
+{
+  "comment_id" : int,
+  "place_id" : int,
+  "user" : User,
+  "is_reply" : int, // 0 or 1
+  "reply_id" : int, // comment_id
+  "likes" : int,
+  "content" : string,
+  "create_date" : datetime
+}
+```
+
 ### GET /api/comments
 
 한 게시글의 댓글 조회
@@ -698,10 +864,9 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 - \*post_id
 - \*is_reply : 대댓인지 여부 0 or 1
 - \*reply_id : 대댓이면 대댓 단 원 댓글 comment_id
-- \*content  : 댓글 내용
+- \*content : 댓글 내용
 
 #### Response
-
 
 <hr />
 
@@ -716,8 +881,8 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 
 #### Response
 
-
 <hr />
+
 ### GET /api/comments/:comment_id/like
 
 댓글 좋아요 추가 / 해제

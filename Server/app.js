@@ -45,7 +45,7 @@ app.use(async (err, req, res, next) => {
     next();
 });
 
-const port = 80;
+const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

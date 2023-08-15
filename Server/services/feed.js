@@ -32,7 +32,7 @@ async function getFeeds(options) {
         const images = await getImages({ id: 'feed_id', value: feed.feed_id });
         Object.assign(feed.images, images);
 
-        feed.nickname = (await getNickname(feed.user_id, feed.place_id))[0].nickname;        
+        feed.nickname = (await getNickname(feed.user_id))[0].nickname;        
 
         res.push(feed);
     }
