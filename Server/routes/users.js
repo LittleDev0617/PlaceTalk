@@ -10,6 +10,7 @@ const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, cha
 const { isAdminMW, isOrganizer } = require('../services/user');
 const { errorWrapper, ADMIN_TOKEN } = require('../utils/util');
 const { getPosts } = require('../services/post');
+const { getPlaces } = require('../services/place');
 
 // 회원 로그인 및 가입
 router.get('/auth', errorWrapper(async (req, res, next) => {
@@ -56,6 +57,11 @@ router.get('/join/:place_id(\\d+)', auth, errorWrapper(async (req, res, next) =>
 // 핫플 나가기
 router.get('/exit/:place_id(\\d+)', auth, errorWrapper(async (req, res, next) => {   
 	const { place_id } = req.params;
+
+    const places = await getPlaces({ user_id: req.user.uid });
+
+    if(places.length == 0)
+        throw new BadRequestError('not join');
 
 	let result = await exitPlace(req.user.uid, place_id);
 	res.json({ message : 'Success' });

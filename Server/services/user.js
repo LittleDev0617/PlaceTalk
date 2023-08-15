@@ -50,11 +50,6 @@ async function joinPlace(user_id, place_id) {
 }
 
 async function exitPlace(user_id, place_id) {
-    const places = await conn.query('SELECT place_id FROM tb_join WHERE user_id = ? AND place_id = ?', [user_id, place_id]);
-
-    if(places.length == 0)
-        throw new BadRequestError('not join');
-
     await conn.query('DELETE FROM tb_join WHERE user_id = ? AND place_id = ?', [user_id, place_id]);    
 }
 
