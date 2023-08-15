@@ -24,9 +24,8 @@ router.get('/', async (req, res, next) => {
 	res.json(places);
 });
 
-router.get('/top10', async (req, res, next) => {
-	const { place_id } = req.body;
-	const places = await getTop10Places(place_id);
+router.get('/top10', async (req, res, next) => {	
+	const places = await getTop10Places();
 	res.json(places);
 });
 

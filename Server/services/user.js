@@ -3,8 +3,26 @@ const { AlreadyJoinError, TooManyJoinError, UnauthorizedError, BadRequestError }
 const { getPlaces } = require("./place");
 const { errorWrapper, ADMIN_TOKEN } = require("../utils/util");
 
-async function getUsers(user_id) {        
-    return await conn.query('SELECT * FROM tb_user WHERE user_id = ?', [user_id]);    
+async function getUsers(options) {        
+    let query = 'SELECT * FROM tb_user WHERE 1=1';
+    let obj = [];
+
+    if(options.nickname) {
+        query += ' AND nickname LIKE ?';
+        obj.push(`%${options.nickname}%`);
+    }
+    
+    if(options.user_id) {
+        query += ' AND user_id = ?';
+        obj.push(options.user_id);
+    }
+
+    if(options.email) {
+        query += ' AND email = ?';
+        obj.push(options.email);
+    }
+
+    return await conn.query(query, obj);
 }
 
 
@@ -74,7 +92,7 @@ module.exports = {
         if(!place_id)
             place_id = req.body.place_id;
         
-        if(!isAdmin() && !(await isOrganizerOfPlace(req.user.uid, place_id)))
+        if(!isAdmin(req.user.uid) && !(await isOrganizerOfPlace(req.user.uid, place_id)))
             throw new UnauthorizedError('Cannot acces');
         
         next();
