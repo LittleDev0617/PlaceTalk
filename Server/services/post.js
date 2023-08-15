@@ -30,6 +30,7 @@ async function getPosts(options) {
         obj.push(postPerPage);
     }
     
+    console.log(options)
     let posts = await conn.query(query, obj);
     let res = [];
 

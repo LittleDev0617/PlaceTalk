@@ -39,33 +39,11 @@ router.get('/auth', errorWrapper(async (req, res, next) => {
     res.json({ message : 'Success' });
 }));
 
-// 자신이 참가중인 핫플 조회
-router.get('/place', auth, async (req, res, next) => {
-    places = await getUserPlace(req.user.uid);
-    res.json(places);
+router.get('/mypage', auth, async (req, res, next) => {
+    let users = await getUsers({ user_id: req.user.uid });
+    res.json(users[0]);
 });
 
-
-// 핫플 참가
-router.get('/join/:place_id(\\d+)', auth, errorWrapper(async (req, res, next) => {   
-	const { place_id } = req.params;
-    
-	let result = await joinPlace(req.user.uid, place_id);
-	res.json({ message : 'Success' });
-}));
-
-// 핫플 나가기
-router.get('/exit/:place_id(\\d+)', auth, errorWrapper(async (req, res, next) => {   
-	const { place_id } = req.params;
-
-    const places = await getPlaces({ user_id: req.user.uid });
-
-    if(places.length == 0)
-        throw new BadRequestError('not join');
-
-	let result = await exitPlace(req.user.uid, place_id);
-	res.json({ message : 'Success' });
-}));
 
 // 자신이 쓴 게시글 조회
 router.get('/post', auth, async (req, res, next) => {
