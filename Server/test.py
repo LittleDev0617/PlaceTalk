@@ -35,6 +35,8 @@ def add_place():
     places = txt.split('\n\n')
     top10List = open("./top10_list.txt", 'r', encoding='utf-8').read().split('\n')    
 
+    tmp = ['리얼월드 성수', '페더 엘리아스 내한공연', '플라츠2', '플라츠S', '충주 다이브 페스티벌']
+
     for place in places:
         name = place.split('\n')[0]
         kind = place.split('\n')[1]
@@ -47,7 +49,7 @@ def add_place():
         myPlace['endDate'] = end
         
         
-        for link in links:            
+        for link in links:        
             loc_name, url = link.split(' ')
             lat, lon = link2lat_lon(url)
             myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
@@ -57,6 +59,13 @@ def add_place():
         if name in top10List:
             files = glob.glob('media/top10/*.png')
             image = files[top10List.index(name)]
+            images = {'image' : (image, open(image, 'rb'))}
+            
+            print(name)
+            r = admin.post(HOST_API+f'places', data=myPlace, files=images)            
+        elif name in tmp:
+            files = glob.glob('media/place/*')            
+            image = files[tmp.index(name)]
             images = {'image' : (image, open(image, 'rb'))}
             
             print(name)
@@ -155,7 +164,7 @@ def add_feed():
 
 
 
-    # add_feed()
+# add_feed()
     
 r = admin.get(HOST_API+f'feeds/1')
 print(r.text)
@@ -164,21 +173,31 @@ def add_info():
     global admin
 
     txt = open("./info_list.txt", 'r', encoding='utf-8').read()
-    infos = txt.split('\n------------------------------------------------\n')
+    infos = txt.split('\n------------------------------------------------------------------------------------------------\n')
     for info in infos:        
         data = info.split('\n')
-        myInfo = { 'place_id': 1 }
-        myInfo['title'] = data[0]
-        myInfo['content'] = '\n'.join(data[1:])
-        myInfo['is_schedule'] = myInfo['title'] == '일정표'        
+        placeName = data[0]
+        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        myInfo = { 'place_id': place_id }
+
+        contents = '\n'.join(data[1:]).split('\n------------------------------------------------\n')
         
-        r = admin.post(HOST_API+f'infos', json=myInfo)
-        print(r.text)
-    # add_info()
+        for content in contents:
+            data2 = content.split('\n')            
+            myInfo['title'] = data2[0]            
+            myInfo['content'] = '\n'.join(data2[1:])
+            myInfo['is_schedule'] = int(myInfo['title'] == '일정표')
+        
+            r = admin.post(HOST_API+f'infos', json=myInfo)
+            print(r.text)
+add_info()
+exit()
     
 r = admin.get(HOST_API+f'infos?place_id=1')
 print(r.text)
 
+r = front.get(HOST_API+f'users/join/1')
+print(r.text)
 
 r = front.get(HOST_API+f'users/join/12')
 print(r.text)
@@ -229,9 +248,9 @@ def add_top10():
     global admin
     txt = open("./top10_list.txt", 'r', encoding='utf-8').read()
     
-    for placeName in txt.splitlines():
+    for i, placeName in enumerate(txt.splitlines()):
         place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
-        r = admin.post(HOST_API+f'places/top10', json={'place_id':place_id})
+        r = admin.post(HOST_API+f'places/top10', json={'place_id':place_id, 'order':i+1})
         print(r.text)
 
 # add_top10()
@@ -266,7 +285,7 @@ print(r.text)
 #     r = admin.post(url+f'places', json=hot_place)
 #     print(r.text)
 
-# add_place(1,2,3,4,5)
+add_place(1,2,3,4,5)
 
 # import time
 

@@ -30,8 +30,8 @@ router.get('/top10', async (req, res, next) => {
 });
 
 router.post('/top10', async (req, res, next) => {
-	const { place_id } = req.body;
-	await addTop10Place(place_id);
+	const { place_id, order } = req.body;
+	await addTop10Place(place_id, order);
 	res.json({ message : "Successful" });
 });
 

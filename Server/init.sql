@@ -48,7 +48,7 @@ CREATE TABLE `tb_feed` (
 );
 
 CREATE TABLE `tb_image` (
-	`image_id`	varchar(40)	NOT NULL,
+	`image_id`	varchar(60)	NOT NULL,
 	`booth_id`	int,
 	`feed_id`	int,
 	`place_id`	int,
@@ -97,7 +97,7 @@ CREATE TABLE `tb_info` (
 	`info_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`title`	varchar(20)	NULL,
-	`content`	varchar(300)	NULL,
+	`content`	varchar(1000)	NULL,
 	`is_schedule` int DEFAULT 0 NOT NULL
 );
 
