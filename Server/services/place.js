@@ -33,10 +33,6 @@ async function getPlaces(options) {
         obj.push(options.place_id);
     }
 
-    if(options.top10) {
-        query += ' AND top10 = ?';
-        obj.push(options.top10);
-    }
         
     if(options.category) {
         query += ' AND category = ?';
@@ -46,6 +42,10 @@ async function getPlaces(options) {
     if(options.user_id) {
         query += ' AND place_id IN (SELECT place_id FROM tb_join WHERE user_id = ?)';
         obj.push(options.user_id);
+    }
+
+    if(options.top10) {
+        query += ' AND top10 != 0 ORDER BY top10';
     }
 
     let places = await conn.query(query, obj);    
@@ -79,16 +79,16 @@ async function getPlaces(options) {
 }
 
 async function getTop10Places() {
-    return await getPlaces({ top10: 1 });
+    return await getPlaces({ top10: true});
 }
 
-async function addTop10Place(place_id) {
+async function addTop10Place(place_id, order) {
     const places = await getPlaces({ place_id });
     
     if(!places.length)
         throw new BadRequestError('Place not exist');
 
-    return await conn.query('UPDATE tb_place SET top10 = 1 WHERE place_id = ?', [place_id]);
+    return await conn.query('UPDATE tb_place SET top10 = ? WHERE place_id = ?', [order, place_id]);
 }
 
 async function removeTop10Place(place_id) {

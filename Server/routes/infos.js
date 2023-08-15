@@ -12,10 +12,7 @@ const getInfosC = async function(req, res, next) {
 	var { is_schedule, place_id } = req.query;
 	const { info_id } = req.params;
 
-	if(!is_schedule)
-		is_schedule = 0;
-
-	let infos = await getInfos({ place_id, info_id, is_schedule });
+	let infos = await getInfos({ place_id, info_id });
 	res.json(infos);
 }
 
