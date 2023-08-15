@@ -24,7 +24,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final status = await _authRepo.kakaoLogin();
         if (status == UserAuthStatusModel.granted) {
           final user = await _authRepo.kakaoGetUsers();
-          _sessionRepo.getCookieFromHeader();
+          _sessionRepo.getCookieFromHeader(
+              user.kakaoID.toString(), user.email!);
           emit(AuthGranted(user: user));
         } else if (status == UserAuthStatusModel.denied) {
           emit(AuthDenied());

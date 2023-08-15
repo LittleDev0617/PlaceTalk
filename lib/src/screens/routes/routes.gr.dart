@@ -71,11 +71,11 @@ abstract class $AppRouter extends _i17.RootStackRouter {
         ),
       );
     },
-    EventLandingRoute.name: (routeData) {
-      final args = routeData.argsAs<EventLandingRouteArgs>();
+    EventTabRoute.name: (routeData) {
+      final args = routeData.argsAs<EventTabRouteArgs>();
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i4.EventLandingScreen(
+        child: _i4.EventTabScreen(
           key: args.key,
           placeID: args.placeID,
           name: args.name,
@@ -92,6 +92,12 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i5.EventsRouterPage(),
+      );
+    },
+    EventsTabRouter.name: (routeData) {
+      return _i17.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: _i5.EventsTabRouterPage(),
       );
     },
     ExploreRoute.name: (routeData) {
@@ -328,16 +334,16 @@ class BoardWriteEventRouteArgs {
 }
 
 /// generated route for
-/// [_i4.EventLandingScreen]
-class EventLandingRoute extends _i17.PageRouteInfo<EventLandingRouteArgs> {
-  EventLandingRoute({
+/// [_i4.EventTabScreen]
+class EventTabRoute extends _i17.PageRouteInfo<EventTabRouteArgs> {
+  EventTabRoute({
     _i18.Key? key,
     required int placeID,
     required String name,
     List<_i17.PageRouteInfo>? children,
   }) : super(
-          EventLandingRoute.name,
-          args: EventLandingRouteArgs(
+          EventTabRoute.name,
+          args: EventTabRouteArgs(
             key: key,
             placeID: placeID,
             name: name,
@@ -346,14 +352,14 @@ class EventLandingRoute extends _i17.PageRouteInfo<EventLandingRouteArgs> {
           initialChildren: children,
         );
 
-  static const String name = 'EventLandingRoute';
+  static const String name = 'EventTabRoute';
 
-  static const _i17.PageInfo<EventLandingRouteArgs> page =
-      _i17.PageInfo<EventLandingRouteArgs>(name);
+  static const _i17.PageInfo<EventTabRouteArgs> page =
+      _i17.PageInfo<EventTabRouteArgs>(name);
 }
 
-class EventLandingRouteArgs {
-  const EventLandingRouteArgs({
+class EventTabRouteArgs {
+  const EventTabRouteArgs({
     this.key,
     required this.placeID,
     required this.name,
@@ -367,7 +373,7 @@ class EventLandingRouteArgs {
 
   @override
   String toString() {
-    return 'EventLandingRouteArgs{key: $key, placeID: $placeID, name: $name}';
+    return 'EventTabRouteArgs{key: $key, placeID: $placeID, name: $name}';
   }
 }
 
@@ -395,6 +401,20 @@ class EventsRouter extends _i17.PageRouteInfo<void> {
         );
 
   static const String name = 'EventsRouter';
+
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i5.EventsTabRouterPage]
+class EventsTabRouter extends _i17.PageRouteInfo<void> {
+  const EventsTabRouter({List<_i17.PageRouteInfo>? children})
+      : super(
+          EventsTabRouter.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EventsTabRouter';
 
   static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }

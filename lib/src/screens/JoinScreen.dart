@@ -25,6 +25,7 @@ class JoinScreen extends StatelessWidget {
             color: Colors.black,
           ),
         ),
+        leading: const AutoLeadingButton(),
         actions: [
           IconButton(
             color: const Color(0xffff7d7d),
@@ -134,7 +135,7 @@ class JoinScreen extends StatelessWidget {
                               InkWell(
                                 onTap: () {
                                   context.router.push(
-                                    EventLandingRoute(
+                                    EventTabRoute(
                                       name: state.itemsLatLng.keys
                                           .toList()[index],
                                       placeID: item['place_id'],

@@ -38,11 +38,14 @@ class AppRouter extends $AppRouter {
                 ),
                 AutoRoute(
                   path: ':eventID',
-                  page: EventLandingRoute.page,
+                  page: EventsTabRouter.page,
                   children: [
-                    AutoRoute(path: 'notice', page: NoticeEventRoute.page),
-                    AutoRoute(path: 'inform', page: InformEventRoute.page),
-                    AutoRoute(path: 'time', page: TimeEventRoute.page),
+                    AutoRoute(path: '', page: EventTabRoute.page, children: [
+                      AutoRoute(path: '', page: InformEventRoute.page),
+                      AutoRoute(path: 'notice', page: NoticeEventRoute.page),
+                      AutoRoute(path: 'inform', page: InformEventRoute.page),
+                      AutoRoute(path: 'time', page: TimeEventRoute.page)
+                    ]),
                   ],
                 ),
               ],
@@ -63,3 +66,6 @@ class EventsRouterPage extends AutoRouter {}
 
 @RoutePage(name: 'EventsBoardRouter')
 class EventsBoardRouterPage extends AutoRouter {}
+
+@RoutePage(name: 'EventsTabRouter')
+class EventsTabRouterPage extends AutoRouter {}

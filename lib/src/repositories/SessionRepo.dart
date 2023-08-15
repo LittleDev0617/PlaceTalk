@@ -45,8 +45,8 @@ class SessionRepo {
     }
   }
 
-  Future<void> getCookieFromHeader() async {
-    final url = Uri.parse('$kuIP/api/users/auth?token=0');
+  Future<void> getCookieFromHeader(String token, String email) async {
+    final url = Uri.parse('$kuIP/api/users/auth?token=$token&email=$email');
 
     final response = await http.get(url);
 

@@ -9,5 +9,5 @@ class UserModel extends Equatable {
   const UserModel({this.userAuthLevel, this.email, required this.kakaoID});
 
   @override
-  List<Object?> get props => [email, kakaoID];
+  List<Object?> get props => [userAuthLevel, email, kakaoID];
 }

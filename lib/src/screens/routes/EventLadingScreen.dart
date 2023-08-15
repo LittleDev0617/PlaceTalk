@@ -7,19 +7,19 @@ import 'package:placetalk/src/screens/routes/routes.gr.dart';
 import '../../blocs/FeedBlocs/feed_bloc.dart';
 
 @RoutePage()
-class EventLandingScreen extends StatefulWidget {
+class EventTabScreen extends StatefulWidget {
   final int placeID;
   final String name;
-  const EventLandingScreen(
+  const EventTabScreen(
       {super.key,
       @PathParam('eventID') required this.placeID,
       required this.name});
 
   @override
-  State<EventLandingScreen> createState() => _EventLandingScreenState();
+  State<EventTabScreen> createState() => _EventTabScreenState();
 }
 
-class _EventLandingScreenState extends State<EventLandingScreen> {
+class _EventTabScreenState extends State<EventTabScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<FeedEventBloc>(context)

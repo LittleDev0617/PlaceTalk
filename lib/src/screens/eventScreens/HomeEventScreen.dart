@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/BoothBlocs/booth_bloc.dart';
+import 'package:placetalk/src/repositories/SessionRepo.dart';
 
 import '../routes/routes.gr.dart';
 
@@ -70,9 +71,26 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
           } else if (state is BoothLoaded) {
             if (state.markers.isEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.router.root.pushAll([
-                  const EventsRouter(),
-                ]);
+                context.router.push(
+                  LandingRoute(
+                    children: [
+                      EventsRouter(
+                        children: [
+                          EventTabRoute(
+                            placeID: widget.placeID,
+                            name: widget.name,
+                            children: [
+                              InformEventRoute(
+                                placeID: widget.placeID,
+                                name: widget.name,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
               });
             }
             return Stack(
@@ -104,7 +122,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                       AutoRouter.of(context).parent<TabsRouter>()!.navigate(
                             EventsRouter(
                               children: [
-                                EventLandingRoute(
+                                EventTabRoute(
                                   placeID: widget.placeID,
                                   name: widget.name,
                                   children: [
@@ -169,6 +187,10 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                     initialCameraPosition:
                         NCameraPosition(target: widget.position, zoom: 14.5),
                     locationButtonEnable: true,
+                    extent: const NLatLngBounds(
+                      southWest: NLatLng(31.43, 122.37),
+                      northEast: NLatLng(44.35, 132.0),
+                    ),
                   ),
                 ),
                 if (_showBottomSheet)
@@ -310,8 +332,10 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                'http://125.180.98.19:1234/images/${state.itemsLatLng[itemIndex]['images'][0]['image_id']}'),
+                                            image: NetworkImage(SessionRepo()
+                                                .getImageUrl(state
+                                                        .itemsLatLng[itemIndex]
+                                                    ['images'][0]['image_id'])),
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -347,19 +371,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
         backgroundColor: Colors.white,
         shape: const CircleBorder(),
         onPressed: () {
-          AutoRouter.of(context).parent<TabsRouter>()!.navigate(
-                EventsRouter(
-                  children: [
-                    EventLandingRoute(
-                      placeID: widget.placeID,
-                      name: widget.name,
-                      children: [
-                        TimeEventRoute(),
-                      ],
-                    ),
-                  ],
-                ),
-              );
+          context.router.popAndPushAll([EventsRouter(), EventsTabRouter()]);
         },
         child: const Icon(
           Icons.alarm,
@@ -449,9 +461,12 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                     margin: const EdgeInsets.only(right: 5),
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                'http://125.180.98.19:1234/images/${images[index]['image_id']}')),
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            SessionRepo()
+                                .getImageUrl(images[index]['image_id']),
+                          ),
+                        ),
                         borderRadius: BorderRadius.circular(12),
                         color: Colors.white38),
                   );

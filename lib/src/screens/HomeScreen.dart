@@ -249,9 +249,15 @@ class HomeScreen extends StatelessWidget {
                                 : (position == null &&
                                         state.position?.target == null)
                                     ? const NLatLng(
-                                        37.54388829908806, 127.07595459999982)
+                                        37.54388829908806,
+                                        127.07595459999982,
+                                      )
                                     : state.position!.target,
                     zoom: state.position?.zoom ?? 13.5,
+                  ),
+                  extent: const NLatLngBounds(
+                    southWest: NLatLng(31.43, 122.37),
+                    northEast: NLatLng(44.35, 132.0),
                   ),
                 ),
               );
