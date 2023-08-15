@@ -3,7 +3,7 @@ create database placetalk;
 use placetalk;
 
 CREATE TABLE `tb_user` (
-	`user_id`	int PRIMARY KEY	NOT NULL,
+	`user_id`	BIGINT PRIMARY KEY	NOT NULL,
 	`nickname` varchar(30),
 	`email` varchar(30)
 );
@@ -22,7 +22,7 @@ CREATE TABLE `tb_place` (
 CREATE TABLE `tb_comment` (
 	`comment_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`post_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL,
+	`user_id`	BIGINT	NOT NULL,
 	`content` varchar(100) NOT NULL,
 	`is_reply`	tinyint	NOT NULL	DEFAULT 0	COMMENT '대댓',
 	`reply_id`	int	NULL	DEFAULT 0	COMMENT '대댓 참조 댓글',
@@ -32,7 +32,7 @@ CREATE TABLE `tb_comment` (
 
 CREATE TABLE `tb_post` (
 	`post_id`	int auto_increment PRIMARY KEY	NOT NULL,
-	`user_id`	int	NOT NULL,
+	`user_id`	BIGINT	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`create_date`	datetime	NULL,
 	`content`	varchar(1000)	NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `tb_post` (
 CREATE TABLE `tb_feed` (
 	`feed_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL,
+	`user_id`	BIGINT	NOT NULL,
 	`content`	varchar(1000)	NOT NULL,
 	`write_time` datetime NOT NULL
 );
@@ -65,23 +65,23 @@ CREATE TABLE `tb_booth` (
 );
 
 CREATE TABLE `tb_join` (
-	`user_id`	int	NOT NULL,
+	`user_id`	BIGINT	NOT NULL,
 	`place_id`	int	NOT NULL
 );
 
 CREATE TABLE `tb_organizer` (
 	`place_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL
+	`user_id`	BIGINT	NOT NULL
 );
 
 CREATE TABLE `tb_comment_likes` (
 	`comment_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL
+	`user_id`	BIGINT	NOT NULL
 );
 
 CREATE TABLE `tb_post_likes` (
 	`post_id`	int	NOT NULL,
-	`user_id`	int	NOT NULL
+	`user_id`	BIGINT	NOT NULL
 );
 
 CREATE TABLE `tb_location` (

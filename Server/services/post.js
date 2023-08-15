@@ -5,7 +5,7 @@ const { getUsers } = require("./user");
 
 async function getPosts(options) {    
 	const { offset, postPerPage, likeOrder } = options;
-    let query = `SELECT * FROM tb_post WHERE 1=1`;
+    let query = `SELECT post_id, user_id, create_date, content, likes, (SELECT COUNT(*) FROM tb_comment WHERE post_id = post_id) as commentCnt FROM tb_post WHERE 1=1`;
     
     let obj = [];
 	
@@ -19,16 +19,27 @@ async function getPosts(options) {
         obj.push(options.user_id);
     }
 
-    query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} DESC LIMIT ?, ?`;
-    obj.push(offset * postPerPage);
-    obj.push(postPerPage);
+    if(options.post_id) {
+        query += ' AND post_id = ?';
+        obj.push(options.post_id);
+    }
 
+    if(offset && postPerPage) {
+        query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} DESC LIMIT ?, ?`;
+        obj.push(offset * postPerPage);
+        obj.push(postPerPage);
+    }
+    
     let posts = await conn.query(query, obj);
-    console.log(posts);
-    const user = await getUsers({ user_id: posts[0].user_id });
+    let res = [];
 
-    posts[0].user = user[0];
-    return posts;
+    for(let post of posts) {        
+        const user = await getUsers({ user_id: post.user_id });    
+        post.user = user[0];
+        delete post.user_id;
+        res.push(post);
+    }
+    return res;
 }
 
 // post : content, place_id, user_id
@@ -45,7 +56,7 @@ async function editPost(post) {
 }
 
 async function deletePost(post_id) {
-    return await conn.query('DELETE FROM tb_post WHERE AND post_id = ?', [ post_id ]);
+    return await conn.query('DELETE FROM tb_post WHERE post_id = ?', [ post_id ]);
 }
 
 async function getPostLikes(post_id) {

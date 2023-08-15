@@ -126,13 +126,14 @@ level : access level
   }
 ]
 ```
+
 ### GET /api/users/join/:place_id
 
 place_id 에 참가합니다.
 
 #### Request
 
-\*place_id - path parameter  
+\*place_id - path parameter
 
 #### Response
 
@@ -144,7 +145,7 @@ place_id 에서 나옵니다.
 
 #### Request
 
-\*place_id - path parameter  
+\*place_id - path parameter
 
 #### Response
 
@@ -780,7 +781,8 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
   "place_id": int,
   "create_date": datetime,
   "content": string,
-  "likes": int
+  "likes": int,
+  "commentCnt" : int
 }
 ```
 
@@ -808,28 +810,52 @@ Post List
 ```json
 [
   {
-    "post_id": 3,
-    "user_id": 0,
-    "place_id": 1,
-    "create_date": "2023-08-14 22:44:08",
-    "content": "내요내용",
-    "likes": 0
+    "post_id": 1,
+    "create_date": "2023-08-15 18:15:06",
+    "content": "오늘 비안오죠? 비오면 안되ㄴ는딩",
+    "likes": 0,
+    "commentCnt": 0,
+    "user": {
+      "user_id": 894316236,
+      "nickname": "비둘기야밥먹자구구구",
+      "email": "test@example.com"
+    }
   },
   {
     "post_id": 2,
-    "user_id": 0,
-    "place_id": 1,
-    "create_date": "2023-08-14 22:44:03",
-    "content": "동해물과",
-    "likes": 0
+    "create_date": "2023-08-15 18:15:06",
+    "content": "오늘 축제 몇시까지해여",
+    "likes": 0,
+    "commentCnt": 0,
+    "user": {
+      "user_id": 976218958,
+      "nickname": "마감요정",
+      "email": "test@example.com"
+    }
   },
   {
-    "post_id": 1,
-    "user_id": 0,
-    "place_id": 1,
-    "create_date": "2023-08-14 22:43:58",
-    "content": "게시글 내용부분",
-    "likes": 0
+    "post_id": 3,
+    "create_date": "2023-08-15 18:15:06",
+    "content": "황소상앞에 부스 괜찬나염",
+    "likes": 0,
+    "commentCnt": 0,
+    "user": {
+      "user_id": 752424328,
+      "nickname": "glaemfdjdy",
+      "email": "test@example.com"
+    }
+  },
+  {
+    "post_id": 4,
+    "create_date": "2023-08-15 18:15:06",
+    "content": "축제 음식 맛있나??",
+    "likes": 0,
+    "commentCnt": 0,
+    "user": {
+      "user_id": 51514446,
+      "nickname": "팡팡파라파라팡팡팡",
+      "email": "test@example.com"
+    }
   }
 ]
 ```
@@ -846,17 +872,21 @@ Post List
 
 #### Response
 
-Post
+- `Post`
 
 ```json
 [
   {
-    "post_id": 3,
-    "user_id": 0,
-    "place_id": 1,
-    "create_date": "2023-08-14 22:44:08",
-    "content": "내요내용",
-    "likes": 0
+    "post_id": 2,
+    "create_date": "2023-08-15 18:15:06",
+    "content": "오늘 축제 몇시까지해여",
+    "likes": 0,
+    "commentCnt": 0,
+    "user": {
+      "user_id": 976218958,
+      "nickname": "마감요정",
+      "email": "test@example.com"
+    }
   }
 ]
 ```

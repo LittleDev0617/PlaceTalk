@@ -6,6 +6,7 @@ const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { errorWrapper } = require('../utils/util');
 const { getComments, createComment, deleteComment } = require('../services/comment');
 const { getPlaces } = require('../services/place');
+const { isAdmin } = require('../services/user');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -53,15 +54,14 @@ router.post('', errorWrapper(async (req, res, next) => {
 const isWriter = errorWrapper(async function(req, res, next) {
 	const { post_id } = req.params;
 
-	if(isAdmin())
+	if(isAdmin(req.user.uid))
 		next();
 
 	const posts = await getPosts({ post_id });
 	if(!posts.length) {
 		throw new BadRequestError('Post does not exist.');
 	}
-
-	if(req.user.uid !== posts[0].user_id) {
+	if(req.user.uid !== posts[0].user.user_id) {
 		throw new UnauthorizedError('user_id does not match.');
 	}
 	next();
@@ -82,7 +82,7 @@ router.put('/:post_id(\\d+)', isWriter, errorWrapper(async (req, res, next) => {
 // 게시글 삭제
 router.delete('/:post_id(\\d+)', isWriter, async (req, res, next) => {	    
 	const { post_id } = req.params;
-
+	console.log(post_id)
 	await deletePost(post_id);
 	res.json({ message : "Successful" });
 });

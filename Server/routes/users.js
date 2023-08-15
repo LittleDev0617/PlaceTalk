@@ -8,23 +8,25 @@ const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { auth } = require('../utils/auth');
 const { getUsers, createUser, getUserPlace, grantAdminRole, removeAdminRole, changeNickname, exitPlace, joinPlace, isAdmin } = require('../services/user');
 const { isAdminMW, isOrganizer } = require('../services/user');
-const { errorWrapper } = require('../utils/util');
+const { errorWrapper, ADMIN_TOKEN } = require('../utils/util');
 const { getPosts } = require('../services/post');
 
 // 회원 로그인 및 가입
 router.get('/auth', errorWrapper(async (req, res, next) => {
-    let { token, nickname } = req.query;
+    let { token, email, nickname } = req.query;
     if(!token) 
         throw new BadRequestError('token is required.');
     // https://kapi.kakao.com/v2/user/me -> 회원 정보 가져오기
-    let user_id = token;
+    let user_id = parseInt(token);
 
-    let users = await getUsers(user_id);
+    let users = await getUsers({ user_id });
     
     if(!users.length) {
         if(!nickname)
             nickname = getRandomNickname('animals');
-        await createUser({ user_id, nickname: nickname, email: 'test@exapmle.com' });
+        if(!email)
+            email = 'test@example.com';
+        await createUser({ user_id, nickname: nickname, email });
     }
     const pay = {
         uid : user_id,
@@ -83,7 +85,7 @@ router.get('/change-nickname', auth, errorWrapper(async (req, res, next) => {
     const { nickname, user_id } = req.query;
     
     // 본인만 닉 변경 가능
-    if(!isAdmin() && user_id != req.user.uid)
+    if(!isAdmin(req.user.uid) && user_id != req.user.uid)
         throw new UnauthorizedError('Cannot access');
 
     await changeNickname(user_id, nickname);
