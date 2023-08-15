@@ -15,24 +15,36 @@ router.use(auth);
 // 게시글 작성자 본인 -> user_id = 0
 // 이외 작성자 -> 1, 2, 3 ..
 router.get('/', async (req, res, next) => {
-	const { post_id, comment_id } = req.query;
+	let { offset, commentsPerPage, likeOrder, post_id, user_id } = req.query;	
+	const { comment_id } = req.params;
 
-	let comments = await getComments({ post_id, comment_id });
-	let writer = (await getPosts({ post_id }))[0].user_id;
+	if(!offset || typeof(offset) !== 'number')
+		offset = 0
+	
+	if(!commentsPerPage || typeof(commentsPerPage) !== 'number')
+		commentsPerPage = 10
 
-	let users = {};
+	if(!likeOrder || typeof(likeOrder) !== 'boolean')
+		likeOrder = false;
 
-	for (let i = 0; i < comments.length; i++) {
-		let comment_user_id = comments[i]['user_id'];
-		if(writer !== comment_user_id) {
-			if(!users[comment_user_id])
-				users[comment_user_id] = i + 1;
+	let comments = await getComments({ user_id, post_id, comment_id, offset, commentsPerPage, likeOrder });
 
-			comments[i]['user_id'] = users[comment_user_id];	
-		}
-		else
-			comments[i]['user_id'] = 0;
-	}
+	// 익명 비활성화
+	// let writer = (await getPosts({ post_id }))[0].user_id;
+
+	// let users = {};
+
+	// for (let i = 0; i < comments.length; i++) {
+	// 	let comment_user_id = comments[i]['user_id'];
+	// 	if(writer !== comment_user_id) {
+	// 		if(!users[comment_user_id])
+	// 			users[comment_user_id] = i + 1;
+
+	// 		comments[i]['user_id'] = users[comment_user_id];	
+	// 	}
+	// 	else
+	// 		comments[i]['user_id'] = 0;
+	// }
 
 	res.json(comments);
 });
@@ -43,8 +55,8 @@ router.get('/', async (req, res, next) => {
 // reply_id : int - 0 : 대댓 X / 0 제외 자연수 comment_id : comment_id 의 대댓
 router.post('/', async (req, res, next) => {
 	const { is_reply, reply_id, content, post_id } = req.body;
-
-	await createComment({ post_id, content, is_reply, reply_id, user_id });
+	
+	await createComment({ post_id, content, is_reply, reply_id, user_id: req.user.uid });
 	res.json({ message : "Successful" });
 });
 

@@ -5,7 +5,7 @@ const { getUsers } = require("./user");
 
 async function getPosts(options) {    
 	const { offset, postPerPage, likeOrder } = options;
-    let query = `SELECT post_id, user_id, create_date, content, likes, (SELECT COUNT(*) FROM tb_comment WHERE post_id = post_id) as commentCnt FROM tb_post WHERE 1=1`;
+    let query = `SELECT post_id, user_id, create_date, content, likes, (SELECT COUNT(*) FROM tb_comment as c WHERE c.post_id = p.post_id) as commentCnt FROM tb_post as p WHERE 1=1`;
     
     let obj = [];
 	
@@ -24,13 +24,17 @@ async function getPosts(options) {
         obj.push(options.post_id);
     }
 
+    if(options.content) {
+        query += ' AND content LIKE ?';
+        obj.push(`%${options.content}%`);
+    }
+
     if(offset && postPerPage) {
         query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} DESC LIMIT ?, ?`;
         obj.push(offset * postPerPage);
         obj.push(postPerPage);
     }
     
-    console.log(options)
     let posts = await conn.query(query, obj);
     let res = [];
 
