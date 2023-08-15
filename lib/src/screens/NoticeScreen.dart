@@ -47,8 +47,6 @@ class NoticeScreen extends StatelessWidget {
               return ListView.builder(
                 itemCount: state.feedList.length,
                 itemBuilder: ((BuildContext context, feedindex) {
-                  print(
-                      '디버그1 $feedindex ${state.feedList[feedindex].content} $feedindex');
                   return SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,9 +98,6 @@ class NoticeScreen extends StatelessWidget {
                                 itemCount:
                                     state.feedList[feedindex].images.length,
                                 itemBuilder: (((BuildContext context, index) {
-                                  print(
-                                      '디버그1-1 $index ${state.feedList[feedindex].images[index].imageId}');
-
                                   return Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),

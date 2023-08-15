@@ -244,6 +244,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                 ],
                               ),
                             ),
+                            const Text('구역별 설명'),
                             Expanded(
                               child: ListView.separated(
                                 controller:
@@ -261,9 +262,6 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                     ),
                                     child: ListTile(
                                       onTap: () {
-                                        print(state.itemsLatLng[itemIndex]
-                                            ['images']);
-
                                         setState(() {
                                           _showBottomSheet = false;
                                         });
@@ -326,8 +324,8 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                         ],
                                       ),
                                       trailing: Container(
-                                        width: 95,
-                                        height: 65,
+                                        width: 125,
+                                        height: 85,
                                         margin: const EdgeInsets.only(right: 5),
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
@@ -347,7 +345,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                 separatorBuilder: (context, index) => Divider(
                                   thickness: .1,
                                   color:
-                                      const Color(0xff707070).withOpacity(.2),
+                                      const Color(0xff707070).withOpacity(.8),
                                 ),
                               ),
                             ),
@@ -367,15 +365,19 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        shape: const CircleBorder(),
-        onPressed: () {
-          context.router.popAndPushAll([EventsRouter(), EventsTabRouter()]);
-        },
-        child: const Icon(
-          Icons.alarm,
-          color: Color(0xffADADAD),
+      floatingActionButton: Visibility(
+        visible: _showBottomSheet,
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          shape: const CircleBorder(),
+          onPressed: () {
+            context.router
+                .popAndPushAll([const EventsRouter(), const EventsTabRouter()]);
+          },
+          child: const Icon(
+            Icons.alarm,
+            color: Color(0xffADADAD),
+          ),
         ),
       ),
     );

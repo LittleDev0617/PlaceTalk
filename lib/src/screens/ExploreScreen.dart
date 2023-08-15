@@ -57,7 +57,7 @@ class ExploreScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24),
             child: Text(
-              '플톡이 뽑은 전국 핫플',
+              '플톡이 뽑은 전국 핫플 10',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -126,7 +126,6 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
             onPageChanged: _onPageChanged,
             itemBuilder: (BuildContext context, int index) {
               double delta = index - _currentPage;
-              print(state.datas);
               String item = state.datas.keys.toList()[index];
 
               if (delta > 0) {

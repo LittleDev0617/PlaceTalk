@@ -31,8 +31,6 @@ class CustomDropdownButton extends StatelessWidget {
         ),
         items: itemList.keys.toList().map((String itemText) {
           final Map<String, dynamic> itemData = itemList[itemText]!;
-          final String name = itemData['name'];
-          final String locName = itemData['loc_name'];
           final int state = itemData['state'];
 
           return DropdownMenuItem<String>(
@@ -52,10 +50,11 @@ class CustomDropdownButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    ('$name $locName').length > 18
-                        ? '${('$name $locName').substring(0, 18)} ···'
-                        : ('$name $locName'),
+                    itemText.length > 18
+                        ? '${itemText.substring(0, 18)}···'
+                        : itemText,
                     style: TextStyle(
+                      letterSpacing: -1,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                       overflow: TextOverflow.ellipsis,

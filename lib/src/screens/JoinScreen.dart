@@ -66,18 +66,19 @@ class JoinScreen extends StatelessWidget {
                             state.itemsLatLng.keys.toList()[index]];
 
                         return ListTile(
-                          leading: const Icon(
-                            Icons.bookmark_outline_rounded,
+                          leading: Icon(
+                            Icons.bookmark_rounded,
                             size: 28,
+                            color: item!['state'] == 0
+                                ? const Color(0xff82E3CD)
+                                : const Color(0xffFF7D7D),
                           ),
                           title: GestureDetector(
                             onTap: () {
                               context.router.root.push(HomeRoute(
                                 position: NLatLng(
-                                  state.itemsLatLng[state.itemsLatLng.keys
-                                      .toList()[index]]!['latitude'],
-                                  state.itemsLatLng[state.itemsLatLng.keys
-                                      .toList()[index]]!['longitude'],
+                                  item['latitude'],
+                                  item['longitude'],
                                 ),
                               ));
 
@@ -120,9 +121,9 @@ class JoinScreen extends StatelessWidget {
                                 onTap: () {
                                   context.router.push(
                                     BoardEventRoute(
-                                        name: state.itemsLatLng.keys
-                                            .toList()[index],
-                                        placeID: item['place_id']),
+                                      name: item['name'],
+                                      placeID: item['place_id'],
+                                    ),
                                   );
                                 },
                                 child: const Icon(
@@ -136,13 +137,11 @@ class JoinScreen extends StatelessWidget {
                                 onTap: () {
                                   context.router.push(
                                     EventTabRoute(
-                                      name: state.itemsLatLng.keys
-                                          .toList()[index],
+                                      name: item['name'],
                                       placeID: item['place_id'],
                                       children: [
                                         InformEventRoute(
-                                          name: state.itemsLatLng.keys
-                                              .toList()[index],
+                                          name: item['name'],
                                           placeID: item['place_id'],
                                         ),
                                       ],
