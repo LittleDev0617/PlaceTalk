@@ -370,10 +370,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
         child: FloatingActionButton(
           backgroundColor: Colors.white,
           shape: const CircleBorder(),
-          onPressed: () {
-            context.router
-                .popAndPushAll([const EventsRouter(), const EventsTabRouter()]);
-          },
+          onPressed: () {},
           child: const Icon(
             Icons.alarm,
             color: Color(0xffADADAD),
