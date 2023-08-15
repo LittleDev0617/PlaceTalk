@@ -1,5 +1,4 @@
 
-<div align="center">
 # PlaceTalk
 ![logo](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2)
 
@@ -45,8 +44,20 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 ### License
 ### References
 ### Contributors
-- 정덕용 Jung Deok Yong / jdy3378@gmail.com
-- 홍가란 Hong garan / bbi100205@gmail.com
-- 김본수 Kim Bon Soo / devbonsu04@gmail.com
-- 유규민 Yu Kyu Min / littledev0617@naver.com
+- 🧑 정덕용
+    - Jung Deok Yong
+    - jdy3378@gmail.com
+    - 기획    
+- 👩 홍가란
+    - Hong garan
+    - bbi100205@gmail.com
+    - 디자인
+- 👨‍💻김본수
+    - Kim Bon Soo
+    - devbonsu04@gmail.com
+    - 프론트엔드 개발
+- 👨‍💻 유규민
+    - Yu Kyu Min
+    - littledev0617@naver.com
+    - 백엔드 개발    
 
