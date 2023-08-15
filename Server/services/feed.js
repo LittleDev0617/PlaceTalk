@@ -1,6 +1,7 @@
 const conn = require("../utils/db");
 const { getImages, createImage } = require("./image");
 const { getLocations, createLocation } = require("./location");
+const { getPlaces } = require("./place");
 const { isOrganizerOfPlace, getNickname } = require("./user");
 
 async function getFeeds(options) {
@@ -30,12 +31,13 @@ async function getFeeds(options) {
         feed.images = [];
         
         const place = await getPlaces({ place_id: feed.place_id });
-        feed.place = { place_id: place[0].place_id, name: place[0].name };
-        
+        // feed.place = { place_id: place[0].place_id, name: place[0].name };
+
         const images = await getImages({ id: 'feed_id', value: feed.feed_id });
         Object.assign(feed.images, images);
 
-        feed.nickname = (await getNickname(feed.user_id))[0].nickname;        
+        // 전체 피드 조회시 장소 이름. 아니면 게시자 닉네임
+        feed.nickname = obj.length == 2 ? place[0].name : (await getNickname(feed.user_id))[0].nickname;        
 
         res.push(feed);
     }
