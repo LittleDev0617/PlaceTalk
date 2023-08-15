@@ -29,6 +29,9 @@ async function getFeeds(options) {
     for(let feed of feeds) {
         feed.images = [];
         
+        const place = await getPlaces({ place_id: feed.place_id });
+        feed.place = { place_id: place[0].place_id, name: place[0].name };
+        
         const images = await getImages({ id: 'feed_id', value: feed.feed_id });
         Object.assign(feed.images, images);
 
