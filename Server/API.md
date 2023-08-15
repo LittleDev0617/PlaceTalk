@@ -261,6 +261,13 @@ place_id 에 참가합니다.
 
 #### Response
 
+```json
+
+or
+{"code":1,"message":"User already joined."}
+or
+{"code":2,"message":"Cannot join more than 5 places."}
+```
 <hr />
 
 ### GET /api/places/:place_id/exit

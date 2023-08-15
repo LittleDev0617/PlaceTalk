@@ -304,14 +304,17 @@ def add_top10():
 #     test.get(HOST_API+f'users/join/{1}')
 #     test.get(HOST_API+f'posts/{(randint(1,1000) % 9) + 1}/like')
 
-# test = Session()
-# test.get(HOST_API+f'users/auth?token=2966688008')
-# test.get(HOST_API+f'places/1/join')
-# test.get(HOST_API+f'places/33/join')
+test = Session()
+test.get(HOST_API+f'users/auth?token=2966688008')
+test.get(HOST_API+f'places/1/join')
+test.get(HOST_API+f'places/31/join')
+test.get(HOST_API+f'places/32/join')
+test.get(HOST_API+f'places/35/join')
+test.get(HOST_API+f'places/34/join')
+test.get(HOST_API+f'places/36/join')
 # exit()
 # print(r.cookies)
 
-r = admin.get(url+f'users/place')
 print(r.text)
 
 # def add_place(name, start, end, latitude, longitude):
