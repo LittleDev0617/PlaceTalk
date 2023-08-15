@@ -55,7 +55,7 @@ async function getPlaces(options) {
         place.locations = [];
         place.images = [];
 
-        const images = await getImages({ id: 'image_id', value: place.image_id });
+        const images = await getImages({ id: 'place_id', value: place.place_id });
         Object.assign(place.images, images);
 
         const locations = await getLocations({ id: 'place_id', value: place.place_id });
@@ -107,8 +107,9 @@ async function createPlace(place) {
     const place_id = (await conn.query('INSERT INTO tb_place(name, category, state, start_date, end_date) VALUES(?, ?, ?, ?, ?)', 
 				[placeName, category, state, startDate, endDate])).insertId;
 
+    console.log(image)
     if(image)
-        await createImage({ id: 'place_id', value: place_id }, image.filename, i);
+        await createImage({ id: 'place_id', value: place_id }, image.filename, 0);
 
     for (let location of locations) {
         createLocation({ id: 'place_id', value: place_id }, location);

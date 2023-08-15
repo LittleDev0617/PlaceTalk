@@ -48,15 +48,23 @@ router.delete('/top10', async (req, res, next) => {
 // startDate : datetime
 // endDate	 : dateTime
 // locations : List<Location>
-router.post('/', isAdminMW, upload.single('image'), async (req, res, next) => {    
-	const { placeName, category, state, startDate, endDate, locations } = req.body;	
-
-	if(!(typeof(placeName) === 'string' && typeof(state) === 'number' && typeof(category) === 'string'))
+router.post('/', isAdminMW, upload.fields(
+	[{ name: 'placeName' },
+	{ name: 'category' },
+	{ name: 'state' },
+	{ name: 'startDate' },
+	{ name: 'endDate' },
+	{ name: 'locations' },
+	{ name: 'image' }]), async (req, res, next) => {    
+	let { placeName, category, state, startDate, endDate, locations } = req.body;	
+	
+	locations = JSON.parse(locations);
+	if(!(typeof(placeName) === 'string' && typeof(category) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
 	let image;
-	if(req.file)
-		image = req.file.image;
+	if(req.files)
+		image = req.files.image[0];
 
 	await createPlace({ placeName, category, state, startDate, endDate, locations, image });
 

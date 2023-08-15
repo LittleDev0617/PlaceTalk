@@ -2,7 +2,7 @@ from requests import post, get, Session
 from naver_parser import link2lat_lon
 import json
 from random import randint
-
+import glob
 HOST_API = 'http://localhost:3000/api/'
 
 # for line in open('API.md', 'r', encoding='utf-8').readlines():
@@ -33,6 +33,8 @@ def add_place():
     global admin
     txt = open("./naver_map_list.txt", 'r', encoding='utf-8').read()
     places = txt.split('\n\n')
+    top10List = open("./top10_list.txt", 'r', encoding='utf-8').read().split('\n')    
+
     for place in places:
         name = place.split('\n')[0]
         kind = place.split('\n')[1]
@@ -50,11 +52,20 @@ def add_place():
             lat, lon = link2lat_lon(url)
             myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
 
-        r = admin.post(HOST_API+f'places', json=myPlace)
+        myPlace['locations'] = json.dumps(myPlace['locations'])
+
+        if name in top10List:
+            files = glob.glob('media/top10/*.png')
+            image = files[top10List.index(name)]
+            images = {'image' : (image, open(image, 'rb'))}
+            
+            print(name)
+            r = admin.post(HOST_API+f'places', data=myPlace, files=images)            
+        else:
+            r = admin.post(HOST_API+f'places', json=myPlace)
         print(r.text)
         
-
-#add_place()
+# add_place()
 
 # r = admin.get(HOST_API+f'places/20/join')
 # print(r.text)
@@ -76,28 +87,6 @@ def add_booth():
     global admin
     #  name, content, on_time, loc_name, lat, lon 
     naver_link = ['https://naver.me/x3qUn8vB', 'https://naver.me/xq5mz4jK']
-    # booth_data = [
-    #     {
-    #         "name": "경영대 주막",
-    #         "on_time": "10:00 ~ 18:00",
-    #         "content": "황소상 앞에서 경영대 주막을 오픈했습니다.",
-    #         "location": {
-    #             "loc_name": "황소상 앞",
-    #             "lat": 123,
-    #             "lon": 23
-    #         }
-    #     },
-    #     {
-    #         "name": "사범대 주막",
-    #         "on_time": "10:00 ~ 18:00",
-    #         "content": "사범대 주막 설명입니다.",
-    #         "location": {
-    #             "loc_name": "교육과학관 앞",
-    #             "lat": 124,
-    #             "lon": 22
-    #         }
-    #     }
-    # ]
 
     booth_images = [['image1.png', 'image2.png', 'image3.png'], ['image4.png'], ['image5.png'], ['image6.png'], ['image7.png']]
     
@@ -123,13 +112,11 @@ def add_booth():
         myBooth['location'] = json.dumps(myBooth['location'])
         r = admin.post(HOST_API+f'booths', data=myBooth, files=images)
         print(r.text)
-
-#add_booth()
+# add_booth()
 
 r = admin.get(HOST_API+f'booths/1')
 print(r.text)
 
-import glob
 def add_feed():
     global admin
 
@@ -168,8 +155,7 @@ def add_feed():
 
 
 
-    
-# add_feed()
+    # add_feed()
     
 r = admin.get(HOST_API+f'feeds/1')
 print(r.text)
@@ -188,8 +174,7 @@ def add_info():
         
         r = admin.post(HOST_API+f'infos', json=myInfo)
         print(r.text)
-    
-#add_info()
+    # add_info()
     
 r = admin.get(HOST_API+f'infos?place_id=1')
 print(r.text)
@@ -203,6 +188,8 @@ print(r.text)
 
 r = front.get(HOST_API+f'users/join/5')
 print(r.text)
+
+front.get(HOST_API+f'users/exit/33')
 
 def add_post():
     global admin
@@ -224,11 +211,11 @@ def add_post():
         r = post_session.post(HOST_API+'posts', json=myPost)
         print(r.text)
 
-myPost = { 'place_id' : 1, 'content': input() }
-test = Session()
-test.get(HOST_API+f'users/auth?token={636228018}')
-test.get(HOST_API+f'users/join/{1}')
-r = test.delete(HOST_API+'posts/12')
+# myPost = { 'place_id' : 1, 'content': input() }
+# test = Session()
+# test.get(HOST_API+f'users/auth?token={636228018}')
+# test.get(HOST_API+f'users/join/{1}')
+# r = test.put(HOST_API+'posts/12')
 
 # myPost = { 'place_id' : 1, 'content': input() }
 
@@ -236,8 +223,7 @@ r = test.delete(HOST_API+'posts/12')
 # test.get(HOST_API+f'users/auth?token={636228018}')
 # test.get(HOST_API+f'users/join/{1}')
 # r = test.post(HOST_API+'posts', json=myPost)
-
-#add_post()
+# add_post()
 
 def add_top10():
     global admin
@@ -247,7 +233,6 @@ def add_top10():
         place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
         r = admin.post(HOST_API+f'places/top10', json={'place_id':place_id})
         print(r.text)
-
 
 # add_top10()
 
@@ -280,7 +265,6 @@ print(r.text)
 
 #     r = admin.post(url+f'places', json=hot_place)
 #     print(r.text)
-
 
 # add_place(1,2,3,4,5)
 
