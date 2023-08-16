@@ -33,7 +33,6 @@ async function getPlaces(options) {
         obj.push(options.place_id);
     }
 
-        
     if(options.category) {
         query += ' AND category = ?';
         obj.push(options.category);
@@ -124,12 +123,16 @@ async function deletePlace() {
 }
 
 async function addSchedule(place_id, image) {
-    const schedule_id = (await conn.query('INSERT INTO tb_schedule(place_id) VALUES(?)', place_id))[0].insertId;
+    const schedule_id = (await conn.query('INSERT INTO tb_schedule(place_id) VALUES(?)', place_id)).insertId;
     return await createImage({ id: 'schedule_id', value: schedule_id }, image, 0);
 }
 
-async function getSchedule(place_id) {
-    const schedule_id = await conn.query('SELECT schedule_id FROM tb_schedule WHERE place_id = ?', [place_id]);
+async function getSchedule(place_id) {        
+    let schedule_id = (await conn.query('SELECT schedule_id FROM tb_schedule WHERE place_id = ?', [place_id]))[0];        
+    if(!schedule_id)
+        return 'empty.png'
+    else
+        schedule_id = schedule_id.schedule_id;
     return await getImages({ id: 'schedule_id', value: schedule_id});
 }
 

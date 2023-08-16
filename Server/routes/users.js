@@ -52,21 +52,21 @@ router.get('/post', auth, async (req, res, next) => {
 });
 
 // 운영자 권한 부여
-router.get('/authority', auth, isAdminMW, async (req, res, next) => {
-    const { user_id, place_id } = req.query;
+router.post('/authority', auth, isAdminMW, async (req, res, next) => {
+    const { user_id, place_id } = req.body;
     await grantAdminRole(user_id, place_id);
     res.json({ message : 'Successful' });
 });
 
 // 
 router.delete('/authority', auth, isAdminMW, async (req, res, next) => {
-    const { user_id, place_id } = req.query;
+    const { user_id, place_id } = req.body;
     await removeAdminRole(user_id, place_id);
     res.json({ message : 'Successful' });
 });
 
 router.post('/nickname', auth, errorWrapper(async (req, res, next) => {
-    const { nickname, user_id } = req.query;
+    const { nickname, user_id } = req.body;
     
     // 본인만 닉 변경 가능
     if(!isAdmin(req.user.uid) && user_id != req.user.uid)

@@ -15,11 +15,6 @@ async function getInfos(options) {
         obj.push(options.info_id);
     }    
 
-    if(options.is_schedule) {
-        query += ' AND is_schedule = ?';
-        obj.push(options.is_schedule);
-    }    
-
     const infos = await conn.query(query, obj);
     
     return infos;
@@ -29,7 +24,7 @@ async function getInfos(options) {
 async function createInfo(infoInfo, place_id) {
     const { title, content } = infoInfo;
 
-    const info_id = (await conn.query('INSERT INTO tb_info(place_id, title, content) VALUES(?, ?, ?, ?)', [place_id, title, content, is_schedule])).insertId;    
+    const info_id = (await conn.query('INSERT INTO tb_info(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content])).insertId;    
 }
 
 // TODO: Edit

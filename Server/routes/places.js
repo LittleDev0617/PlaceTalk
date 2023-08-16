@@ -3,7 +3,7 @@ var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { errorWrapper, upload } = require('../utils/util');
-const { getPlaces, createPlace, getTop10Places, addTop10Place, removeTop10Place } = require('../controllers/place');
+const { getPlaces, createPlace, getTop10Places, addTop10Place, removeTop10Place, getSchedule, addSchedule } = require('../controllers/place');
 const { joinPlace, isAdminMW, exitPlace } = require('../controllers/user');
 var router = express.Router();
 
@@ -90,7 +90,8 @@ router.get('/:place_id(\\d+)/schedule', async (req, res, next) => {
 
 router.post('/:place_id(\\d+)/schedule', upload.single('image'), async (req, res, next) => {
 	var { place_id } = req.params;	
-	let schedule_image = await addSchedule(place_id, req.file ? req.file.image : 'empty.png');
+	
+	let schedule_image = await addSchedule(place_id, req.file ? req.file.filename : 'empty.png');
 	res.json({ message: 'Successful' });
 });
 

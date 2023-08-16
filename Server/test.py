@@ -309,12 +309,12 @@ def add_top10():
 # add_comment()
 
 # 게시글 좋아요
-# for i in range(42):
-#     test = Session()
-#     test.get(HOST_API+f'users/auth?token={3534982+i}')
-#     test.get(HOST_API+f'users/join/1')
-#     test.get(HOST_API+f'users/join/51')
-#     test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
+for i in range(42):
+    test = Session()
+    test.get(HOST_API+f'users/auth?token={3534982+i}')
+    test.get(HOST_API+f'users/join/1')
+    test.get(HOST_API+f'users/join/51')
+    test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
 
 # test = Session()
 # test.get(HOST_API+f'users/auth?token=2966688008')
