@@ -9,9 +9,7 @@ class NearBloc extends Bloc<NearEvent, NearState> {
   final PlaceRepo _placeRepo;
 
   NearBloc(this._placeRepo) : super(NearInitial()) {
-    on<NearEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<NearEvent>((event, emit) {});
 
     on<FetchNearMapDataEvent>((event, emit) async {
       emit(NearLoding());

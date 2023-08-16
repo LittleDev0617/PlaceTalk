@@ -8,9 +8,7 @@ part 'explore_state.dart';
 class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
   final PlaceRepo _placeRepo;
   ExploreBloc(this._placeRepo) : super(ExploreInitial()) {
-    on<ExploreEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ExploreEvent>((event, emit) {});
 
     on<FetchExploreDataEvent>((event, emit) async {
       emit((ExploreLoading()));

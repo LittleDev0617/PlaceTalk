@@ -10,9 +10,7 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final FeedRepo _feedRepo;
   FeedBloc(this._feedRepo) : super(FeedInitial()) {
-    on<FeedEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<FeedEvent>((event, emit) {});
 
     on<FetchFeedData>((event, emit) async {
       emit(FeedLoading());
@@ -30,10 +28,6 @@ class FeedEventBloc extends Bloc<FeedEvent, FeedState> {
       emit(FeedEventLoading());
       final feedList = await _feedEventRepo.fetchEventFeedData(event.placeId);
       emit(FeedEventLoaded(feedList: feedList));
-
-      void dispose() {
-        super.close();
-      }
     });
 
     on<ToFeedInitial>((event, emit) {

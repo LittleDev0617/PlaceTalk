@@ -43,6 +43,16 @@ class PlaceRepo {
     };
   }
 
+  Future<Map<String, dynamic>> fetchPlaceData(int placeID) async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    final apiData = await _sessionRepo.get('api/places/$placeID');
+
+    return {
+      'itemsLatLng': createCoordinatesMap(apiData),
+    };
+  }
+
   Future<Map<String, dynamic>> fetchNearData() async {
     Position? position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium);
@@ -79,15 +89,27 @@ class PlaceRepo {
     };
   }
 
-  Future<Map<String, dynamic>> fetchJoinData() async {
+  Future<Map<String, dynamic>> fetchJoinData(int userID) async {
     await Future.delayed(const Duration(seconds: 1));
 
     final apiData = await _sessionRepo.get(
-      'api/users/place',
+      'api/places?user_id=$userID',
     );
 
     return {
       'itemsLatLng': createCoordinatesJoin(apiData),
+    };
+  }
+
+  Future<Map<String, dynamic>> fetchIdData(int placeID) async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    final apiData = await _sessionRepo.get(
+      'api/places/$placeID',
+    );
+
+    return {
+      'items': createCoordinatesID(apiData),
     };
   }
 
@@ -224,5 +246,36 @@ class PlaceRepo {
     }
 
     return itemsLatLng;
+  }
+
+  Map<String, Map<String, dynamic>> createCoordinatesID(
+      List<Map<String, dynamic>> apiData) {
+    Map<String, Map<String, dynamic>> items = {};
+
+    final data = apiData[0];
+
+    final name = data['name'];
+
+    final List<dynamic> imagesJson = data['images'];
+    final List<Map<String, dynamic>> images =
+        imagesJson.cast<Map<String, dynamic>>();
+
+    final category = data['category'];
+    final placeID = data['place_id'];
+    final state = data['state'];
+    final startDate = DateTime.parse(data['start_date']);
+    final endDate = DateTime.parse(data['end_date']);
+
+    items[name] = {
+      'name': name,
+      'place_id': placeID,
+      'category': category,
+      'state': state,
+      'startDate': startDate,
+      'endDate': endDate,
+      'images': images,
+    };
+
+    return items;
   }
 }

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:placetalk/src/models/UserAuthStatusModel.dart';
+import 'package:placetalk/src/repositories/MypageRepo.dart';
 import 'package:placetalk/src/repositories/SessionRepo.dart';
 
 import '../../models/UserModel.dart';
@@ -13,8 +14,10 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepo _authRepo;
   final SessionRepo _sessionRepo;
+  final MypageRepo _mypageRepo;
 
-  AuthBloc(this._authRepo, this._sessionRepo) : super(AuthInitial()) {
+  AuthBloc(this._authRepo, this._sessionRepo, this._mypageRepo)
+      : super(AuthInitial()) {
     on<AuthEvent>((event, emit) {});
 
     on<RequestKakaoLogin>((event, emit) async {
@@ -24,9 +27,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final status = await _authRepo.kakaoLogin();
         if (status == UserAuthStatusModel.granted) {
           final user = await _authRepo.kakaoGetUsers();
+
           _sessionRepo.getCookieFromHeader(
-              user.kakaoID.toString(), user.email!);
-          emit(AuthGranted(user: user));
+              user.kakaoID.toString(), user.email == null ? "" : user.email!);
+
+          final mypage = await _mypageRepo.fetchMypageData(user.kakaoID);
+
+          emit(AuthGranted(user: user, nickname: mypage.nickname));
         } else if (status == UserAuthStatusModel.denied) {
           emit(AuthDenied());
         }

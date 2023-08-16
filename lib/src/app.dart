@@ -6,14 +6,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
 import 'package:placetalk/src/blocs/BoardBlocs/board_bloc.dart';
 import 'package:placetalk/src/blocs/BoothBlocs/booth_bloc.dart';
+import 'package:placetalk/src/blocs/CommentBlocs/comment_bloc.dart';
 import 'package:placetalk/src/blocs/ExploreBlocs/explore_bloc.dart';
 import 'package:placetalk/src/blocs/FeedBlocs/feed_bloc.dart';
 import 'package:placetalk/src/blocs/JoinBlocs/join_bloc.dart';
 import 'package:placetalk/src/blocs/NearBloc/near_bloc.dart';
+import 'package:placetalk/src/blocs/PlaceInfoblocs/place_info_bloc.dart';
 import 'package:placetalk/src/repositories/AuthRepo.dart';
 import 'package:placetalk/src/repositories/BoardRepo.dart';
 import 'package:placetalk/src/repositories/BoothRepo.dart';
+import 'package:placetalk/src/repositories/CommentRepo.dart';
 import 'package:placetalk/src/repositories/FeedRepo.dart';
+import 'package:placetalk/src/repositories/JoinRepo.dart';
+import 'package:placetalk/src/repositories/MypageRepo.dart';
+import 'package:placetalk/src/repositories/PlaceInfoRepo.dart';
 import 'package:placetalk/src/repositories/PlaceRepo.dart';
 import 'package:placetalk/src/repositories/SessionRepo.dart';
 
@@ -31,12 +37,15 @@ class App extends StatelessWidget {
         RepositoryProvider(create: (context) => AuthRepo()),
         RepositoryProvider(create: (context) => PlaceRepo(SessionRepo())),
         RepositoryProvider(create: (context) => FeedRepo(SessionRepo())),
+        RepositoryProvider(create: (context) => PlaceInfoRepo(SessionRepo())),
+        RepositoryProvider(create: (context) => JoinRepo(SessionRepo())),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => AuthBloc(AuthRepo(), SessionRepo())
-                ..add(RequestKakaoLogin())),
+              create: (context) =>
+                  AuthBloc(AuthRepo(), SessionRepo(), MypageRepo(SessionRepo()))
+                    ..add(RequestKakaoLogin())),
           BlocProvider(
               create: (context) => PlaceBloc(
                     PlaceRepo(SessionRepo()),
@@ -44,14 +53,24 @@ class App extends StatelessWidget {
           BlocProvider(
               create: (context) => BoothBloc(BoothRepo(SessionRepo()))),
           BlocProvider(create: (context) => NearBloc(PlaceRepo(SessionRepo()))),
-          BlocProvider(create: (context) => JoinBloc(PlaceRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) =>
+                  JoinBloc(PlaceRepo(SessionRepo()), JoinRepo(SessionRepo()))),
           BlocProvider(create: (context) => FeedBloc(FeedRepo(SessionRepo()))),
           BlocProvider(
               create: (context) => ExploreBloc(PlaceRepo(SessionRepo()))),
           BlocProvider(
               create: (context) => FeedEventBloc(FeedRepo(SessionRepo()))),
           BlocProvider(
-              create: (context) => BoardBloc(BoardRepo(SessionRepo()))),
+              create: (context) =>
+                  BoardBloc(BoardRepo(SessionRepo()), JoinRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => PlaceInfoBloc(
+                  PlaceInfoRepo(SessionRepo()), PlaceRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => PlaceTimeBloc(PlaceInfoRepo(SessionRepo()))),
+          BlocProvider(
+              create: (context) => CommentBloc(CommentRepo(SessionRepo()))),
         ],
         child: ScreenUtilInit(
           designSize: const Size(384, 832),

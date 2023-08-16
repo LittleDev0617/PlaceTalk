@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 import 'package:intl/intl.dart';
+import 'package:placetalk/src/components/CustomDialog.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 import '../blocs/ExploreBlocs/explore_bloc.dart';
@@ -22,8 +23,8 @@ class ExploreScreen extends StatelessWidget {
         title: const Text(
           '둘러보기',
           style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            fontSize: 17,
             color: Colors.black,
           ),
         ),
@@ -31,7 +32,13 @@ class ExploreScreen extends StatelessWidget {
           IconButton(
             color: const Color(0xffff7d7d),
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((BuildContext context) {
+                    return const CustomAlertDialog();
+                  }));
+            },
           ),
         ],
         backgroundColor: const Color(0xfff7f7f7),
@@ -41,18 +48,7 @@ class ExploreScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              '플레이스톡',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xffadadad),
-              ),
-            ),
+            height: 15,
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24),
@@ -163,7 +159,7 @@ class _PlaceCardPageState extends State<PlaceCardPage> {
                         ),
                         padding: const EdgeInsets.all(25),
                         width: MediaQuery.of(context).size.width * 0.85,
-                        height: MediaQuery.of(context).size.height * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.75,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,

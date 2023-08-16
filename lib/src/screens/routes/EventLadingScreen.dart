@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 import '../../blocs/FeedBlocs/feed_bloc.dart';
+import '../../blocs/PlaceInfoblocs/place_info_bloc.dart';
+import '../../components/CustomDialog.dart';
 
 @RoutePage()
 class EventTabScreen extends StatefulWidget {
@@ -25,6 +27,11 @@ class _EventTabScreenState extends State<EventTabScreen> {
     BlocProvider.of<FeedEventBloc>(context)
         .add(FetchEventFeedData(widget.placeID));
 
+    BlocProvider.of<PlaceInfoBloc>(context)
+        .add(FetchPlaceInfoData(widget.placeID));
+
+    BlocProvider.of<PlaceTimeBloc>(context)
+        .add(FetchPlaceTimeData(widget.placeID));
     return AutoTabsRouter.tabBar(
         routes: [
           NoticeEventRoute(placeID: widget.placeID, name: widget.name),
@@ -47,15 +54,19 @@ class _EventTabScreenState extends State<EventTabScreen> {
                 IconButton(
                   color: const Color(0xffff7d7d),
                   icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: ((BuildContext context) {
+                          return const CustomAlertDialog();
+                        }));
+                  },
                 ),
                 const SizedBox(width: 24),
               ],
               backgroundColor: const Color(0xfff7f7f7),
               centerTitle: true,
-              leading: const AutoLeadingButton(
-                color: Colors.black,
-              ),
+              leading: const AutoLeadingButton(),
               bottom: TabBar(
                 controller: controller,
                 indicatorWeight: 4,

@@ -6,21 +6,27 @@ import 'package:intl/intl.dart';
 import 'package:placetalk/src/blocs/AuthBlocs/auth_bloc.dart';
 
 import '../blocs/JoinBlocs/join_bloc.dart';
+import '../components/CustomDialog.dart';
 
 @RoutePage()
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             '마이페이지',
             style: TextStyle(
-              fontSize: 17.sp,
+              fontSize: 17,
               fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
@@ -29,7 +35,13 @@ class ProfileScreen extends StatelessWidget {
             IconButton(
               color: const Color(0xffff7d7d),
               icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: ((BuildContext context) {
+                      return const CustomAlertDialog();
+                    }));
+              },
             ),
             const SizedBox(width: 24),
           ],
@@ -37,8 +49,8 @@ class ProfileScreen extends StatelessWidget {
           centerTitle: true,
         ),
         body: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthGranted) {
+          builder: (context, authstate) {
+            if (authstate is AuthGranted) {
               return Column(
                 children: [
                   Container(
@@ -54,14 +66,19 @@ class ProfileScreen extends StatelessWidget {
                               AssetImage('assets/images/profile.png'),
                         ),
                       ),
-                      title: Text(
-                        state.user.kakaoID.toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                      title: SizedBox(
+                        width: 160,
+                        child: Text(
+                          authstate.nickname,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      subtitle: Text(state.user.email!),
+                      subtitle: Text(authstate.user.email == null
+                          ? ""
+                          : authstate.user.email!),
                       trailing: OutlinedButton(
                         onPressed: () {
                           BlocProvider.of<AuthBloc>(context).add(
@@ -100,13 +117,13 @@ class ProfileScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        const Center(child: Text('탭1 내용')),
+                        const Center(child: Text('작성하신 게시글이 없습니다.')),
                         Center(
                           child: BlocBuilder<JoinBloc, JoinState>(
                             builder: (context, state) {
                               if (state is JoinInitial) {
                                 BlocProvider.of<JoinBloc>(context).add(
-                                  FetchJoinDataEvent(),
+                                  FetchJoinDataEvent(authstate.user.kakaoID),
                                 );
                                 return const CircularProgressIndicator();
                               } else if (state is JoinLoading) {
@@ -195,7 +212,29 @@ class ProfileScreen extends StatelessWidget {
                                                           maxHeight: 27,
                                                         ),
                                                         child: OutlinedButton(
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            BlocProvider.of<
+                                                                        JoinBloc>(
+                                                                    context)
+                                                                .add(
+                                                              ToExitEvnet(
+                                                                state.itemsLatLng[
+                                                                        item]![
+                                                                    'place_id'],
+                                                              ),
+                                                            );
+
+                                                            BlocProvider.of<
+                                                                        JoinBloc>(
+                                                                    context)
+                                                                .add(
+                                                              FetchJoinDataEvent(
+                                                                state.itemsLatLng[
+                                                                        item]![
+                                                                    'place_id'],
+                                                              ),
+                                                            );
+                                                          },
                                                           child: const Text(
                                                             '나가기',
                                                             style: TextStyle(

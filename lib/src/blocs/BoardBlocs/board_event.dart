@@ -14,3 +14,20 @@ class FetchBoardData extends BoardEvent {
   @override
   List<Object> get props => [placeID];
 }
+
+class ToJoinEvnet extends BoardEvent {
+  final int placeID;
+  const ToJoinEvnet(this.placeID);
+
+  @override
+  List<Object> get props => [placeID];
+}
+
+class FetchLikeOrderData extends BoardEvent {
+  final int placeID;
+  final int order;
+  const FetchLikeOrderData(this.placeID, this.order);
+
+  @override
+  List<Object> get props => [placeID, order];
+}

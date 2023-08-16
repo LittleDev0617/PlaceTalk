@@ -10,9 +10,7 @@ class BoothBloc extends Bloc<BoothEvent, BoothState> {
   final BoothRepo _boothRepo;
 
   BoothBloc(this._boothRepo) : super(BoothInitial()) {
-    on<BoothEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<BoothEvent>((event, emit) {});
 
     on<FetchBoothData>((event, emit) async {
       emit(BoothLoading());

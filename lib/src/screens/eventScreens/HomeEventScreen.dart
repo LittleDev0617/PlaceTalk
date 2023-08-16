@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/BoothBlocs/booth_bloc.dart';
+import 'package:placetalk/src/blocs/PlaceInfoblocs/place_info_bloc.dart';
 import 'package:placetalk/src/repositories/SessionRepo.dart';
 
+import '../../components/CustomDialog.dart';
 import '../routes/routes.gr.dart';
 
 @RoutePage()
@@ -57,7 +59,13 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
           IconButton(
             color: const Color(0xffff7d7d),
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((BuildContext context) {
+                    return const CustomAlertDialog();
+                  }));
+            },
           ),
           const SizedBox(width: 24),
         ],
@@ -71,9 +79,10 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
           } else if (state is BoothLoaded) {
             if (state.markers.isEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.router.push(
-                  LandingRoute(
-                    children: [
+                BlocProvider.of<PlaceInfoBloc>(context)
+                    .add(FetchPlaceInfoData(widget.placeID));
+
+                AutoRouter.of(context).parent<TabsRouter>()!.navigate(
                       EventsRouter(
                         children: [
                           EventTabRoute(
@@ -88,9 +97,7 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                );
+                    );
               });
             }
             return Stack(
@@ -135,6 +142,9 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                               ],
                             ),
                           );
+
+                      BlocProvider.of<PlaceInfoBloc>(context)
+                          .add(FetchPlaceInfoData(widget.placeID));
                     });
 
                     controller.addOverlay(eventMarker);
@@ -220,7 +230,6 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                         child: Column(
                           children: [
                             Container(
-                              height: 80,
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border(
@@ -241,10 +250,28 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
+                                  const SizedBox(height: 10),
+                                  const Row(
+                                    children: [
+                                      SizedBox(width: 10),
+                                      Text(
+                                        '구역별 설명',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xffadadad),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(
+                                    thickness: .1,
+                                    color:
+                                        const Color(0xff707070).withOpacity(.8),
+                                  ),
                                 ],
                               ),
                             ),
-                            const Text('구역별 설명'),
                             Expanded(
                               child: ListView.separated(
                                 controller:
@@ -255,97 +282,109 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
                                   var itemIndex = state.itemsLatLng.keys
                                       .toList()[index]
                                       .toString();
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                      horizontal: 16,
-                                    ),
-                                    child: ListTile(
-                                      onTap: () {
+                                  return ListTile(
+                                    onTap: () {
+                                      setState(() {
+                                        _showBottomSheet = false;
+                                      });
+                                      showBottomSheet(
+                                        context: context,
+                                        builder: ((BuildContext context) {
+                                          return BoothBottomSheet(
+                                            context,
+                                            state.itemsLatLng[itemIndex]
+                                                ['name'],
+                                            state.itemsLatLng[itemIndex]
+                                                ['loc_name'],
+                                            state.itemsLatLng[itemIndex]
+                                                ['on_time'],
+                                            state.itemsLatLng[itemIndex]
+                                                ['content'],
+                                            state
+                                                .itemsLatLng[itemIndex]
+                                                    ['images']
+                                                .length,
+                                            state.itemsLatLng[itemIndex]
+                                                ['images'],
+                                          );
+                                        }),
+                                      ).closed.then((value) {
                                         setState(() {
-                                          _showBottomSheet = false;
+                                          _showBottomSheet = true;
                                         });
-                                        showBottomSheet(
-                                          context: context,
-                                          builder: ((BuildContext context) {
-                                            return BoothBottomSheet(
-                                              context,
-                                              state.itemsLatLng[itemIndex]
-                                                  ['name'],
-                                              state.itemsLatLng[itemIndex]
-                                                  ['loc_name'],
-                                              state.itemsLatLng[itemIndex]
-                                                  ['on_time'],
-                                              state.itemsLatLng[itemIndex]
-                                                  ['content'],
-                                              state
-                                                  .itemsLatLng[itemIndex]
-                                                      ['images']
-                                                  .length,
-                                              state.itemsLatLng[itemIndex]
-                                                  ['images'],
-                                            );
-                                          }),
-                                        ).closed.then((value) {
-                                          setState(() {
-                                            _showBottomSheet = true;
-                                          });
-                                        });
-                                      },
-                                      title: Text(
-                                        '${state.itemsLatLng[itemIndex]['name']}',
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${state.itemsLatLng[itemIndex]['loc_name']}',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  Colors.black.withOpacity(.45),
+                                      });
+                                    },
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${state.itemsLatLng[itemIndex]['name']}',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black,
+                                                letterSpacing: -1,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            '${state.itemsLatLng[itemIndex]['on_time']}',
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black,
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              '${state.itemsLatLng[itemIndex]['loc_name']}',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black
+                                                    .withOpacity(.45),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: Container(
-                                        width: 125,
-                                        height: 85,
-                                        margin: const EdgeInsets.only(right: 5),
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(SessionRepo()
-                                                .getImageUrl(state
-                                                        .itemsLatLng[itemIndex]
-                                                    ['images'][0]['image_id'])),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                            Text(
+                                              '${state.itemsLatLng[itemIndex]['on_time']}',
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .35,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .11,
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(SessionRepo()
+                                                  .getImageUrl(state
+                                                              .itemsLatLng[
+                                                          itemIndex]['images']
+                                                      [0]['image_id'])),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 },
-                                separatorBuilder: (context, index) => Divider(
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
                                   thickness: .1,
-                                  color:
-                                      const Color(0xff707070).withOpacity(.8),
+                                  color: Color(0xff707070),
                                 ),
                               ),
                             ),
@@ -370,7 +409,21 @@ class _HomeEventScreenState extends State<HomeEventScreen> {
         child: FloatingActionButton(
           backgroundColor: Colors.white,
           shape: const CircleBorder(),
-          onPressed: () {},
+          onPressed: () {
+            context.router.navigate(
+              EventsRouter(
+                children: [
+                  EventTabRoute(
+                    placeID: widget.placeID,
+                    name: widget.name,
+                    children: [
+                      TimeEventRoute(),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
           child: const Icon(
             Icons.alarm,
             color: Color(0xffADADAD),

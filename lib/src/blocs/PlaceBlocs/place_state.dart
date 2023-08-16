@@ -9,7 +9,14 @@ class PlaceState extends Equatable {
 
 class PlaceInitial extends PlaceState {}
 
-class PlaceLoading extends PlaceState {}
+class PlaceLoading extends PlaceState {
+  final NCameraPosition? position;
+
+  const PlaceLoading(this.position);
+
+  @override
+  List<Object?> get props => [position];
+}
 
 class PlaceLoaded extends PlaceState {
   final Set<NMarker> markers;

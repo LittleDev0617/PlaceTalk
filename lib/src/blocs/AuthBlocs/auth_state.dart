@@ -13,8 +13,9 @@ final class AuthLoding extends AuthState {}
 
 class AuthGranted extends AuthState {
   final UserModel user;
+  final String nickname;
 
-  const AuthGranted({required this.user});
+  const AuthGranted({required this.user, required this.nickname});
 }
 
 class AuthDenied extends AuthState {}

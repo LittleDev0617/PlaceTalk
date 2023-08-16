@@ -1,11 +1,12 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/repositories/SessionRepo.dart';
+import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 import '../blocs/FeedBlocs/feed_bloc.dart';
+import '../components/CustomDialog.dart';
 
 @RoutePage()
 class NoticeScreen extends StatelessWidget {
@@ -15,10 +16,10 @@ class NoticeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           '전체 피드',
           style: TextStyle(
-            fontSize: 17.sp,
+            fontSize: 17,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -27,7 +28,13 @@ class NoticeScreen extends StatelessWidget {
           IconButton(
             color: const Color(0xffff7d7d),
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((BuildContext context) {
+                    return const CustomAlertDialog();
+                  }));
+            },
           ),
           const SizedBox(width: 24),
         ],
@@ -60,20 +67,57 @@ class NoticeScreen extends StatelessWidget {
                               'assets/images/profile.png',
                             ),
                           ),
-                          title: Text(
-                            state.feedList[feedindex].nickname,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {},
-                            iconSize: 24,
-                            icon: const Icon(
-                              Icons.more_horiz,
-                              color: Colors.black,
+                          title: InkWell(
+                            onTap: () {
+                              context.navigateTo(
+                                EventsRouter(
+                                  children: [
+                                    EventTabRoute(
+                                      name: state.feedList[feedindex].nickname,
+                                      placeID:
+                                          state.feedList[feedindex].placeId,
+                                      children: [
+                                        NoticeEventRoute(
+                                          name: state
+                                              .feedList[feedindex].nickname,
+                                          placeID:
+                                              state.feedList[feedindex].placeId,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                              // BlocProvider.of<PlaceInfoBloc>(context).add(
+                              //   FetchPlaceInfoData(
+                              //       state.feedList[feedindex].placeId),
+                              // );
+                              // context.router.navigate(
+                              //   EventsRouter(
+                              //     children: [
+                              //       EventTabRoute(
+                              //         placeID:
+                              //             state.feedList[feedindex].placeId,
+                              //         name: state.feedList[feedindex].nickname,
+                              //       )
+                              //     ],
+                              //   ),
+                              // );
+                              // context.router.pushAll([
+                              //   const EventsRouter(),
+                              //   EventTabRoute(
+                              // placeID: state.feedList[feedindex].placeId,
+                              // name: state.feedList[feedindex].nickname,
+                              //   ),
+                              // ]);
+                            },
+                            child: Text(
+                              state.feedList[feedindex].nickname,
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ),

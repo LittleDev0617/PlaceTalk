@@ -9,7 +9,6 @@ class BoothRepo {
   BoothRepo(this._sessionRepo);
 
   Future<Map<String, dynamic>> fetchData(int locID) async {
-    await Future.delayed(const Duration(seconds: 1));
     final apiData = await _sessionRepo.get('api/booths?location_id=$locID');
 
     List<BoothModel> dataList =

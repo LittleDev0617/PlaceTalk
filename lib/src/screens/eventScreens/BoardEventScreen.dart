@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/BoardBlocs/board_bloc.dart';
+import 'package:placetalk/src/blocs/CommentBlocs/comment_bloc.dart';
 import 'package:placetalk/src/components/CustomButtons.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
+
+import '../../blocs/AuthBlocs/auth_bloc.dart';
+import '../../components/CustomDialog.dart';
 
 @RoutePage()
 class BoardEventScreen extends StatefulWidget {
@@ -21,10 +25,13 @@ class BoardEventScreen extends StatefulWidget {
 }
 
 class _BoardEventScreenState extends State<BoardEventScreen> {
-  bool _isLatestOrder = true; // 초기 값
+  bool _isLatestOrder = false; // 초기 값 0
 
   void _toggleOrder() {
     setState(() {
+      BlocProvider.of<BoardBloc>(context).add(
+        FetchLikeOrderData(widget.placeID, _isLatestOrder == false ? 1 : 0),
+      );
       _isLatestOrder = !_isLatestOrder; // 값 토글
     });
   }
@@ -32,74 +39,104 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              backgroundColor: Colors.white.withOpacity(.9),
-              onPressed: () {},
-              shape: const CircleBorder(),
-              elevation: 3,
-              child: const SizedBox(
-                height: 60,
-                width: 60,
-                child: Icon(
-                  Icons.map_outlined,
-                  color: Color(0xffff7d7d),
-                  size: 32,
-                ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // FloatingActionButton(
+          //   backgroundColor: Colors.white.withOpacity(.9),
+          //   onPressed: () {},
+          //   shape: const CircleBorder(),
+          //   elevation: 3,
+          //   child: const SizedBox(
+          //     height: 60,
+          //     width: 60,
+          //     child: Icon(
+          //       Icons.map_outlined, //
+          //       color: Color(0xffff7d7d),
+          //       size: 32,
+          //     ),
+          //   ),
+          // ),
+          const SizedBox(height: 15),
+          FloatingActionButton(
+            backgroundColor: const Color(0xffFF7D7D),
+            onPressed: () {
+              context.router.push(BoardWriteEventRoute(name: widget.name));
+            },
+            shape: const CircleBorder(),
+            elevation: 3,
+            child: const SizedBox(
+              height: 60,
+              width: 60,
+              child: Icon(
+                Icons.edit_rounded,
+                color: Colors.white,
+                size: 32,
               ),
-            ),
-            const SizedBox(height: 15),
-            FloatingActionButton(
-              onPressed: () {
-                context.router.push(BoardWriteEventRoute(name: widget.name));
-              },
-              shape: const CircleBorder(),
-              elevation: 3,
-              child: const SizedBox(
-                height: 60,
-                width: 60,
-                child: Icon(
-                  Icons.edit_rounded,
-                  size: 32,
-                ),
-              ),
-            ),
-          ],
-        ),
-        appBar: AppBar(
-          title: Text(
-            widget.name,
-            style: TextStyle(
-              fontSize: 17.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
-          actions: [
-            IconButton(
-              color: const Color(0xffff7d7d),
-              icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {},
-            ),
-            const SizedBox(width: 24),
-          ],
-          backgroundColor: const Color(0xfff7f7f7),
-          centerTitle: true,
-          leading: const AutoLeadingButton(color: Colors.black),
+        ],
+      ),
+      appBar: AppBar(
+        title: Text(
+          widget.name,
+          style: TextStyle(
+            fontSize: 17.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-        body: BlocBuilder<BoardBloc, BoardState>(
-          builder: (context, state) {
-            if (state is BoardInitial) {
+        actions: [
+          IconButton(
+            color: const Color(0xffff7d7d),
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((BuildContext context) {
+                    return const CustomAlertDialog();
+                  }));
+            },
+          ),
+          const SizedBox(width: 24),
+        ],
+        backgroundColor: const Color(0xfff7f7f7),
+        centerTitle: true,
+        leading: const AutoLeadingButton(color: Colors.black),
+      ),
+      body: BlocBuilder<BoardBloc, BoardState>(
+        builder: (context, state) {
+          if (state is BoardJoinLoading) {
+            if (state.codes == 0 || state.codes == 1) {
               BlocProvider.of<BoardBloc>(context)
                   .add(FetchBoardData(widget.placeID));
-              return const SizedBox.shrink();
-            } else if (state is BoardLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is BoardLoaded) {
-              return Container(
+            } else if (state.codes == 2) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                _showBottomModal(context);
+              });
+
+              return const Center(
+                child: Text("참여 중인 핫플이 5개를 초과했습니다."),
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is BoardInitial) {
+            BlocProvider.of<BoardBloc>(context)
+                .add(FetchBoardData(widget.placeID));
+            return const SizedBox.shrink();
+          } else if (state is BoardLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is BoardLoaded) {
+            int? userID;
+
+            return BlocListener<AuthBloc, AuthState>(
+              listener: (context, authstate) {
+                if (authstate is AuthGranted) {
+                  userID = authstate.user.kakaoID;
+                }
+              },
+              child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: Column(
@@ -119,9 +156,22 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                                 color: const Color(0xff707070).withOpacity(.55),
                               ),
                             ),
-                            child: const Icon(
-                              Icons.search_rounded, // 여기가 검색부분임
-                              size: 21,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.local_fire_department,
+                                  color: Color(0xffFF7D7D), // 여기가 검색부분임
+                                  size: 21,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  '현재 핫플의 실시간 플레이스 톡입니다',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -133,7 +183,7 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                             _toggleOrder();
                           },
                           child: Text(
-                            _isLatestOrder ? '최신 순' : '좋아요 순',
+                            _isLatestOrder ? '좋아요 순' : '최신 순',
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -154,9 +204,26 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                               children: [
                                 ListTile(
                                   onTap: () {
+                                    BlocProvider.of<CommentBloc>(context).add(
+                                      FetchCommentsEvent(
+                                        state.boards[index].postId,
+                                      ),
+                                    );
                                     context.router.push(
                                       BoardDetailEventRoute(
-                                          name: widget.name, postID: index),
+                                        name: widget.name,
+                                        postID: state.boards[index].postId,
+                                        commentCnt:
+                                            state.boards[index].commentCnt,
+                                        content: state.boards[index].content,
+                                        createDate:
+                                            state.boards[index].createDate,
+                                        nickname:
+                                            state.boards[index].user.nickname,
+                                        likeCnt: state.boards[index].likes,
+                                        isPressLike:
+                                            state.boards[index].isPressLike,
+                                      ),
                                     );
                                   },
                                   contentPadding: const EdgeInsets.symmetric(
@@ -185,14 +252,16 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      IconButton(
-                                        onPressed: () {},
-                                        iconSize: 24,
-                                        icon: const Icon(
-                                          Icons.more_horiz,
-                                          color: Colors.black,
+                                      if (userID ==
+                                          state.boards[index].user.userId)
+                                        IconButton(
+                                          onPressed: () {},
+                                          iconSize: 24,
+                                          icon: const Icon(
+                                            Icons.more_horiz,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
                                     ],
                                   ),
                                   subtitle: Column(
@@ -269,11 +338,60 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                     ),
                   ],
                 ),
-              );
-            } else {
-              return const Center(child: Text('데이터 불러오기에 실패했어요.'));
-            }
-          },
-        ));
+              ),
+            );
+          } else {
+            return const Center(child: Text('데이터 불러오기에 실패했어요.'));
+          }
+        },
+      ),
+    );
   }
+}
+
+void _showBottomModal(BuildContext context) {
+  showModalBottomSheet<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.only(
+            left: 25,
+            right: 25,
+            bottom: 40,
+          ),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "참여 중인 핫플이 5개를 초과했습니다.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  context.back();
+                },
+                child: const Text(
+                  '닫기',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xffadadad),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

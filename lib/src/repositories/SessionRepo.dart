@@ -17,9 +17,7 @@ class SessionRepo {
     final String url = '$kuIP/$api';
     http.Response response = await http.get(Uri.parse(url), headers: headers);
     final int statusCode = response.statusCode;
-    if (statusCode < 200 || statusCode > 400) {
-      // 처리 코드 입력
-    }
+    if (statusCode < 200 || statusCode > 400) {}
     return List.from(json.decode(utf8.decode(response.bodyBytes)));
   }
 
@@ -28,9 +26,7 @@ class SessionRepo {
     http.Response response = await http.post(Uri.parse(url),
         body: json.encode(data), headers: headers);
     final int statusCode = response.statusCode;
-    if (statusCode < 200 || statusCode > 400) {
-      // 처리 코드 입력
-    }
+    if (statusCode < 200 || statusCode > 400) {}
     return json.decode(utf8.decode(response.bodyBytes));
   }
 

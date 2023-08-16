@@ -9,6 +9,7 @@ import 'package:placetalk/src/components/CustomButtons.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
 import '../blocs/BoothBlocs/booth_bloc.dart';
+import '../components/CustomDialog.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -66,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: CustomDropdownButton(
                             itemList: nearstate.itemsLatLng,
-                            customOnChanged: (value) {
+                            customOnChanged: (value) async {
                               final Map<String, dynamic>? selectedItem =
                                   nearstate.itemsLatLng[value];
                               if (selectedItem != null) {
@@ -74,9 +75,11 @@ class HomeScreen extends StatelessWidget {
                                     selectedItem['latitude'];
                                 final double longitude =
                                     selectedItem['longitude'];
+
                                 _controller.updateCamera(
                                   NCameraUpdate.withParams(
                                     target: NLatLng(latitude, longitude),
+                                    zoom: 14,
                                   ),
                                 );
                               }
@@ -100,7 +103,13 @@ class HomeScreen extends StatelessWidget {
                           Icons.notifications_outlined,
                           color: Color(0xffff7d7d),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: ((BuildContext context) {
+                                return const CustomAlertDialog();
+                              }));
+                        },
                       ),
                     ],
                   );
@@ -193,18 +202,21 @@ class HomeScreen extends StatelessWidget {
               BlocProvider.of<PlaceBloc>(context).add(
                 const FetchNaverMapDataEvent(),
               );
-
               return const NaverMap();
             } else if (state is PlaceLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Stack(children: [
+                NaverMap(
+                  options: NaverMapViewOptions(
+                      initialCameraPosition: state.position),
+                ),
+                const Center(child: CircularProgressIndicator()),
+              ]);
             } else if (state is PlaceLoaded) {
               return NaverMap(
                 onMapTapped: (point, latLng) async {
                   BlocProvider.of<PlaceBloc>(context).add(
-                    FetchNaverMapDataEvent(
-                      position: await _controller.getCameraPosition(),
-                    ),
-                  );
+                      FetchNaverMapDataEvent(
+                          position: await _controller.getCameraPosition()));
                 },
                 onMapReady: (controller) async {
                   _controller = controller;
@@ -215,6 +227,11 @@ class HomeScreen extends StatelessWidget {
 
                     marker.setOnTapListener(
                       (overlay) {
+                        BlocProvider.of<BoothBloc>(context).add(
+                          FetchBoothData(state
+                              .itemsLatLng[marker.info.id]!['location_id']),
+                        );
+
                         context.router.push(HomeEventRoute(
                           placeID:
                               state.itemsLatLng[marker.info.id]!['place_id'],
@@ -223,11 +240,6 @@ class HomeScreen extends StatelessWidget {
                               state.itemsLatLng[marker.info.id]!['location_id'],
                           name: state.itemsLatLng[marker.info.id]!['name'],
                         ));
-
-                        BlocProvider.of<BoothBloc>(context).add(
-                          FetchBoothData(state
-                              .itemsLatLng[marker.info.id]!['location_id']),
-                        );
                       },
                     );
 
@@ -236,30 +248,7 @@ class HomeScreen extends StatelessWidget {
                     controller.addOverlay(marker);
                   }
                 },
-                options: NaverMapViewOptions(
-                  locationButtonEnable: true,
-                  initialCameraPosition: NCameraPosition(
-                    target: (position != null && state.position?.target != null)
-                        ? position!
-                        : (position == null && state.position?.target != null)
-                            ? state.position!.target
-                            : (position != null &&
-                                    state.position?.target == null)
-                                ? position!
-                                : (position == null &&
-                                        state.position?.target == null)
-                                    ? const NLatLng(
-                                        37.54388829908806,
-                                        127.07595459999982,
-                                      )
-                                    : state.position!.target,
-                    zoom: state.position?.zoom ?? 13.5,
-                  ),
-                  extent: const NLatLngBounds(
-                    southWest: NLatLng(31.43, 122.37),
-                    northEast: NLatLng(44.35, 132.0),
-                  ),
-                ),
+                options: getNaverMapOptions(state),
               );
             } else {
               return const Center(
@@ -270,6 +259,31 @@ class HomeScreen extends StatelessWidget {
             }
           },
         ),
+      ),
+    );
+  }
+
+  NaverMapViewOptions getNaverMapOptions(PlaceLoaded state) {
+    return NaverMapViewOptions(
+      locationButtonEnable: true,
+      initialCameraPosition: NCameraPosition(
+        target: (position != null && state.position?.target != null)
+            ? position!
+            : (position == null && state.position?.target != null)
+                ? state.position!.target
+                : (position != null && state.position?.target == null)
+                    ? position!
+                    : (position == null && state.position?.target == null)
+                        ? const NLatLng(
+                            37.54388829908806,
+                            127.07595459999982,
+                          )
+                        : state.position!.target,
+        zoom: state.position?.zoom ?? 13.5,
+      ),
+      extent: const NLatLngBounds(
+        southWest: NLatLng(31.43, 122.37),
+        northEast: NLatLng(44.35, 132.0),
       ),
     );
   }

@@ -76,7 +76,7 @@ class _NoticeEventScreenState extends State<NoticeEventScreen> {
                           ),
                           const SizedBox(height: 15),
                           SizedBox(
-                            height: 130, // TODO: 한장일 때 수정
+                            height: 130,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,

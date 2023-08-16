@@ -46,6 +46,12 @@ abstract class $AppRouter extends _i17.RootStackRouter {
         child: _i1.BoardDetailEventScreen(
           key: args.key,
           name: args.name,
+          content: args.content,
+          createDate: args.createDate,
+          commentCnt: args.commentCnt,
+          isPressLike: args.isPressLike,
+          likeCnt: args.likeCnt,
+          nickname: args.nickname,
           postID: args.postID,
         ),
       );
@@ -92,12 +98,6 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i5.EventsRouterPage(),
-      );
-    },
-    EventsTabRouter.name: (routeData) {
-      return _i17.AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: _i5.EventsTabRouterPage(),
       );
     },
     ExploreRoute.name: (routeData) {
@@ -212,6 +212,12 @@ class BoardDetailEventRoute
   BoardDetailEventRoute({
     _i18.Key? key,
     required String name,
+    required String content,
+    required String createDate,
+    required int commentCnt,
+    required bool isPressLike,
+    required int likeCnt,
+    required String nickname,
     required int postID,
     List<_i17.PageRouteInfo>? children,
   }) : super(
@@ -219,6 +225,12 @@ class BoardDetailEventRoute
           args: BoardDetailEventRouteArgs(
             key: key,
             name: name,
+            content: content,
+            createDate: createDate,
+            commentCnt: commentCnt,
+            isPressLike: isPressLike,
+            likeCnt: likeCnt,
+            nickname: nickname,
             postID: postID,
           ),
           rawPathParams: {'postID': postID},
@@ -235,6 +247,12 @@ class BoardDetailEventRouteArgs {
   const BoardDetailEventRouteArgs({
     this.key,
     required this.name,
+    required this.content,
+    required this.createDate,
+    required this.commentCnt,
+    required this.isPressLike,
+    required this.likeCnt,
+    required this.nickname,
     required this.postID,
   });
 
@@ -242,11 +260,23 @@ class BoardDetailEventRouteArgs {
 
   final String name;
 
+  final String content;
+
+  final String createDate;
+
+  final int commentCnt;
+
+  final bool isPressLike;
+
+  final int likeCnt;
+
+  final String nickname;
+
   final int postID;
 
   @override
   String toString() {
-    return 'BoardDetailEventRouteArgs{key: $key, name: $name, postID: $postID}';
+    return 'BoardDetailEventRouteArgs{key: $key, name: $name, content: $content, createDate: $createDate, commentCnt: $commentCnt, isPressLike: $isPressLike, likeCnt: $likeCnt, nickname: $nickname, postID: $postID}';
   }
 }
 
@@ -401,20 +431,6 @@ class EventsRouter extends _i17.PageRouteInfo<void> {
         );
 
   static const String name = 'EventsRouter';
-
-  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
-}
-
-/// generated route for
-/// [_i5.EventsTabRouterPage]
-class EventsTabRouter extends _i17.PageRouteInfo<void> {
-  const EventsTabRouter({List<_i17.PageRouteInfo>? children})
-      : super(
-          EventsTabRouter.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'EventsTabRouter';
 
   static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }

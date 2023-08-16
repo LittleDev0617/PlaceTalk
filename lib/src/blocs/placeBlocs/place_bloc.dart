@@ -13,9 +13,7 @@ class PlaceBloc extends Bloc<PlaceEvent, PlaceState> {
   final PlaceRepo _placeRepo;
 
   PlaceBloc(this._placeRepo) : super(PlaceInitial()) {
-    on<PlaceEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<PlaceEvent>((event, emit) {});
 
     on<RequestLocationPermission>((event, emit) async {
       final permission = await _placeRepo.checkLocationPermission();
@@ -29,7 +27,7 @@ class PlaceBloc extends Bloc<PlaceEvent, PlaceState> {
     });
 
     on<FetchNaverMapDataEvent>((event, emit) async {
-      emit(PlaceLoading());
+      emit(PlaceLoading(event.position));
 
       Map<String, dynamic> datas = await _placeRepo.fetchData();
 
@@ -40,7 +38,7 @@ class PlaceBloc extends Bloc<PlaceEvent, PlaceState> {
     });
 
     on<FetchCategoryMapDataEvent>((event, emit) async {
-      emit(PlaceLoading());
+      emit(PlaceLoading(event.position));
       Map<String, dynamic> datas =
           await _placeRepo.fetchCategoryData(event.category);
 

@@ -4,46 +4,36 @@ class BoardModel {
   final String content;
   final int likes;
   final int commentCnt;
-  final UserModel user;
+  final bool isPressLike;
+  final ProfileModel user;
 
   BoardModel({
     required this.postId,
     required this.createDate,
     required this.content,
     required this.likes,
+    required this.isPressLike,
     required this.commentCnt,
     required this.user,
   });
 }
 
-class UserModel {
+class ProfileModel {
   final int userId;
   final String nickname;
   final String email;
 
-  UserModel({
+  ProfileModel({
     required this.userId,
     required this.nickname,
     required this.email,
   });
-}
 
-// Now you can parse the JSON data into a list of BoardModel objects
-
-List<BoardModel> fromJson(List<dynamic> jsonList) {
-  return jsonList.map((json) {
-    final userData = json['user'];
-    return BoardModel(
-      postId: json['post_id'],
-      createDate: json['create_date'],
-      content: json['content'],
-      likes: json['likes'],
-      commentCnt: json['commentCnt'],
-      user: UserModel(
-        userId: userData['user_id'],
-        nickname: userData['nickname'],
-        email: userData['email'],
-      ),
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    return ProfileModel(
+      userId: json['user_id'],
+      nickname: json['nickname'],
+      email: json['email'],
     );
-  }).toList();
+  }
 }
