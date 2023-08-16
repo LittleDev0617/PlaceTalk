@@ -299,7 +299,7 @@ def add_top10():
 # add_place()
 # add_booth()
 # add_feed()
-add_info()
+# add_info()
 # add_top10()
 # add_post()
 # add_comment()
