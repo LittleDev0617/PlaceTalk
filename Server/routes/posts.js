@@ -13,7 +13,7 @@ var router = express.Router();
 router.use(auth);
 
 const getPostsC = async (req, res, next) => {    
-	let { offset, postPerPage, likeOrder, place_id, content } = req.query;
+	let { offset, postPerPage, likeOrder, place_id, content, user_id } = req.query;
 	const { post_id } = req.params;
 
 	offset = parseInt(offset);
@@ -29,7 +29,7 @@ const getPostsC = async (req, res, next) => {
 	if(likeOrder == null)
 		likeOrder = 0;
 
-	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id, post_id, content });
+	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id, post_id, content, user_id });
 	res.json(posts);
 };
 
