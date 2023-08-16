@@ -29,12 +29,12 @@ async function getPosts(options) {
         obj.push(`%${options.content}%`);
     }
 
-    if(offset && postPerPage) {
+    if(offset != null && postPerPage != null) {
         query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} DESC LIMIT ?, ?`;
         obj.push(offset * postPerPage);
         obj.push(postPerPage);
     }
-    
+
     let posts = await conn.query(query, obj);
     let res = [];
 

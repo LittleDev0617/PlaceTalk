@@ -80,13 +80,14 @@ const isAdmin = function(user_id) {
 module.exports = {
     getUsers, createUser, getUserPlace, joinPlace, isOrganizerOfPlace, grantAdminRole, removeAdminRole, changeNickname, getNickname, exitPlace,
     
-    isOrganizer : errorWrapper(async function (req, res, next) {
+    isOrganizer : errorWrapper(async function (req, res, next) {        
         let { place_id } = req.params;
         if(!place_id)
             place_id = req.query.place_id;
         if(!place_id)
             place_id = req.body.place_id;
         
+        console.log(req.user.uid, place_id,!isAdmin(req.user.uid), !(await isOrganizerOfPlace(req.user.uid, place_id)))
         if(!isAdmin(req.user.uid) && !(await isOrganizerOfPlace(req.user.uid, place_id)))
             throw new UnauthorizedError('Cannot acces');
         

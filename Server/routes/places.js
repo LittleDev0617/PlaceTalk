@@ -85,7 +85,7 @@ router.get('/:place_id(\\d+)/join', errorWrapper(async (req, res, next) => {
 	const { place_id } = req.params;
     
 	let result = await joinPlace(req.user.uid, place_id);
-	res.send();
+	res.json([{code:0, message:'asdf'}]);
 }));
 
 // 핫플 나가기
@@ -98,7 +98,7 @@ router.get('/:place_id(\\d+)/exit', errorWrapper(async (req, res, next) => {
         throw new BadRequestError('not join');
 
 	let result = await exitPlace(req.user.uid, place_id);
-	res.send();
+	res.json([]);
 }));
 
 module.exports = router;

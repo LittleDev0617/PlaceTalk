@@ -41,7 +41,7 @@ app.use('/api/comments', commentsRouter);
 
 app.use(async (err, req, res, next) => {
     if(err.status)
-        res.status(err.status).json({ code : err.code, message : err.message });
+        res.status(err.status).json([{ code : err.code, message : err.message }]);
     next();
 });
 

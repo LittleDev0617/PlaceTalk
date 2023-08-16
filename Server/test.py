@@ -1,8 +1,10 @@
 from requests import post, get, Session
 from naver_parser import link2lat_lon
 import json
-from random import randint
+from random import randint, choice
 import glob
+import time
+
 HOST_API = 'http://localhost:3000/api/'
 
 # for line in open('API.md', 'r', encoding='utf-8').readlines():
@@ -86,16 +88,16 @@ def add_place():
 # r = admin.get(HOST_API+f'places/20/join')
 # print(r.text)
 
-r = admin.get(HOST_API+f'users/place')
-print(r.text)
+# r = admin.get(HOST_API+f'users/place')
+# print(r.text)
 
-r = admin.get(HOST_API+f'places/1')
-print(r.text)
+# r = admin.get(HOST_API+f'places/1')
+# print(r.text)
 
 
-lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
-r = admin.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
-print(r.text)
+# lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
+# r = admin.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
+# print(r.text)
 
 
 
@@ -138,8 +140,8 @@ def add_booth():
             fileIndex += imageCnt
 # add_booth()
 
-r = admin.get(HOST_API+f'booths/1')
-print(r.text)
+# r = admin.get(HOST_API+f'booths/1')
+# print(r.text)
 
 def add_feed():
     global admin
@@ -157,13 +159,14 @@ def add_feed():
         imageCnt = int(imageCnt)
         date += ' 18:00:00'
 
+        tmpUserId = randint(300,1000000000)
         feed_session = Session()
-        feed_session.get(HOST_API+f'users/auth?token={i+1}')
+        feed_session.get(HOST_API+f'users/auth?token={tmpUserId}')
 
         place_id = searchPlace(placeName)['place_id']
 
-        r = admin.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
-        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
+        r = admin.get(HOST_API+f'users/grant-org?user_id={tmpUserId}&place_id={place_id}')
+        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={tmpUserId}&place_id={place_id}')  
         
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
@@ -180,8 +183,8 @@ def add_feed():
 
 # add_feed()
     
-r = admin.get(HOST_API+f'feeds/1')
-print(r.text)
+# r = admin.get(HOST_API+f'feeds/1')
+# print(r.text)
 
 def add_info():
     global admin
@@ -207,22 +210,22 @@ def add_info():
 # add_info()
 
     
-r = admin.get(HOST_API+f'infos?place_id=1')
-print(r.text)
+# r = admin.get(HOST_API+f'infos?place_id=1')
+# print(r.text)
 
-r = front.get(HOST_API+f'places/1/join')
-print(r.text)
+# r = front.get(HOST_API+f'places/1/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'places/12/join')
-print(r.text)
+# r = front.get(HOST_API+f'places/12/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'places/33/join')
-print(r.text)
+# r = front.get(HOST_API+f'places/33/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'places/13/join')
-print(r.text)
+# r = front.get(HOST_API+f'places/13/join')
+# print(r.text)
 
-front.get(HOST_API+f'places/33/exit')
+# front.get(HOST_API+f'places/33/exit')
 
 def add_post():
     global admin
@@ -240,9 +243,11 @@ def add_post():
 
         post_session = Session()
         post_session.get(HOST_API+f'users/auth?token={randint(30,1000000000)}&nickname={nickname}')
-        post_session.get(HOST_API+f'users/join/{place_id}')
+        post_session.get(HOST_API+f'places/{place_id}/join')
         r = post_session.post(HOST_API+'posts', json=myPost)
         print(r.text)
+        time.sleep(randint(1,10))
+
 
 def add_comment():
     global admin
@@ -263,6 +268,7 @@ def add_comment():
         # comment_session.get(HOST_API+f'users/join/{post_id}')
         r = comment_session.post(HOST_API+'comments', json=mycomment)
         print(r.text)
+        time.sleep(randint(1,5))
 
 # myPost = { 'place_id' : 1, 'content': input() }
 # test = Session()
@@ -276,7 +282,7 @@ def add_comment():
 # test.get(HOST_API+f'users/auth?token={636228018}')
 # test.get(HOST_API+f'users/join/{1}')
 # r = test.post(HOST_API+'posts', json=myPost)
-# add_post()
+#add_post()
 
 def add_top10():
     global admin
@@ -298,21 +304,23 @@ def add_top10():
 # add_comment()
 
 # 게시글 좋아요
-# for i in range(42):
-#     test = Session()
-#     test.get(HOST_API+f'users/auth?token={353452+i}')
-#     test.get(HOST_API+f'users/join/{1}')
-#     test.get(HOST_API+f'posts/{(randint(1,1000) % 9) + 1}/like')
+for i in range(42):
+    test = Session()
+    test.get(HOST_API+f'users/auth?token={3534982+i}')
+    test.get(HOST_API+f'users/join/1')
+    test.get(HOST_API+f'users/join/51')
+    test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
 
-test = Session()
-test.get(HOST_API+f'users/auth?token=2966688008')
-test.get(HOST_API+f'places/1/join')
-test.get(HOST_API+f'places/31/join')
-test.get(HOST_API+f'places/32/join')
-test.get(HOST_API+f'places/35/join')
-test.get(HOST_API+f'places/34/join')
-test.get(HOST_API+f'places/36/join')
-# exit()
+# test = Session()
+# test.get(HOST_API+f'users/auth?token=2966688008')
+# r = test.get(HOST_API+f'places/30/join')
+# print(r.text)
+# test.get(HOST_API+f'places/31/join')
+# test.get(HOST_API+f'places/32/join')
+# test.get(HOST_API+f'places/35/join')
+# test.get(HOST_API+f'places/34/join')
+# test.get(HOST_API+f'places/36/join')
+exit()
 # print(r.cookies)
 
 print(r.text)
