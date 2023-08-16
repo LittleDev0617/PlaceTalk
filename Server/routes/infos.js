@@ -9,10 +9,10 @@ var router = express.Router();
 router.use(auth);
 
 const getInfosC = async function(req, res, next) {
-	var { place_id } = req.query;
+	var { place_id, is_schedule } = req.query;
 	const { info_id } = req.params;
 
-	let infos = await getInfos({ place_id, info_id });
+	let infos = await getInfos({ place_id, info_id, is_schedule });
 	res.json(infos);
 }
 
