@@ -90,6 +90,19 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 ## 5. 경쟁사
 ![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/5bbc8f23-4fc9-484b-9a3d-c26a56c2a272)
 
+## 6. 이런 식으로 개발했어요  
+![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/0a8796f9-3f0a-493d-9155-4819361abbb3)  
+![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/211b1bfa-e6da-45aa-a3bf-31e249b34555)  
+
+API 문서를 만들어 프론트와 소통했습니다.  
+최대한 각 자원을 URI로, METHOD 로 행위를 나타내는 RESTful API 를 만들고자 하였습니다.  
+[API.md](https://github.com/LittleDev0617/PlaceTalk/blob/Server/Server/API.md)  
+
+🌍  
+https://naver.me/Gh846DFX 와 같은 지도 공유 URL 에서 위도와 경도를 추출하는 parser를 제작하여 데이터 가공하는데 사용했습니다.  
+![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/3e41999f-74e6-4bfa-ab5a-c615874f2430)
+
+
 ---
 
 ## Team
@@ -133,18 +146,6 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
     - ![nodejs](https://img.shields.io/badge/nodejs-339933?style=for-the-badge&logo=Node.js&logoColor=white)
     - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
     - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-
-## 이런 식으로 개발했어요  
-![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/0a8796f9-3f0a-493d-9155-4819361abbb3)  
-![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/211b1bfa-e6da-45aa-a3bf-31e249b34555)  
-
-API 문서를 만들어 프론트와 소통했습니다.  
-최대한 각 자원을 URI로, METHOD 로 행위를 나타내는 RESTful API 를 만들고자 하였습니다.  
-[API.md](https://github.com/LittleDev0617/PlaceTalk/blob/Server/Server/API.md)  
-
-🌍  
-https://naver.me/Gh846DFX 와 같은 지도 공유 URL 에서 위도와 경도를 추출하는 parser를 제작하여 데이터 가공하는데 사용했습니다.  
-![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/3e41999f-74e6-4bfa-ab5a-c615874f2430)
 
 
 
