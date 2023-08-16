@@ -28,18 +28,21 @@ async function getPosts(options) {
         query += ' AND content LIKE ?';
         obj.push(`%${options.content}%`);
     }
-
+    
     if(offset != null && postPerPage != null) {
         query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} DESC LIMIT ?, ?`;
         obj.push(offset * postPerPage);
         obj.push(postPerPage);
     }
-
+    
     let posts = await conn.query(query, obj);
     let res = [];
 
     for(let post of posts) {        
-        const user = await getUsers({ user_id: post.user_id });    
+        const user = await getUsers({ user_id: post.user_id });   
+        const isPressed = await isPressLike(post.post_id, post.user_id);
+        
+        post.isPressLike = isPressed;
         post.user = user[0];
         delete post.user_id;
         res.push(post);

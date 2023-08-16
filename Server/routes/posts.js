@@ -18,6 +18,7 @@ const getPostsC = async (req, res, next) => {
 
 	offset = parseInt(offset);
 	postPerPage = parseInt(postPerPage);
+	likeOrder = parseInt(likeOrder);
 
 	if(offset != 0 && !offset)
 		offset = 0

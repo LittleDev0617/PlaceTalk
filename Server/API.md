@@ -268,6 +268,7 @@ or
 or
 {"code":2,"message":"Cannot join more than 5 places."}
 ```
+
 <hr />
 
 ### GET /api/places/:place_id/exit
@@ -738,6 +739,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
   "create_date": datetime,
   "content": string,
   "likes": int,
+  "isPressLike": bool,
   "commentCnt" : int
 }
 ```
@@ -766,50 +768,41 @@ Post List
 ```json
 [
   {
-    "post_id": 1,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 비안오죠? 비오면 안되ㄴ는딩",
-    "likes": 0,
+    "post_id": 24,
+    "create_date": "2023-08-16 15:39:26",
+    "content": "건국대 축제 너무 재밌어요",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 894316236,
-      "nickname": "비둘기야밥먹자구구구",
+      "user_id": 555663674,
+      "nickname": "주인공인",
       "email": "test@example.com"
     }
   },
   {
-    "post_id": 2,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 축제 몇시까지해여",
+    "post_id": 23,
+    "create_date": "2023-08-16 15:39:25",
+    "content": "저는 내일 광진구쪽으로 가보려고용",
     "likes": 0,
-    "commentCnt": 0,
+    "commentCnt": 3,
+    "isPressLike": false,
     "user": {
-      "user_id": 976218958,
-      "nickname": "마감요정",
+      "user_id": 143028191,
+      "nickname": "한량대학생",
       "email": "test@example.com"
     }
   },
   {
-    "post_id": 3,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "황소상앞에 부스 괜찬나염",
-    "likes": 0,
+    "post_id": 22,
+    "create_date": "2023-08-16 15:39:18",
+    "content": "핫바 부스 괜찮더라",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 752424328,
-      "nickname": "glaemfdjdy",
-      "email": "test@example.com"
-    }
-  },
-  {
-    "post_id": 4,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "축제 음식 맛있나??",
-    "likes": 0,
-    "commentCnt": 0,
-    "user": {
-      "user_id": 51514446,
-      "nickname": "팡팡파라파라팡팡팡",
+      "user_id": 602885501,
+      "nickname": "집가고싶다",
       "email": "test@example.com"
     }
   }
@@ -833,14 +826,15 @@ Post List
 ```json
 [
   {
-    "post_id": 2,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 축제 몇시까지해여",
-    "likes": 0,
+    "post_id": 24,
+    "create_date": "2023-08-16 15:39:26",
+    "content": "건국대 축제 너무 재밌어요",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 976218958,
-      "nickname": "마감요정",
+      "user_id": 555663674,
+      "nickname": "주인공인",
       "email": "test@example.com"
     }
   }
@@ -917,6 +911,7 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
   "is_reply" : int, // 0 or 1
   "reply_id" : int, // comment_id
   "likes" : int,
+  "isPressLike" : bool,
   "content" : string,
   "create_date" : datetime
 }
@@ -933,6 +928,7 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 #### Response
 
 - `List<Comment>`
+
 ```json
 [
   {

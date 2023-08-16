@@ -41,7 +41,7 @@ router.get('/auth', errorWrapper(async (req, res, next) => {
 
 router.get('/mypage', auth, async (req, res, next) => {
     let users = await getUsers({ user_id: req.user.uid });
-    res.json(users[0]);
+    res.json([users[0]]);
 });
 
 
