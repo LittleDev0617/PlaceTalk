@@ -1,15 +1,20 @@
+<p align="center">
+<img src="https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2">
 
 # PlaceTalk
-![logo](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2)
+
+</p>
+
+
 
 ![main](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/4f45b4a3-c0b1-45a7-8fcc-b1c6db1f7ce9)
 
 ***
 
-# About the PlaceTalk
 
 ## 1. What is PlaceTalk?
-지도 기반 핫플레이스 제공 플랫폼  
+**플레이스톡(PlaceTalk)**은 내 주변에 어떤 재밌는 일이 일어나는지 확인할 때 쓰는 **지도 기반 핫플레이스 정보 제공 플랫폼**입니다. 위치 기반으로 사용자 주변에 어떤 핫플레이스와 오프라인 행사가 있는지 확인할 수 있습니다. 인스타그램, 네이버 지도, 네이버, 트위터, 티켓 예매 사이트 등으로 분산된 핫플레이스와 행사 정보를 하나의 플랫폼에 모아 **정보 탐색 시간**을 줄여줍니다. 또한 이벤트마다 개설된 **게시판**으로 사용자끼리 실시간 소통이 가능합니다. **피드**에서는 행사 관계자가 올려주는 공지사항과 실시간 상황을 확인할 수 있습니다. **둘러보기**에서는 플레이스톡 운영진이 선별한 전국 행사 TOP 10 이 큐레이팅됩니다.  
+
 <p align="center">
 <img src="https://github.com/LittleDev0617/PlaceTalk/assets/35802632/cd256c8d-1673-42fe-934b-715c7197e2ad">
 </p>
@@ -44,24 +49,24 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
                 - jdy3378@gmail.com
         </td>
         <td>
-                    🧑 정덕용 (Jung Deok Yong)
-                * 기획    
-                * 건국대학교 철학과 4 학년    
-                * jdy3378@gmail.com
+            👩 홍가란 (Hong garan)<br />
+                - 디자인<br />
+                - 단국대학교 커뮤니케이션디자인과 3 학년    <br />
+                - bbi100205@gmail.com  <br />
         </td>
     </tr>
     <tr>
         <td>
-            🧑 정덕용 (Jung Deok Yong)
-                * 기획    
-                * 건국대학교 철학과 4 학년    
-                * jdy3378@gmail.com
+            👨‍💻 김본수 (Kim Bon Soo)<br />
+                - 프론트엔드 개발<br />
+                - 건국대학교 컴퓨터공학부 1 학년<br />
+                - devbonsu04@gmail.com  <br />
         </td>
         <td>
-                    🧑 정덕용 (Jung Deok Yong)
-                * 기획    
-                * 건국대학교 철학과 4 학년    
-                * jdy3378@gmail.com
+            👨‍💻 유규민 (Yu Kyu Min)    <br />
+                - 백엔드 개발    <br />
+                - 건국대학교 컴퓨터공학부 1 학년<br />
+                - littledev0617@naver.com  <br />
         </td>
     </tr>
 </table>
