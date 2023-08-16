@@ -856,7 +856,6 @@ post 생성
 #### Request
 
 - \*place_id
-- \*title
 - \*content
 
 #### Response
@@ -872,7 +871,6 @@ post 수정
 #### Request
 
 - \*post_id
-- \*title
 - \*content
 
 #### Response

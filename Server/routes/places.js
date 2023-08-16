@@ -59,6 +59,7 @@ router.post('/', isAdminMW, upload.fields(
 	let { placeName, category, state, startDate, endDate, locations } = req.body;	
 	
 	locations = JSON.parse(locations);
+	console.log(locations)
 	if(!(typeof(placeName) === 'string' && typeof(category) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
@@ -73,11 +74,11 @@ router.post('/', isAdminMW, upload.fields(
 
 // 특정 핫플 조회
 // place_id : int
-router.get('/:place_id(\\d+)', isAdminMW, async (req, res, next) => {    
+router.get('/:place_id(\\d+)', async (req, res, next) => {    
 	const { place_id } = req.params;
 
 	let places = await getPlaces({ date: false, place_id });
-	res.send();
+	res.json(places);
 });
 
 // 핫플 참가
