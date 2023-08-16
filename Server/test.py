@@ -4,6 +4,7 @@ import json
 from random import randint, choice
 import glob
 import time
+import string
 
 HOST_API = 'http://localhost:3000/api/'
 
@@ -44,7 +45,7 @@ def add_place():
     places = txt.split('\n\n')
     top10List = open("./top10_list.txt", 'r', encoding='utf-8').read().split('\n')    
 
-    tmp = ['리얼월드 성수', '페더 엘리아스 내한공연', '플라츠2', '플라츠S', '충주 다이브 페스티벌']
+    tmp = ['리얼월드 성수', '페더 엘리아스 내한공연', '플라츠 2', '플라츠 S', '충주 다이브 페스티벌']
 
     for place in places:
         name = place.split('\n')[0]
@@ -166,8 +167,8 @@ def add_feed():
 
         place_id = searchPlace(placeName)['place_id']
 
-        r = admin.get(HOST_API+f'users/grant-org?user_id={tmpUserId}&place_id={place_id}')
-        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={tmpUserId}&place_id={place_id}')  
+        r = admin.post(HOST_API+f'users/authority',json={'user_id':tmpUserId, 'place_id':place_id})
+        r = admin.post(HOST_API+f'users/nickname',json={'nickname':author,'user_id':tmpUserId,'place_id':place_id})  
         
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
@@ -190,7 +191,7 @@ def add_feed():
 def add_info():
     global admin
 
-    txt = open("./info_list.txt", 'r', encoding='utf-8').read()
+    txt = open("./info_list.md", 'r', encoding='utf-8').read()
     infos = txt.split('\n------------------------------------------------------------------------------------------------\n')
     for info in infos:        
         data = info.split('\n')
@@ -203,10 +204,13 @@ def add_info():
         for content in contents:
             data2 = content.split('\n')            
             myInfo['title'] = data2[0]            
-            myInfo['content'] = '\n'.join(data2[1:])
-            myInfo['is_schedule'] = int('일정표' in myInfo['title'])
-        
-            r = admin.post(HOST_API+f'infos', json=myInfo)
+            print(data2[1])
+            if '일정표' in myInfo['title']:
+                r = admin.post(HOST_API+f'places/{place_id}/schedule', files={'image': (data2[1], open('media/info/'+data2[1], 'rb').read())})
+            else:
+                myInfo['content'] = '\n'.join(data2[1:])
+                r = admin.post(HOST_API+f'infos', json=myInfo)
+                
             print(r.text)
 # add_info()
 
@@ -305,12 +309,12 @@ def add_top10():
 # add_comment()
 
 # 게시글 좋아요
-# for i in range(42):
-#     test = Session()
-#     test.get(HOST_API+f'users/auth?token={3534982+i}')
-#     test.get(HOST_API+f'users/join/1')
-#     test.get(HOST_API+f'users/join/51')
-#     test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
+for i in range(42):
+    test = Session()
+    test.get(HOST_API+f'users/auth?token={3534982+i}')
+    test.get(HOST_API+f'users/join/1')
+    test.get(HOST_API+f'users/join/51')
+    test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
 
 # test = Session()
 # test.get(HOST_API+f'users/auth?token=2966688008')

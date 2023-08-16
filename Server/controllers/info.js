@@ -1,7 +1,5 @@
 const conn = require("../utils/db");
 const { getImages, createImage } = require("./image");
-const { getLocations, createLocation } = require("./location");
-const { isOrganizerOfPlace, getNickname } = require("./user");
 
 async function getInfos(options) {
     let query = 'SELECT * FROM tb_info WHERE 1=1';
@@ -17,11 +15,6 @@ async function getInfos(options) {
         obj.push(options.info_id);
     }    
 
-    if(options.is_schedule) {
-        query += ' AND is_schedule = ?';
-        obj.push(options.is_schedule);
-    }    
-
     const infos = await conn.query(query, obj);
     
     return infos;
@@ -29,9 +22,9 @@ async function getInfos(options) {
 
 // Info : title, content, is_schedule
 async function createInfo(infoInfo, place_id) {
-    const { title, content, is_schedule } = infoInfo;
+    const { title, content } = infoInfo;
 
-    const info_id = (await conn.query('INSERT INTO tb_info(place_id, title, content, is_schedule) VALUES(?, ?, ?, ?)', [place_id, title, content, is_schedule])).insertId;    
+    const info_id = (await conn.query('INSERT INTO tb_info(place_id, title, content) VALUES(?, ?, ?)', [place_id, title, content])).insertId;    
 }
 
 // TODO: Edit

@@ -15,41 +15,43 @@ level : access level
 
 바로가기
 
-- User  
-  [GET /api/users/place](#get-apiusersplace)  
-  [GET /api/users/post](#get-apiuserspost)
+- Users
+[GET	/api/users/mypage](#get-apiusersmypage)  
 
-- Place  
-  [GET /api/places](#get-apiplaces)  
-  [POST /api/places](#post-apiplaces)  
-  [GET /api/places/:place_id](#get-apiplacesplace_id)  
-  [GET /api/places/:place_id/join](#get-apiplacesplace_idjoin)
+- Places
+[GET	/api/places](#get-apiplaces)  
+[POST	/api/places](#post-apiplaces)  
+[GET	/api/places/:place_id](#get-apiplacesplace_id)  
+[GET	/api/places/:place_id/join](#get-apiplacesplace_idjoin)  
+[GET	/api/places/:place_id/exit](#get-apiplacesplace_idexit)  
+[GET	/api/places/top10](#get-apiplacestop10)  
 
-- Booth  
-  [GET /api/booths](#get-apibooths)  
-  [GET /api/booths/:location_id](#get-apiboothslocation_id)  
-  [POST /api/booths](#post-apibooths)
+- Booths
+[GET	/api/booths](#get-apibooths)  
+[GET	/api/booths/:booth_id](#get-apiboothsbooth_id)  
+[POST	/api/booths](#post-apibooths)  
 
-- Feed  
-  [GET /api/feeds](#get-apifeeds)  
-  [GET /api/feeds/feed_id](#get-apifeedsfeed_id)  
-  [POST /api/feeds](#post-apifeeds)
+- Feeds
+[GET	/api/feeds](#get-apifeeds)  
+[GET	/api/feeds/feed_id](#get-apifeedsfeed_id)  
+[POST	/api/feeds](#post-apifeeds)  
 
-- Info  
-  [GET /api/infos](#get-apiinfos)  
-  [GET /api/infos/:info_id](#get-apiinfosinfo_id)  
-  [POST /api/infos](#post-apiinfos)
+- Infos
+[GET	/api/infos](#get-apiinfos)  
+[GET	/api/infos/:info_id](#get-apiinfosinfo_id)  
+[POST	/api/infos](#post-apiinfos)  
 
-- Post  
-  [GET /api/posts](#get-apiposts)  
-  [POST /api/posts](#post-apiposts)  
-  [GET /api/posts/:post_id](#get-apipostspost_id)  
-  [GET /api/posts/:post_id/like](#get-apipostspost_idlike)
+- Posts
+[GET	/api/posts](#get-apiposts)  
+[GET	/api/posts/:post_id](#get-apipostspost_id)  
+[POST	/api/posts](#post-apiposts)  
+[GET	/api/posts/:post_id/like](#get-apipostspost_idlike)  
 
-- Comment  
-  [GET /api/comments](#get-apicomments)  
-  [POST /api/comments](#post-apicomments)  
-  [GET /api/comments/:comment_id/like](#get-apicommentscomment_idlike)
+- Comments
+[GET	/api/comments](#get-apicomments)  
+[POST	/api/comments](#post-apicomments)  
+[GET	/api/comments/:comment_id/like](#get-apicommentscomment_idlike)  
+
 
 ## User
 
@@ -74,12 +76,6 @@ level : access level
   "email": "test@example.com"
 }
 ```
-
-### GET /api/users/post
-
-#### Request
-
-#### Response
 
 ## Place - 핫플레이스
 

@@ -1,10 +1,10 @@
 var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
-const { getPosts, pressPostLike } = require('../services/post');
+const { getPosts, pressPostLike } = require('../controllers/post');
 const { BadRequestError } = require('../utils/error');
 const { errorWrapper } = require('../utils/util');
-const { getComments, createComment, deleteComment } = require('../services/comment');
+const { getComments, createComment, deleteComment } = require('../controllers/comment');
 var router = express.Router();
 
 // jwt 인증 middleware
