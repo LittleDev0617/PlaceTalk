@@ -64,7 +64,7 @@ def add_place():
             myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
 
         myPlace['locations'] = json.dumps(myPlace['locations'])
-
+        
         if name in top10List:
             files = glob.glob('media/top10/*.png')
             image = files[top10List.index(name)]
@@ -82,6 +82,7 @@ def add_place():
         else:
             r = admin.post(HOST_API+f'places', json=myPlace)
         print(r.text)
+        
         
 # add_place()
 
@@ -203,7 +204,7 @@ def add_info():
             data2 = content.split('\n')            
             myInfo['title'] = data2[0]            
             myInfo['content'] = '\n'.join(data2[1:])
-            myInfo['is_schedule'] = int(myInfo['title'] == '일정표')
+            myInfo['is_schedule'] = int('일정표' in myInfo['title'])
         
             r = admin.post(HOST_API+f'infos', json=myInfo)
             print(r.text)
@@ -298,18 +299,18 @@ def add_top10():
 # add_place()
 # add_booth()
 # add_feed()
-# add_info()
+add_info()
 # add_top10()
 # add_post()
 # add_comment()
 
 # 게시글 좋아요
-for i in range(42):
-    test = Session()
-    test.get(HOST_API+f'users/auth?token={3534982+i}')
-    test.get(HOST_API+f'users/join/1')
-    test.get(HOST_API+f'users/join/51')
-    test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
+# for i in range(42):
+#     test = Session()
+#     test.get(HOST_API+f'users/auth?token={3534982+i}')
+#     test.get(HOST_API+f'users/join/1')
+#     test.get(HOST_API+f'users/join/51')
+#     test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
 
 # test = Session()
 # test.get(HOST_API+f'users/auth?token=2966688008')
