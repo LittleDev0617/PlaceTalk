@@ -123,6 +123,16 @@ async function deletePlace() {
     
 }
 
+async function addSchedule(place_id, image) {
+    const schedule_id = (await conn.query('INSERT INTO tb_schedule(place_id) VALUES(?)', place_id))[0].insertId;
+    return await createImage({ id: 'schedule_id', value: schedule_id }, image, 0);
+}
+
+async function getSchedule(place_id) {
+    const schedule_id = await conn.query('SELECT schedule_id FROM tb_schedule WHERE place_id = ?', [place_id]);
+    return await getImages({ id: 'schedule_id', value: schedule_id});
+}
+
 module.exports = {
-    getPlaces, createPlace, editPlace, deletePlace, getTop10Places, addTop10Place, removeTop10Place
+    getPlaces, createPlace, editPlace, deletePlace, getTop10Places, addTop10Place, removeTop10Place, addSchedule, getSchedule
 };

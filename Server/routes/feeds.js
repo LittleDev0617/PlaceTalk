@@ -2,8 +2,8 @@ var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
 const { upload } = require('../utils/util');
-const { isOrganizer } = require('../services/user');
-const { getFeeds, createFeed, editFeed, deleteFeed } = require('../services/feed');
+const { isOrganizer } = require('../controllers/user');
+const { getFeeds, createFeed, editFeed, deleteFeed } = require('../controllers/feed');
 var router = express.Router();
 
 // jwt 인증 middleware
