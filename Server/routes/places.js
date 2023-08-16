@@ -4,7 +4,7 @@ const { auth } = require('../utils/auth');
 const { BadRequestError, UnauthorizedError } = require('../utils/error');
 const { errorWrapper, upload } = require('../utils/util');
 const { getPlaces, createPlace, getTop10Places, addTop10Place, removeTop10Place } = require('../services/place');
-const { joinPlace, isAdminMW } = require('../services/user');
+const { joinPlace, isAdminMW, exitPlace } = require('../services/user');
 var router = express.Router();
 
 // jwt 인증 middleware
@@ -16,10 +16,10 @@ router.use(auth);
 // lon : 내 경도
 // dist : 반경 dist km 이내
 router.get('/', async (req, res, next) => {
-	const { name, category, lat, lon, dist } = req.query;
+	const { name, category, lat, lon, dist, user_id } = req.query;
 	var date = req.query['date'];
 	
-	let places = await getPlaces({ name, category, date, lat, lon, dist });
+	let places = await getPlaces({ name, category, date, lat, lon, dist, user_id });
 	// console.log(places)
 	res.json(places);
 });
@@ -59,6 +59,7 @@ router.post('/', isAdminMW, upload.fields(
 	let { placeName, category, state, startDate, endDate, locations } = req.body;	
 	
 	locations = JSON.parse(locations);
+	console.log(locations)
 	if(!(typeof(placeName) === 'string' && typeof(category) === 'string'))
 		throw new BadRequestError('Bad data.');
 	
@@ -73,12 +74,32 @@ router.post('/', isAdminMW, upload.fields(
 
 // 특정 핫플 조회
 // place_id : int
-router.get('/:place_id(\\d+)', isAdminMW, async (req, res, next) => {    
+router.get('/:place_id(\\d+)', async (req, res, next) => {    
 	const { place_id } = req.params;
 
 	let places = await getPlaces({ date: false, place_id });
 	res.json(places);
 });
 
+// 핫플 참가
+router.get('/:place_id(\\d+)/join', errorWrapper(async (req, res, next) => {   
+	const { place_id } = req.params;
+    
+	let result = await joinPlace(req.user.uid, place_id);
+	res.json([{code:0, message:'asdf'}]);
+}));
+
+// 핫플 나가기
+router.get('/:place_id(\\d+)/exit', errorWrapper(async (req, res, next) => {   
+	const { place_id } = req.params;
+
+    const places = await getPlaces({ user_id: req.user.uid });
+
+    if(places.length == 0)
+        throw new BadRequestError('not join');
+
+	let result = await exitPlace(req.user.uid, place_id);
+	res.json([]);
+}));
 
 module.exports = router;

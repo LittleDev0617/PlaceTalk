@@ -1,6 +1,12 @@
 const conn = require("../utils/db");
 const { getDistance } = require("../utils/util");
 const { getLocations, createLocation } = require("./location");
+const { getUsers } = require("./user");
+
+async function isPressLike(comment_id, user_id) {
+    const { count } = (await conn.query('SELECT COUNT(*) as count FROM tb_comment_likes WHERE comment_id = ? AND user_id = ?', [comment_id, user_id]))[0];
+    return count > 0;
+}
 
 async function getComments(options) {
 	const { offset, commentsPerPage, likeOrder } = options;
@@ -17,21 +23,35 @@ async function getComments(options) {
         obj.push(options.user_id);
     }
 
-    query += ` ORDER BY ${likeOrder ? 'likes' : 'create_time'} LIMIT ?, ?`;
+    if(options.comment_id) {
+        query += ' AND comment_id = ?';
+        obj.push(options.comment_id);
+    }
+
+    query += ` ORDER BY ${likeOrder ? 'likes' : 'create_date'} LIMIT ?, ?`;
     obj.push(offset * commentsPerPage);
     obj.push(commentsPerPage);
 
     let comments = await conn.query(query, obj);
-    const user = await getUsers({ user_id: comments[0].user_id });
+    let res = [];
 
-    comments[0].user = user[0];
-    return comments;
+    for(let comment of comments) {
+        const user = await getUsers({ user_id: comment.user_id });  
+        const isPressed = await isPressLike(comment.comment_id, comment.user_id);    
+
+        comment.isPressLike = isPressed;
+        comment.user = user[0];
+        delete comment.user_id;
+        res.push(comment);
+    }
+
+    return res;
 }
 
 async function createComment(comment) {
     const { post_id, content, is_reply, user_id, reply_id } = comment;
     
-    return await conn.query('INSERT INTO tb_comment(post_id, user_id, is_reply, reply_id, content, create_time) VALUES(?,?,?,?,?,NOW())',
+    return await conn.query('INSERT INTO tb_comment(post_id, user_id, is_reply, reply_id, content, create_date) VALUES(?,?,?,?,?,NOW())',
                 [post_id, user_id, is_reply, reply_id, content]);
 }
 
@@ -43,10 +63,6 @@ async function getCommentLikes(comment_id) {
     return (await conn.query('SELECT likes FROM tb_comment WHERE comment_id = ?', [comment_id]))[0].likes;
 }
 
-async function isPressLike(comment_id, user_id) {
-    const { count } = (await conn.query('SELECT COUNT(*) as count FROM tb_comment_likes WHERE comment_id = ? AND user_id = ?', [comment_id, user_id]))[0];
-    return count > 0;
-}
 
 async function pressCommentLike(comment_id, user_id) {
     const isPressed = await isPressLike(comment_id, user_id);    

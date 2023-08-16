@@ -61,95 +61,19 @@ level : access level
 }
 ```
 
-### GET /api/users/place
+### GET /api/users/mypage
 
-유저가 참여중인 행사/핫플 목록을 조회합니다.
+유저의 정보를 조회합니다.
 
-#### Request
-
-#### Response
-
-- `List<Location>`
+### Response
 
 ```json
-[
-  {
-    "place_id": 12,
-    "name": "강릉 커피 축제",
-    "category": "지역 축제",
-    "state": 1,
-    "start_date": "2023-10-12 00:00:00",
-    "end_date": "2023-10-16 00:00:00",
-    "count": 1,
-    "locations": [
-      {
-        "location_id": 15,
-        "loc_name": "",
-        "lat": 37.77979410091278,
-        "lon": 128.8968565000015
-      }
-    ]
-  },
-  {
-    "place_id": 33,
-    "name": "서울밤도깨비야시장 – 여의도한강공원",
-    "category": "여가",
-    "state": 0,
-    "start_date": "1001-01-01 00:00:00",
-    "end_date": "9998-12-30 00:00:00",
-    "count": 1,
-    "locations": [
-      {
-        "location_id": 36,
-        "loc_name": "",
-        "lat": 37.53124899999992,
-        "lon": 126.9286831999997
-      }
-    ]
-  },
-  {
-    "place_id": 5,
-    "name": "숭실대 축제",
-    "category": "대학 축제",
-    "state": 1,
-    "start_date": "2023-09-27 00:00:00",
-    "end_date": "2023-10-01 00:00:00",
-    "count": 1,
-    "locations": [
-      {
-        "location_id": 8,
-        "loc_name": "",
-        "lat": 37.49668954890789,
-        "lon": 126.95750406798976
-      }
-    ]
-  }
-]
+{
+  "user_id": 1,
+  "nickname": "관리자",
+  "email": "test@example.com"
+}
 ```
-
-### GET /api/users/join/:place_id
-
-place_id 에 참가합니다.
-
-#### Request
-
-\*place_id - path parameter
-
-#### Response
-
-<hr />
-
-### GET /api/users/exit/:place_id
-
-place_id 에서 나옵니다.
-
-#### Request
-
-\*place_id - path parameter
-
-#### Response
-
-<hr />
 
 ### GET /api/users/post
 
@@ -208,6 +132,7 @@ place_id 에서 나옵니다.
 3. date 이후의 행사들 조회
 
 - name : 이름 필터
+- user_id : 필터
 - category : 카테고리 필터
 - lat / lon / dist => 반경 n km 이내 조회 시 사용
   - lat : 사용자 위치 위도
@@ -325,6 +250,38 @@ place_id - path parameter
   }
 ]
 ```
+
+### GET /api/places/:place_id/join
+
+place_id 에 참가합니다.
+
+#### Request
+
+\*place_id - path parameter
+
+#### Response
+
+```json
+
+or
+{"code":1,"message":"User already joined."}
+or
+{"code":2,"message":"Cannot join more than 5 places."}
+```
+
+<hr />
+
+### GET /api/places/:place_id/exit
+
+place_id 에서 나옵니다.
+
+#### Request
+
+\*place_id - path parameter
+
+#### Response
+
+<hr />
 
 ### GET /api/places/top10
 
@@ -782,6 +739,7 @@ location_id 에 해당하는 행사 에 부스를 등록합니다.
   "create_date": datetime,
   "content": string,
   "likes": int,
+  "isPressLike": bool,
   "commentCnt" : int
 }
 ```
@@ -810,50 +768,41 @@ Post List
 ```json
 [
   {
-    "post_id": 1,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 비안오죠? 비오면 안되ㄴ는딩",
-    "likes": 0,
+    "post_id": 24,
+    "create_date": "2023-08-16 15:39:26",
+    "content": "건국대 축제 너무 재밌어요",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 894316236,
-      "nickname": "비둘기야밥먹자구구구",
+      "user_id": 555663674,
+      "nickname": "주인공인",
       "email": "test@example.com"
     }
   },
   {
-    "post_id": 2,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 축제 몇시까지해여",
+    "post_id": 23,
+    "create_date": "2023-08-16 15:39:25",
+    "content": "저는 내일 광진구쪽으로 가보려고용",
     "likes": 0,
-    "commentCnt": 0,
+    "commentCnt": 3,
+    "isPressLike": false,
     "user": {
-      "user_id": 976218958,
-      "nickname": "마감요정",
+      "user_id": 143028191,
+      "nickname": "한량대학생",
       "email": "test@example.com"
     }
   },
   {
-    "post_id": 3,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "황소상앞에 부스 괜찬나염",
-    "likes": 0,
+    "post_id": 22,
+    "create_date": "2023-08-16 15:39:18",
+    "content": "핫바 부스 괜찮더라",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 752424328,
-      "nickname": "glaemfdjdy",
-      "email": "test@example.com"
-    }
-  },
-  {
-    "post_id": 4,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "축제 음식 맛있나??",
-    "likes": 0,
-    "commentCnt": 0,
-    "user": {
-      "user_id": 51514446,
-      "nickname": "팡팡파라파라팡팡팡",
+      "user_id": 602885501,
+      "nickname": "집가고싶다",
       "email": "test@example.com"
     }
   }
@@ -877,14 +826,15 @@ Post List
 ```json
 [
   {
-    "post_id": 2,
-    "create_date": "2023-08-15 18:15:06",
-    "content": "오늘 축제 몇시까지해여",
-    "likes": 0,
+    "post_id": 24,
+    "create_date": "2023-08-16 15:39:26",
+    "content": "건국대 축제 너무 재밌어요",
+    "likes": 1,
     "commentCnt": 0,
+    "isPressLike": false,
     "user": {
-      "user_id": 976218958,
-      "nickname": "마감요정",
+      "user_id": 555663674,
+      "nickname": "주인공인",
       "email": "test@example.com"
     }
   }
@@ -900,7 +850,6 @@ post 생성
 #### Request
 
 - \*place_id
-- \*title
 - \*content
 
 #### Response
@@ -916,7 +865,6 @@ post 수정
 #### Request
 
 - \*post_id
-- \*title
 - \*content
 
 #### Response
@@ -963,6 +911,7 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
   "is_reply" : int, // 0 or 1
   "reply_id" : int, // comment_id
   "likes" : int,
+  "isPressLike" : bool,
   "content" : string,
   "create_date" : datetime
 }
@@ -978,8 +927,54 @@ post_id 에 해당하는 게시글 내용을 삭제합니다.
 
 #### Response
 
-게시글 작성자가 작성한 댓글의 user_id 는 0 입니다.  
-이외의 댓글은 날짜순으로 1 2 3.. 으로 설정됩니다.
+- `List<Comment>`
+
+```json
+[
+  {
+    "comment_id": 1,
+    "post_id": 9,
+    "content": "맛있는거많으면좋겠따",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 388244853,
+      "nickname": "엄마가만들고내가먹는짜장면",
+      "email": "test@example.com"
+    }
+  },
+  {
+    "comment_id": 2,
+    "post_id": 9,
+    "content": "광진구면 어디쪽이지",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 854228789,
+      "nickname": "뉴헤어뉴티",
+      "email": "test@example.com"
+    }
+  },
+  {
+    "comment_id": 3,
+    "post_id": 9,
+    "content": "올 어디임? 추천 좀",
+    "is_reply": 0,
+    "reply_id": 0,
+    "create_date": "2023-08-16 02:56:19",
+    "likes": 0,
+    "user": {
+      "user_id": 790511534,
+      "nickname": "가입되지 않은 이용자입니다",
+      "email": "test@example.com"
+    }
+  }
+]
+```
 
 <hr />
 

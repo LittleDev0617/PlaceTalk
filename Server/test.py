@@ -1,8 +1,10 @@
 from requests import post, get, Session
 from naver_parser import link2lat_lon
 import json
-from random import randint
+from random import randint, choice
 import glob
+import time
+
 HOST_API = 'http://localhost:3000/api/'
 
 # for line in open('API.md', 'r', encoding='utf-8').readlines():
@@ -28,6 +30,13 @@ r = front.get(HOST_API+f'users/auth?token={2955408317}')
 #     lat, lon = link2lat_lon(m.rstrip())
 
 # exit()
+
+def searchPlace(name):
+    return json.loads(admin.get(HOST_API+f'places?name={name}').text)[0]
+
+def searchPost(content):
+    return json.loads(admin.get(HOST_API+f'posts?content={content}').text)[0]
+
 
 def add_place():
     global admin
@@ -55,7 +64,7 @@ def add_place():
             myPlace['locations'].append({'loc_name' : loc_name, 'lat' : lat, 'lon' : lon })
 
         myPlace['locations'] = json.dumps(myPlace['locations'])
-
+        
         if name in top10List:
             files = glob.glob('media/top10/*.png')
             image = files[top10List.index(name)]
@@ -74,57 +83,66 @@ def add_place():
             r = admin.post(HOST_API+f'places', json=myPlace)
         print(r.text)
         
+        
 # add_place()
 
 # r = admin.get(HOST_API+f'places/20/join')
 # print(r.text)
 
-r = admin.get(HOST_API+f'users/place')
-print(r.text)
+# r = admin.get(HOST_API+f'users/place')
+# print(r.text)
 
-r = admin.get(HOST_API+f'places/1')
-print(r.text)
+# r = admin.get(HOST_API+f'places/1')
+# print(r.text)
 
 
-lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
-r = admin.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
-print(r.text)
+# lat, lon = link2lat_lon('https://naver.me/x0GsZ73h')
+# r = admin.get(HOST_API+f'places?lat={lat}&lon={lon}&dist=1')
+# print(r.text)
 
 
 
 def add_booth():
     global admin
-    #  name, content, on_time, loc_name, lat, lon 
-    naver_link = ['https://naver.me/x3qUn8vB', 'https://naver.me/xq5mz4jK']
+    #  name, content, on_time, loc_name, lat, lon
 
-    booth_images = [['image1.png', 'image2.png', 'image3.png'], ['image4.png'], ['image5.png'], ['image6.png'], ['image7.png']]
-    
     txt = open("./booth_list.txt", 'r', encoding='utf-8').read()
-    booths = txt.split('\n\n')
-    for i, booth in enumerate(booths):        
-        
-        data = booth.split('\n')
-        myBooth = {}        
-        myBooth['location_id'] = 1
-        myBooth['name'] = data[0]
-        myBooth['on_time'] = data[1]
-        myBooth['content'] = '\n'.join(data[4:])
-        myBooth['location'] = {}
-        myBooth['location']['loc_name'] = data[2]
-        myBooth['location']['lat'], myBooth['location']['lon'] = link2lat_lon(data[3])
-        
-        images = []
+    for place in txt.split('\n-----------------------------------------------\n'):
+        placeName = place.split('\n')[0]
+        location_id = searchPlace(placeName)['locations'][0]['location_id']
+        booths = '\n'.join(place.split('\n')[1:]).split('\n\n')
 
-        for image in booth_images[i]:
-            images.append(('images', (image, open('media/' + image, 'rb').read())))
-        
-        myBooth['location'] = json.dumps(myBooth['location'])
-        r = admin.post(HOST_API+f'booths', data=myBooth, files=images)
-        print(r.text)
+        files = list(glob.glob(f'./media/booth/{placeName}/*.png'))
+        print(files)
+        files.sort(key=lambda x: int(x.split('\\image')[1].split('.')[0]))
+
+        fileIndex = 0
+
+        for i, booth in enumerate(booths):
+            data = booth.split('\n')
+            myBooth = {}        
+            myBooth['location_id'] = location_id
+            myBooth['name'] = data[0]
+            myBooth['on_time'] = data[1]
+            myBooth['content'] = '\n'.join(data[5:])
+            myBooth['location'] = {}
+            myBooth['location']['loc_name'] = data[2]
+            myBooth['location']['lat'], myBooth['location']['lon'] = link2lat_lon(data[3])
+            
+            images = []
+            imageCnt = int(data[4])
+
+            for image in files[fileIndex:fileIndex+imageCnt]:
+                images.append(('images', (image, open(image, 'rb').read())))
+            
+            myBooth['location'] = json.dumps(myBooth['location'])
+            r = admin.post(HOST_API+f'booths', data=myBooth, files=images)
+            print(r.text)
+            fileIndex += imageCnt
 # add_booth()
 
-r = admin.get(HOST_API+f'booths/1')
-print(r.text)
+# r = admin.get(HOST_API+f'booths/1')
+# print(r.text)
 
 def add_feed():
     global admin
@@ -142,14 +160,14 @@ def add_feed():
         imageCnt = int(imageCnt)
         date += ' 18:00:00'
 
+        tmpUserId = randint(300,1000000000)
         feed_session = Session()
-        feed_session.get(HOST_API+f'users/auth?token={i+1}')
+        feed_session.get(HOST_API+f'users/auth?token={tmpUserId}')
 
-        r = admin.get(HOST_API+f'places?name={placeName}')
-        place_id = json.loads(r.text)[0]['place_id']
+        place_id = searchPlace(placeName)['place_id']
 
-        r = admin.get(HOST_API+f'users/grant-org?user_id={i+1}&place_id={place_id}')
-        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={i+1}&place_id={place_id}')  
+        r = admin.get(HOST_API+f'users/grant-org?user_id={tmpUserId}&place_id={place_id}')
+        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={tmpUserId}&place_id={place_id}')  
         
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
@@ -166,8 +184,8 @@ def add_feed():
 
 # add_feed()
     
-r = admin.get(HOST_API+f'feeds/1')
-print(r.text)
+# r = admin.get(HOST_API+f'feeds/1')
+# print(r.text)
 
 def add_info():
     global admin
@@ -177,7 +195,7 @@ def add_info():
     for info in infos:        
         data = info.split('\n')
         placeName = data[0]
-        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        place_id = searchPlace(placeName)['place_id']
         myInfo = { 'place_id': place_id }
 
         contents = '\n'.join(data[1:]).split('\n------------------------------------------------\n')
@@ -186,29 +204,29 @@ def add_info():
             data2 = content.split('\n')            
             myInfo['title'] = data2[0]            
             myInfo['content'] = '\n'.join(data2[1:])
-            myInfo['is_schedule'] = int(myInfo['title'] == '일정표')
+            myInfo['is_schedule'] = int('일정표' in myInfo['title'])
         
             r = admin.post(HOST_API+f'infos', json=myInfo)
             print(r.text)
-add_info()
-exit()
+# add_info()
+
     
-r = admin.get(HOST_API+f'infos?place_id=1')
-print(r.text)
+# r = admin.get(HOST_API+f'infos?place_id=1')
+# print(r.text)
 
-r = front.get(HOST_API+f'users/join/1')
-print(r.text)
+# r = front.get(HOST_API+f'places/1/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'users/join/12')
-print(r.text)
+# r = front.get(HOST_API+f'places/12/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'users/join/33')
-print(r.text)
+# r = front.get(HOST_API+f'places/33/join')
+# print(r.text)
 
-r = front.get(HOST_API+f'users/join/5')
-print(r.text)
+# r = front.get(HOST_API+f'places/13/join')
+# print(r.text)
 
-front.get(HOST_API+f'users/exit/33')
+# front.get(HOST_API+f'places/33/exit')
 
 def add_post():
     global admin
@@ -220,15 +238,38 @@ def add_post():
         nickname = data[1]
         content = '\n'.join(data[2:])
 
-        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        place_id = searchPlace(placeName)['place_id']
 
         myPost = { 'place_id' : place_id, 'content': content }
 
         post_session = Session()
         post_session.get(HOST_API+f'users/auth?token={randint(30,1000000000)}&nickname={nickname}')
-        post_session.get(HOST_API+f'users/join/{place_id}')
+        post_session.get(HOST_API+f'places/{place_id}/join')
         r = post_session.post(HOST_API+'posts', json=myPost)
         print(r.text)
+        time.sleep(randint(1,10))
+
+
+def add_comment():
+    global admin
+    txt = open("./comment_list.txt", 'r', encoding='utf-8').read()
+    
+    for comments in reversed(txt.split('\n\n')):
+        data = comments.split("\n")
+        placeName, post_content, nickname = data[:3]        
+
+        content = '\n'.join(data[3:])
+
+        post_id = searchPost(post_content)['post_id']
+
+        mycomment = { 'post_id' : post_id, 'content': content, 'is_reply': 0, 'reply_id': 0 }
+
+        comment_session = Session()
+        comment_session.get(HOST_API+f'users/auth?token={randint(300,1000000000)}&nickname={nickname}')
+        # comment_session.get(HOST_API+f'users/join/{post_id}')
+        r = comment_session.post(HOST_API+'comments', json=mycomment)
+        print(r.text)
+        time.sleep(randint(1,5))
 
 # myPost = { 'place_id' : 1, 'content': input() }
 # test = Session()
@@ -242,24 +283,47 @@ def add_post():
 # test.get(HOST_API+f'users/auth?token={636228018}')
 # test.get(HOST_API+f'users/join/{1}')
 # r = test.post(HOST_API+'posts', json=myPost)
-# add_post()
+#add_post()
 
 def add_top10():
     global admin
     txt = open("./top10_list.txt", 'r', encoding='utf-8').read()
     
     for i, placeName in enumerate(txt.splitlines()):
-        place_id = json.loads(admin.get(HOST_API+f'places?name={placeName}').text)[0]['place_id']
+        place_id = searchPlace(placeName)['place_id']
         r = admin.post(HOST_API+f'places/top10', json={'place_id':place_id, 'order':i+1})
         print(r.text)
 
 # add_top10()
 
+# add_place()
+# add_booth()
+# add_feed()
+# add_info()
+# add_top10()
+# add_post()
+# add_comment()
 
+# 게시글 좋아요
+# for i in range(42):
+#     test = Session()
+#     test.get(HOST_API+f'users/auth?token={3534982+i}')
+#     test.get(HOST_API+f'users/join/1')
+#     test.get(HOST_API+f'users/join/51')
+#     test.get(HOST_API+f'posts/{choice(range(1,25))}/like')
+
+# test = Session()
+# test.get(HOST_API+f'users/auth?token=2966688008')
+# r = test.get(HOST_API+f'places/30/join')
+# print(r.text)
+# test.get(HOST_API+f'places/31/join')
+# test.get(HOST_API+f'places/32/join')
+# test.get(HOST_API+f'places/35/join')
+# test.get(HOST_API+f'places/34/join')
+# test.get(HOST_API+f'places/36/join')
 exit()
 # print(r.cookies)
 
-r = admin.get(url+f'users/place')
 print(r.text)
 
 # def add_place(name, start, end, latitude, longitude):

@@ -13,19 +13,23 @@ var router = express.Router();
 router.use(auth);
 
 const getPostsC = async (req, res, next) => {    
-	let { offset, postPerPage, likeOrder, place_id } = req.query;
+	let { offset, postPerPage, likeOrder, place_id, content } = req.query;
 	const { post_id } = req.params;
 
-	if(!offset || typeof(offset) !== 'number')
+	offset = parseInt(offset);
+	postPerPage = parseInt(postPerPage);
+	likeOrder = parseInt(likeOrder);
+
+	if(offset != 0 && !offset)
 		offset = 0
 	
-	if(!postPerPage || typeof(postPerPage) !== 'number')
-		postPerPage = 10
+	if(!postPerPage)
+		postPerPage = 20
 
-	if(!likeOrder || typeof(likeOrder) !== 'boolean')
-		likeOrder = false;
+	if(likeOrder == null)
+		likeOrder = 0;
 
-	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id, post_id });
+	const posts = await getPosts({ offset, postPerPage, likeOrder, place_id, post_id, content });
 	res.json(posts);
 };
 

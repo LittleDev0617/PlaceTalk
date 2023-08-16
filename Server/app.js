@@ -39,11 +39,11 @@ app.use('/api/infos', infosRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/comments', commentsRouter);
 
-// app.use(async (err, req, res, next) => {
-//     if(err.status)
-//         res.status(err.status).json({ code : err.code, message : err.message });
-//     next();
-// });
+app.use(async (err, req, res, next) => {
+    if(err.status)
+        res.status(err.status).json([{ code : err.code, message : err.message }]);
+    next();
+});
 
 const port = 3000;
 app.listen(port, () => {
