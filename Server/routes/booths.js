@@ -2,8 +2,8 @@ var express = require('express');
 var conn = require('../utils/db');
 const { auth } = require('../utils/auth');
 const { upload, errorWrapper } = require('../utils/util');
-const { isAdminMW } = require('../services/user');
-const { getBooths, createBooth } = require('../services/booth');
+const { isAdminMW } = require('../controllers/user');
+const { getBooths, createBooth } = require('../controllers/booth');
 var router = express.Router();
 
 // jwt 인증 middleware

@@ -166,8 +166,8 @@ def add_feed():
 
         place_id = searchPlace(placeName)['place_id']
 
-        r = admin.get(HOST_API+f'users/grant-org?user_id={tmpUserId}&place_id={place_id}')
-        r = admin.get(HOST_API+f'users/change-nickname?nickname={author}&user_id={tmpUserId}&place_id={place_id}')  
+        r = admin.post(HOST_API+f'users/authority',json={'user_id':tmpUserId, 'place_id':place_id})
+        r = admin.post(HOST_API+f'users/nickname',json={'nickname':author,'user_id':tmpUserId,'place_id':place_id})  
         
         images = []
         for image in files[fileIndex:fileIndex+imageCnt]:
@@ -190,7 +190,7 @@ def add_feed():
 def add_info():
     global admin
 
-    txt = open("./info_list.txt", 'r', encoding='utf-8').read()
+    txt = open("./info_list.md", 'r', encoding='utf-8').read()
     infos = txt.split('\n------------------------------------------------------------------------------------------------\n')
     for info in infos:        
         data = info.split('\n')
@@ -203,10 +203,13 @@ def add_info():
         for content in contents:
             data2 = content.split('\n')            
             myInfo['title'] = data2[0]            
-            myInfo['content'] = '\n'.join(data2[1:])
-            myInfo['is_schedule'] = int('일정표' in myInfo['title'])
-        
-            r = admin.post(HOST_API+f'infos', json=myInfo)
+            
+            if '일정표' in myInfo['title']:
+                r = admin.post(HOST_API+f'places/{place_id}/schedule', files={'image':open(data2[1])})
+            else:
+                myInfo['content'] = '\n'.join(data2[1:])
+                r = admin.post(HOST_API+f'infos', json=myInfo)
+                
             print(r.text)
 # add_info()
 
@@ -299,7 +302,7 @@ def add_top10():
 # add_place()
 # add_booth()
 # add_feed()
-# add_info()
+add_info()
 # add_top10()
 # add_post()
 # add_comment()

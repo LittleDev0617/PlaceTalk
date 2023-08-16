@@ -18,6 +18,10 @@ CREATE TABLE `tb_place` (
 	`top10` int DEFAULT 0
 );
 
+CREATE TABLE `tb_schedule` (
+	`place_id`	int NOT NULL,
+	`schedule_id` int auto_increment PRIMARY KEY NOT NULL
+);
 
 CREATE TABLE `tb_comment` (
 	`comment_id`	int auto_increment PRIMARY KEY	NOT NULL,
@@ -52,6 +56,7 @@ CREATE TABLE `tb_image` (
 	`booth_id`	int,
 	`feed_id`	int,
 	`place_id`	int,
+	`schedule_id`	int,
 	`order`	int	DEFAULT 0
 );
 
@@ -97,8 +102,7 @@ CREATE TABLE `tb_info` (
 	`info_id`	int auto_increment PRIMARY KEY	NOT NULL,
 	`place_id`	int	NOT NULL,
 	`title`	varchar(20)	NULL,
-	`content`	varchar(1000)	NULL,
-	`is_schedule` int DEFAULT 0 NOT NULL
+	`content`	varchar(1000)	NULL
 );
 
 ALTER TABLE `tb_image` ADD CONSTRAINT `FK_tb_place_TO_tb_image_1` FOREIGN KEY (
