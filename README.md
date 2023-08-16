@@ -10,22 +10,22 @@
 
 ## 0. 목차
 - [PlaceTalk](#placetalk)
-  * [1. What is PlaceTalk?](#1-what-is-placetalk-)
+  * [1. What is PlaceTalk?](#1-what-is-placetalk%3F)
   * [2. 🔥 핫플에 대해 궁금한 MZ 세대](#2--%ED%95%AB%ED%94%8C%EC%97%90-%EB%8C%80%ED%95%B4-%EA%B6%81%EA%B8%88%ED%95%9C-mz-%EC%84%B8%EB%8C%80)
   * [3. PlaceTalk 의 장점](#3-placetalk-%EC%9D%98-%EC%9E%A5%EC%A0%90)
-  * [4. PlaceTalk 기능](#4)
-    + [4.1 월드 지도](#41------)
+  * [4. PlaceTalk 기능](#4-placetalk-%EA%B8%B0%EB%8A%A5)
+    + [4.1 월드 지도](#41-%EC%9B%94%EB%93%9C-%EC%A7%80%EB%8F%84)
       - [내 주변 핫플](#%EB%82%B4-%EC%A3%BC%EB%B3%80-%ED%95%AB%ED%94%8C)
       - [카테고리별 핫플](#%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%EB%B3%84-%ED%95%AB%ED%94%8C)
       - [행사정보 및 예매](#%ED%96%89%EC%82%AC%EC%A0%95%EB%B3%B4-%EB%B0%8F-%EC%98%88%EB%A7%A4)
-    + [4.2 지도 속의 지도](#42---------)
-      - [구역별 설명](#------)
-      - [일정표](#---)
-    + [4.3 커뮤니티](#43-----)
-      - [자유게시판](#-----)
-      - [피드](#--)
-    + [4.4 둘러보기](#44-----)
-  * [5. 경쟁사](#5----)
+    + [4.2 지도 속의 지도](#42-%EC%A7%80%EB%8F%84-%EC%86%8D%EC%9D%98-%EC%A7%80%EB%8F%84)
+      - [구역별 설명](#%EA%B5%AC%EC%97%AD%EB%B3%84-%EC%84%A4%EB%AA%85)
+      - [일정표](#%EC%9D%BC%EC%A0%95%ED%91%9C)
+    + [4.3 커뮤니티](#43-%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0)
+      - [자유게시판](#%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%ED%8C%90)
+      - [피드](#%ED%94%BC%EB%93%9C)
+    + [4.4 둘러보기](#44-%EB%91%98%EB%9F%AC%EB%B3%B4%EA%B8%B0)
+  * [5. 경쟁사](#5-%EA%B2%BD%EC%9F%81%EC%82%AC)
   * [Team](#team)
     + [Built With](#built-with)
     + [License](#license)
@@ -89,13 +89,6 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
 ## 5. 경쟁사
 ![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/5bbc8f23-4fc9-484b-9a3d-c26a56c2a272)
 
-
-
-
-
-
-
-
 ---
 
 ## Team
@@ -131,30 +124,21 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
     </tr>
 </table>
 </div>
-  
-- 👩 홍가란 (Hong garan)
-    - 디자인
-    - 단국대학교 커뮤니케이션디자인과 3 학년    
-    - bbi100205@gmail.com  
-- 👨‍💻 김본수 (Kim Bon Soo)
-    - 프론트엔드 개발
-    - 건국대학교 컴퓨터공학부 1 학년
-    - devbonsu04@gmail.com  
-- 👨‍💻 유규민 (Yu Kyu Min)    
-    - 백엔드 개발    
-    - 건국대학교 컴퓨터공학부 1 학년
-    - littledev0617@naver.com  
 
-    
-
-
-### Built With
+## Built With
 - FrontEnd
     - ![flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white)  
 - BackEnd
     - ![nodejs](https://img.shields.io/badge/nodejs-339933?style=for-the-badge&logo=Node.js&logoColor=white)
     - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
     - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+## 이런 식으로 개발했어요
+![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/0a8796f9-3f0a-493d-9155-4819361abbb3)  
+![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/211b1bfa-e6da-45aa-a3bf-31e249b34555)  
+
+
+
 
 ### License
 Distributed under the MIT License. See LICENSE.md for more information.
