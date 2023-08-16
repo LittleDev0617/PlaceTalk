@@ -746,6 +746,7 @@ post 조회
 
 #### Request
 
+- user_id : 필터링
 - place_id : 필터링
 - offset
 - postPerPage
