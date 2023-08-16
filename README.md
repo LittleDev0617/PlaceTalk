@@ -8,6 +8,32 @@
 
 ***
 
+## 0. 목차
+- [PlaceTalk](#placetalk)
+  * [1. What is PlaceTalk?](#1-what-is-placetalk-)
+  * [2. 🔥 핫플에 대해 궁금한 MZ 세대](#2--%ED%95%AB%ED%94%8C%EC%97%90-%EB%8C%80%ED%95%B4-%EA%B6%81%EA%B8%88%ED%95%9C-mz-%EC%84%B8%EB%8C%80)
+  * [3. PlaceTalk 의 장점](#3-placetalk-%EC%9D%98-%EC%9E%A5%EC%A0%90)
+  * [4. PlaceTalk 기능](#4)
+    + [4.1 월드 지도](#41------)
+      - [내 주변 핫플](#%EB%82%B4-%EC%A3%BC%EB%B3%80-%ED%95%AB%ED%94%8C)
+      - [카테고리별 핫플](#%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%EB%B3%84-%ED%95%AB%ED%94%8C)
+      - [행사정보 및 예매](#%ED%96%89%EC%82%AC%EC%A0%95%EB%B3%B4-%EB%B0%8F-%EC%98%88%EB%A7%A4)
+    + [4.2 지도 속의 지도](#42---------)
+      - [구역별 설명](#------)
+      - [일정표](#---)
+    + [4.3 커뮤니티](#43-----)
+      - [자유게시판](#-----)
+      - [피드](#--)
+    + [4.4 둘러보기](#44-----)
+  * [5. 경쟁사](#5----)
+  * [Team](#team)
+    + [Built With](#built-with)
+    + [License](#license)
+    + [References](#references)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 
 ## 1. What is PlaceTalk?
 
