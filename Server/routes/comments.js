@@ -57,7 +57,7 @@ router.post('/', async (req, res, next) => {
 	const { is_reply, reply_id, content, post_id } = req.body;
 	
 	await createComment({ post_id, content, is_reply, reply_id, user_id: req.user.uid });
-	res.json({ message : "Successful" });
+	res.json([{ message : "Successful" }]);
 });
 
 // 댓글 삭제	- 본인 or 어드민
@@ -74,7 +74,7 @@ router.delete('/:comment_id(\\d+)', errorWrapper(async (req, res, next) => {
 		await deleteComment(comment_id);
 	}
 
-	res.json({ message : "Successful" });
+	res.json([{ message : "Successful" }]);
 }));
 
 // 댓글 좋아요
@@ -82,7 +82,7 @@ router.get('/:comment_id(\\d+)/like', async (req, res, next) => {
 	const { comment_id } = req.params;
 
 	await pressPostLike(comment_id, req.user.uid);
-	res.json({ message : "Successful" });
+	res.json([{ message : "Successful" }]);
 });
 
 module.exports = router;
