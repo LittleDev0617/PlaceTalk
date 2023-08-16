@@ -4,6 +4,7 @@ import json
 from random import randint, choice
 import glob
 import time
+import string
 
 HOST_API = 'http://localhost:3000/api/'
 
@@ -44,7 +45,7 @@ def add_place():
     places = txt.split('\n\n')
     top10List = open("./top10_list.txt", 'r', encoding='utf-8').read().split('\n')    
 
-    tmp = ['리얼월드 성수', '페더 엘리아스 내한공연', '플라츠2', '플라츠S', '충주 다이브 페스티벌']
+    tmp = ['리얼월드 성수', '페더 엘리아스 내한공연', '플라츠 2', '플라츠 S', '충주 다이브 페스티벌']
 
     for place in places:
         name = place.split('\n')[0]
@@ -203,9 +204,9 @@ def add_info():
         for content in contents:
             data2 = content.split('\n')            
             myInfo['title'] = data2[0]            
-            
+            print(data2[1])
             if '일정표' in myInfo['title']:
-                r = admin.post(HOST_API+f'places/{place_id}/schedule', files={'image':open(data2[1])})
+                r = admin.post(HOST_API+f'places/{place_id}/schedule', files={'image': (data2[1], open('media/info/'+data2[1], 'rb').read())})
             else:
                 myInfo['content'] = '\n'.join(data2[1:])
                 r = admin.post(HOST_API+f'infos', json=myInfo)
@@ -302,7 +303,7 @@ def add_top10():
 # add_place()
 # add_booth()
 # add_feed()
-add_info()
+# add_info()
 # add_top10()
 # add_post()
 # add_comment()
