@@ -15,10 +15,10 @@ level : access level
 
 바로가기
 
-- Users
+- Users  
 [GET	/api/users/mypage](#get-apiusersmypage)  
 
-- Places
+- Places  
 [GET	/api/places](#get-apiplaces)  
 [POST	/api/places](#post-apiplaces)  
 [GET	/api/places/:place_id](#get-apiplacesplace_id)  
@@ -26,28 +26,28 @@ level : access level
 [GET	/api/places/:place_id/exit](#get-apiplacesplace_idexit)  
 [GET	/api/places/top10](#get-apiplacestop10)  
 
-- Booths
+- Booths  
 [GET	/api/booths](#get-apibooths)  
 [GET	/api/booths/:booth_id](#get-apiboothsbooth_id)  
 [POST	/api/booths](#post-apibooths)  
 
-- Feeds
+- Feeds  
 [GET	/api/feeds](#get-apifeeds)  
 [GET	/api/feeds/feed_id](#get-apifeedsfeed_id)  
 [POST	/api/feeds](#post-apifeeds)  
 
-- Infos
+- Infos  
 [GET	/api/infos](#get-apiinfos)  
 [GET	/api/infos/:info_id](#get-apiinfosinfo_id)  
 [POST	/api/infos](#post-apiinfos)  
 
-- Posts
+- Posts  
 [GET	/api/posts](#get-apiposts)  
 [GET	/api/posts/:post_id](#get-apipostspost_id)  
 [POST	/api/posts](#post-apiposts)  
 [GET	/api/posts/:post_id/like](#get-apipostspost_idlike)  
 
-- Comments
+- Comments  
 [GET	/api/comments](#get-apicomments)  
 [POST	/api/comments](#post-apicomments)  
 [GET	/api/comments/:comment_id/like](#get-apicommentscomment_idlike)  

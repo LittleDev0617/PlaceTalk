@@ -27,9 +27,10 @@
     + [4.4 둘러보기](#44-%EB%91%98%EB%9F%AC%EB%B3%B4%EA%B8%B0)
   * [5. 경쟁사](#5-%EA%B2%BD%EC%9F%81%EC%82%AC)
   * [Team](#team)
-    + [Built With](#built-with)
-    + [License](#license)
-    + [References](#references)
+  * [Built With](#built-with)
+  * [6. 이런식으로 개발했어요](#6-이런-식으로-개발했어요)
+  * [License](#license)
+  * [References](#references)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -133,7 +134,7 @@ MZ세대가 핫플레이스와 오프라인 행사 정보를 탐색할 때, 여�
     - ![express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
     - ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
-## 이런 식으로 개발했어요
+## 이런 식으로 개발했어요  
 ![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/0a8796f9-3f0a-493d-9155-4819361abbb3)  
 ![image](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/211b1bfa-e6da-45aa-a3bf-31e249b34555)  
 
