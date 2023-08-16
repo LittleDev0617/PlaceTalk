@@ -1,0 +1,4 @@
+enum UserAuthStatusModel {
+  denied,
+  granted,
+}
