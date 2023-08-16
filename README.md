@@ -26,9 +26,9 @@
       - [피드](#%ED%94%BC%EB%93%9C)
     + [4.4 둘러보기](#44-%EB%91%98%EB%9F%AC%EB%B3%B4%EA%B8%B0)
   * [5. 경쟁사](#5-%EA%B2%BD%EC%9F%81%EC%82%AC)
+  * [6. 이런식으로 개발했어요](#6-이런-식으로-개발했어요)
   * [Team](#team)
   * [Built With](#built-with)
-  * [6. 이런식으로 개발했어요](#6-이런-식으로-개발했어요)
   * [License](#license)
   * [References](#references)
 
