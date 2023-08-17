@@ -1,4 +1,4 @@
-<img src="https://github.com/LittleDev0617/PlaceTalk/assets/35802632/c58412b7-214e-4e09-be8e-2ab36ba2aba2">
+[logo](https://github.com/LittleDev0617/PlaceTalk/assets/35802632/3e94b7c1-49bf-49af-a5d5-7b28a78a8262)
 
 # PlaceTalk
 
