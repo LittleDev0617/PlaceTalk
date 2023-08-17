@@ -74,6 +74,7 @@ abstract class $AppRouter extends _i17.RootStackRouter {
         child: _i3.BoardWriteEventScreen(
           key: args.key,
           name: args.name,
+          placeID: args.placeID,
         ),
       );
     },
@@ -331,12 +332,14 @@ class BoardWriteEventRoute
   BoardWriteEventRoute({
     _i18.Key? key,
     required String name,
+    required int placeID,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           BoardWriteEventRoute.name,
           args: BoardWriteEventRouteArgs(
             key: key,
             name: name,
+            placeID: placeID,
           ),
           initialChildren: children,
         );
@@ -351,15 +354,18 @@ class BoardWriteEventRouteArgs {
   const BoardWriteEventRouteArgs({
     this.key,
     required this.name,
+    required this.placeID,
   });
 
   final _i18.Key? key;
 
   final String name;
 
+  final int placeID;
+
   @override
   String toString() {
-    return 'BoardWriteEventRouteArgs{key: $key, name: $name}';
+    return 'BoardWriteEventRouteArgs{key: $key, name: $name, placeID: $placeID}';
   }
 }
 

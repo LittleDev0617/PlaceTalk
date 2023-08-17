@@ -18,7 +18,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       final List<CommentModel> comments =
           await _commentRepo.fetchCommentData(event.postId);
       emit(CommentLoaded(comments));
-      close();
     });
   }
 }

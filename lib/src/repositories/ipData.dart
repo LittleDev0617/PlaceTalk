@@ -1,2 +1,2 @@
-String gguIP = 'http://125.180.98.19:1234';
-String kuIP = 'http://203.252.139.164:3000';
+String kuIP =
+    'http://ec2-15-164-151-54.ap-northeast-2.compute.amazonaws.com:80';

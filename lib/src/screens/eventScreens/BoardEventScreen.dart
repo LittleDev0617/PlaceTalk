@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:placetalk/src/blocs/BoardBlocs/board_bloc.dart';
-import 'package:placetalk/src/blocs/CommentBlocs/comment_bloc.dart';
 import 'package:placetalk/src/components/CustomButtons.dart';
 import 'package:placetalk/src/screens/routes/routes.gr.dart';
 
@@ -42,26 +41,16 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // FloatingActionButton(
-          //   backgroundColor: Colors.white.withOpacity(.9),
-          //   onPressed: () {},
-          //   shape: const CircleBorder(),
-          //   elevation: 3,
-          //   child: const SizedBox(
-          //     height: 60,
-          //     width: 60,
-          //     child: Icon(
-          //       Icons.map_outlined, //
-          //       color: Color(0xffff7d7d),
-          //       size: 32,
-          //     ),
-          //   ),
-          // ),
           const SizedBox(height: 15),
           FloatingActionButton(
             backgroundColor: const Color(0xffFF7D7D),
             onPressed: () {
-              context.router.push(BoardWriteEventRoute(name: widget.name));
+              context.router.push(
+                BoardWriteEventRoute(
+                  name: widget.name,
+                  placeID: widget.placeID,
+                ),
+              );
             },
             shape: const CircleBorder(),
             elevation: 3,
@@ -107,6 +96,7 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
       ),
       body: BlocBuilder<BoardBloc, BoardState>(
         builder: (context, state) {
+          int? userID;
           if (state is BoardJoinLoading) {
             if (state.codes == 0 || state.codes == 1) {
               BlocProvider.of<BoardBloc>(context)
@@ -128,8 +118,6 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
           } else if (state is BoardLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is BoardLoaded) {
-            int? userID;
-
             return BlocListener<AuthBloc, AuthState>(
               listener: (context, authstate) {
                 if (authstate is AuthGranted) {
@@ -194,145 +182,151 @@ class _BoardEventScreenState extends State<BoardEventScreen> {
                     ),
                     const SizedBox(height: 15),
                     Expanded(
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: state.boards.length,
-                        itemBuilder: ((BuildContext context, index) {
-                          return SizedBox(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  onTap: () {
-                                    BlocProvider.of<CommentBloc>(context).add(
-                                      FetchCommentsEvent(
-                                        state.boards[index].postId,
-                                      ),
-                                    );
-                                    context.router.push(
-                                      BoardDetailEventRoute(
-                                        name: widget.name,
-                                        postID: state.boards[index].postId,
-                                        commentCnt:
-                                            state.boards[index].commentCnt,
-                                        content: state.boards[index].content,
-                                        createDate:
-                                            state.boards[index].createDate,
-                                        nickname:
-                                            state.boards[index].user.nickname,
-                                        likeCnt: state.boards[index].likes,
-                                        isPressLike:
-                                            state.boards[index].isPressLike,
-                                      ),
-                                    );
-                                  },
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 10,
-                                  ),
-                                  leading: Container(
-                                    margin: const EdgeInsets.only(right: 5),
-                                    child: const CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: AssetImage(
-                                        'assets/images/profile.png',
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          setState(() {
+                            BlocProvider.of<BoardBloc>(context)
+                                .add(FetchBoardData(widget.placeID));
+                          });
+                        },
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: state.boards.length,
+                          itemBuilder: ((BuildContext context, index) {
+                            return SizedBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      context.router.push(
+                                        BoardDetailEventRoute(
+                                          name: widget.name,
+                                          postID: state.boards[index].postId,
+                                          commentCnt:
+                                              state.boards[index].commentCnt,
+                                          content: state.boards[index].content,
+                                          createDate:
+                                              state.boards[index].createDate,
+                                          nickname:
+                                              state.boards[index].user.nickname,
+                                          likeCnt: state.boards[index].likes,
+                                          isPressLike:
+                                              state.boards[index].isPressLike,
+                                        ),
+                                      );
+                                    },
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 10,
+                                    ),
+                                    leading: Container(
+                                      margin: const EdgeInsets.only(right: 5),
+                                      child: const CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: AssetImage(
+                                          'assets/images/profile.png',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  title: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        state.boards[index].user.nickname,
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      if (userID ==
-                                          state.boards[index].user.userId)
-                                        IconButton(
-                                          onPressed: () {},
-                                          iconSize: 24,
-                                          icon: const Icon(
-                                            Icons.more_horiz,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 180,
-                                        child: Text(
-                                          state.boards[index].content,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                    title: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          state.boards[index].user.nickname,
                                           style: TextStyle(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                           ),
                                         ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            state.boards[index].createDate,
-                                            style: TextStyle(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w300,
-                                              color:
-                                                  Colors.black.withOpacity(.56),
+                                        const Spacer(),
+                                        Visibility(
+                                          visible: userID ==
+                                              state.boards[index].user.userId,
+                                          child: IconButton(
+                                            onPressed: () {},
+                                            iconSize: 24,
+                                            icon: const Icon(
+                                              Icons.more_horiz,
+                                              color: Colors.black,
                                             ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              CustomIconText(
-                                                icons: const Icon(
-                                                  Icons
-                                                      .favorite_border_outlined,
-                                                  color: Colors.black,
-                                                ),
-                                                text:
-                                                    '${state.boards[index].likes}',
-                                              ),
-                                              const SizedBox(width: 15),
-                                              CustomIconText(
-                                                icons: const Icon(
-                                                  Icons.chat_bubble_outline,
-                                                  color: Colors.black,
-                                                ),
-                                                text:
-                                                    '${state.boards[index].commentCnt}',
-                                              ),
-                                            ],
+                                        ),
+                                      ],
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 180,
+                                          child: Text(
+                                            state.boards[index].content,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              state.boards[index].createDate,
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.black
+                                                    .withOpacity(.56),
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                CustomIconText(
+                                                  icons: const Icon(
+                                                    Icons
+                                                        .favorite_border_outlined,
+                                                    color: Colors.black,
+                                                  ),
+                                                  text:
+                                                      '${state.boards[index].likes}',
+                                                ),
+                                                const SizedBox(width: 15),
+                                                CustomIconText(
+                                                  icons: const Icon(
+                                                    Icons.chat_bubble_outline,
+                                                    color: Colors.black,
+                                                  ),
+                                                  text:
+                                                      '${state.boards[index].commentCnt}',
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                        separatorBuilder: (BuildContext context, int index) =>
-                            Divider(
-                          thickness: 1,
-                          color: const Color(0xff707070).withOpacity(.3),
+                                ],
+                              ),
+                            );
+                          }),
+                          separatorBuilder: (BuildContext context, int index) =>
+                              Divider(
+                            thickness: 1,
+                            color: const Color(0xff707070).withOpacity(.3),
+                          ),
                         ),
                       ),
                     ),

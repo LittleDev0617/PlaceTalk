@@ -1,13 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:placetalk/src/blocs/BoardBlocs/board_bloc.dart';
+
+import '../../repositories/SessionRepo.dart';
 
 @RoutePage()
 class BoardWriteEventScreen extends StatefulWidget {
   final String name;
+  final int placeID;
   const BoardWriteEventScreen({
     super.key,
     required this.name,
+    required this.placeID,
   });
 
   @override
@@ -21,15 +27,21 @@ class _BoardWriteEventScreenState extends State<BoardWriteEventScreen> {
   String _inputText = '';
 
   void _sendMessage() {
-    setState(() {
+    setState(() async {
       _inputText = _textEditingController.text;
       if (_inputText.trim().isNotEmpty) {
         _textEditingController.clear();
         FocusScope.of(context).unfocus();
 
+        Map data = {'content': _inputText, 'place_id': widget.placeID};
+
+        await SessionRepo().post('api/posts', data);
+
         const snackBar = SnackBar(
-          content: Text('작성 되었습니다.'),
+          content: Text('작성되었습니다.'),
         );
+
+        BlocProvider.of<BoardBloc>(context).add(FetchBoardData(widget.placeID));
 
         context.router.pop();
 
@@ -147,18 +159,6 @@ class _BoardWriteEventScreenState extends State<BoardWriteEventScreen> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   backgroundColor: const Color(0xffff7d7d),
-      //   isExtended: true,
-      //   elevation: 0,
-      //   onPressed: () {
-      //     _sendMessage();
-      //   },
-      //   label: const Text(
-      //     '게시',
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      // ),
     );
   }
 }

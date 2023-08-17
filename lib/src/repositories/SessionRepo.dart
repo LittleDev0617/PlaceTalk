@@ -21,13 +21,23 @@ class SessionRepo {
     return List.from(json.decode(utf8.decode(response.bodyBytes)));
   }
 
-  Future<dynamic> post(String api, dynamic data, String token) async {
+  Future<dynamic> post(String api, dynamic data) async {
+    headers['Cookie'] = 'token=${await _initCookie()}';
     final String url = '$kuIP/$api';
-    http.Response response = await http.post(Uri.parse(url),
+    await http.post(Uri.parse(url), body: json.encode(data), headers: headers);
+  }
+
+  Future<dynamic> put(String api, dynamic data) async {
+    headers['Cookie'] = 'token=${await _initCookie()}';
+    final String url = '$kuIP/$api';
+    await http.put(Uri.parse(url), body: json.encode(data), headers: headers);
+  }
+
+  Future<dynamic> delete(String api, dynamic data) async {
+    headers['Cookie'] = 'token=${await _initCookie()}';
+    final String url = '$kuIP/$api';
+    await http.delete(Uri.parse(url),
         body: json.encode(data), headers: headers);
-    final int statusCode = response.statusCode;
-    if (statusCode < 200 || statusCode > 400) {}
-    return json.decode(utf8.decode(response.bodyBytes));
   }
 
   Future<void> _saveCookie(String newCookie) async {
